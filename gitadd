@@ -1,0 +1,4 @@
+#!/bin/bash
+git add MoveVerticesWidget.{cpp,h,ui} InteractorStyleVertPick.{cpp,h} MainWindow.{cxx,h,ui} CMakeLists.txt Icons/*.{png,svg} Icons/icons.qrc myNotes.txt HexBlocker.{cpp,h} CreateBlockWidget.{cpp,h,ui}
+
+

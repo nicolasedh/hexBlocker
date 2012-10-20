@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MoveVerticesWidget</class>
+ <widget class="QDockWidget" name="MoveVerticesWidget">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Set position</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QCheckBox" name="checkBoxDelta">
+      <property name="text">
+       <string>apply delta vector, i.e. move</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkBoxX">
+        <property name="text">
+         <string>X coord</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditX">
+        <property name="inputMethodHints">
+         <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
+        </property>
+        <property name="maxLength">
+         <number>16</number>
+        </property>
+        <property name="placeholderText">
+         <string>0.0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="checkBoxY">
+        <property name="text">
+         <string>Y coord</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditY">
+        <property name="inputMethodHints">
+         <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
+        </property>
+        <property name="maxLength">
+         <number>16</number>
+        </property>
+        <property name="placeholderText">
+         <string>0.0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="checkBoxZ">
+        <property name="text">
+         <string>Y coord</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEditZ">
+        <property name="inputMethodHints">
+         <set>Qt::ImhDigitsOnly|Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
+        </property>
+        <property name="maxLength">
+         <number>16</number>
+        </property>
+        <property name="placeholderText">
+         <string>0.0</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>48</width>
+        <height>90</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonCancel">
+        <property name="text">
+         <string>Done</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonApply">
+        <property name="text">
+         <string>Apply</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <action name="actionApply">
+   <property name="text">
+    <string>Apply</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>lineEditX</tabstop>
+  <tabstop>lineEditY</tabstop>
+  <tabstop>lineEditZ</tabstop>
+  <tabstop>pushButtonApply</tabstop>
+  <tabstop>checkBoxDelta</tabstop>
+  <tabstop>checkBoxX</tabstop>
+  <tabstop>checkBoxY</tabstop>
+  <tabstop>checkBoxZ</tabstop>
+  <tabstop>pushButtonCancel</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

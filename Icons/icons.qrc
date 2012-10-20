@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file>fileopen.png</file>
+        <file>filesave.png</file>
+        <file>print.png</file>
+        <file>help.png</file>
+        <file>createHexBlock.png</file>
+        <file>ExtrudeBlock.png</file>
+        <file>selectVertices.png</file>
+    </qresource>
+</RCC>
