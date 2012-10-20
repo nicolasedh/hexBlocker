@@ -36,6 +36,7 @@ class vtkAxesActor;
 class vtkOrientationMarkerWidget;
 class vtkAreaPicker;
 class InteractorStyleVertPick;
+class InteractorStylePatchPick;
 class MoveVerticesWidget;
 class vtkInteractorStyleTrackballCamera;
 class CreateBlockWidget;
@@ -52,7 +53,8 @@ public:
 
   vtkSmartPointer<vtkPoints> mypoints;
   vtkSmartPointer<vtkPolyData> mydata;
-  vtkSmartPointer<InteractorStyleVertPick> style;
+  vtkSmartPointer<InteractorStyleVertPick> styleVertPick;
+  vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
 public slots:
 
   virtual void slotOpenFile();

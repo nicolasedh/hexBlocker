@@ -28,9 +28,18 @@ INCLUDE_DIRECTORIES(
 
 
 # Set your files and resources here  
-SET(HexBlockerSrcs main.cxx MainWindow.cxx HexBlock.cpp HexBlocker.cpp hexPatch.cpp InteractorStyleVertPick.cpp MoveVerticesWidget.cpp CreateBlockWidget.cpp)
+SET(HexBlockerSrcs
+    main.cxx MainWindow.cxx HexBlock.cpp HexBlocker.cpp
+    hexPatch.cpp InteractorStyleVertPick.cpp
+    MoveVerticesWidget.cpp CreateBlockWidget.cpp
+    InteractorStylePatchPick.cpp
+    )
 SET(HexBlockerUI MainWindow.ui MoveVerticesWidget.ui CreateBlockWidget.ui)
-SET(HexBlockerHeaders MainWindow.h HexBlock.h HexBlocker.h hexPatch.h InteractorStyleVertPick.h MoveVerticesWidget.h CreateBlockWidget.h)
+SET(HexBlockerHeaders
+    MainWindow.h HexBlock.h HexBlocker.h hexPatch.h
+    InteractorStyleVertPick.h MoveVerticesWidget.h
+    CreateBlockWidget.h InteractorStylePatchPick.h
+    )
 SET(HexBlockerResources Icons/icons.qrc)
 
 # The rest should just work (sure...)

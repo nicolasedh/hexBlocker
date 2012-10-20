@@ -1,5 +1,5 @@
-#ifndef INTERACTORVERTPICK_H
-#define INTERACTORVERTPICK_H
+#ifndef INTERACTORSTYLEVERTPICK_H
+#define INTERACTORSTYLEVERTPICK_H
 
 #include <vtkSmartPointer.h>
 #include <vtkInteractorStyleRubberBandPick.h>

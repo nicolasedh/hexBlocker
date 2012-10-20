@@ -11,6 +11,7 @@
 #include "HexBlocker.h"
 #include "HexBlock.h" //apparently needed inorder to acces it's actors
 #include "InteractorStyleVertPick.h"
+#include "InteractorStylePatchPick.h"
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
@@ -64,9 +65,11 @@ MainWindow::MainWindow()
 
     //Area Picker and InteractorStyleVertPicker
     areaPicker = vtkSmartPointer<vtkAreaPicker>::New();
-    style = vtkSmartPointer<InteractorStyleVertPick>::New();
-    style->SetPoints(hexBlocker->vertData);
-    style->SelectedSphere=hexBlocker->vertSphere;
+    styleVertPick = vtkSmartPointer<InteractorStyleVertPick>::New();
+    styleVertPick->SetPoints(hexBlocker->vertData);
+    styleVertPick->SelectedSphere=hexBlocker->vertSphere;
+    stylePatchPick = vtkSmartPointer<InteractorStylePatchPick>::New();
+    stylePatchPick->SetPatches(hexBlocker->patches);
 
     defStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
 
@@ -95,6 +98,9 @@ void MainWindow::slotOpenFile()
 {
     hexBlocker->resetBounds();
     renwin->Render();
+
+
+    renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
 }
 
 void MainWindow::slotOpenCreateHexBlockDialog()
@@ -128,9 +134,9 @@ void MainWindow::slotExtrudePatch()
 void MainWindow::slotSelectVertices()
 {
     renwin->GetInteractor()->SetPicker(areaPicker);
-    renwin->GetInteractor()->SetInteractorStyle(style);
+    renwin->GetInteractor()->SetInteractorStyle(styleVertPick);
 
-    style->StartSelect();
+    styleVertPick->StartSelect();
 
     this->addDockWidget(Qt::LeftDockWidgetArea,moveWidget);
 
@@ -142,24 +148,27 @@ void MainWindow::slotSelectVertices()
 void MainWindow::slotMoveVertices()
 {
     std::cout << "slot is connected, selected IDs: ";
-    for(vtkIdType i=0;i<style->SelectedList->GetNumberOfIds();i++)
-        std::cout << style->SelectedList->GetId(i)<< " ";
+    for(vtkIdType i=0;i<styleVertPick->SelectedList->GetNumberOfIds();i++)
+        std::cout << styleVertPick->SelectedList->GetId(i)<< " ";
     std::cout << "."<< std::endl;
 
     if(moveWidget->delta)
-        hexBlocker->moveVertices(style->SelectedList,moveWidget->dist);
+        hexBlocker->moveVertices(styleVertPick->SelectedList,moveWidget->dist);
 
     renwin->Render();
 }
 
 void MainWindow::slotResetInteractor()
 {
-    style->SelectedActor->SetVisibility(0);
-    style->clearSelection();
+    styleVertPick->SelectedActor->SetVisibility(0);
+    styleVertPick->clearSelection();
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
 
 }
 
-void MainWindow::slotExit() {
+void MainWindow::slotExit()
+{
     qApp->exit();
 }
+
+
