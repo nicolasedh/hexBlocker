@@ -24,6 +24,13 @@ public:
 
     void SetPatches(vtkSmartPointer<vtkCollection> pts);
     virtual void OnLeftButtonDown();
+    virtual void OnLeftButtonUp(){}
+    virtual void OnMiddleButtonDown(){}
+    virtual void OnMiddleButtonUp(){}
+    virtual void OnRightButtonDown(){}
+    virtual void OnRightButtonUp(){}
+    virtual void OnMouseMove(){}
+
     void OnChar(); //override from superclass
 
 private:
