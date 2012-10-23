@@ -40,6 +40,7 @@ class InteractorStylePatchPick;
 class MoveVerticesWidget;
 class vtkInteractorStyleTrackballCamera;
 class CreateBlockWidget;
+class ToolBoxWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -81,6 +82,7 @@ private:
   vtkSmartPointer<vtkAreaPicker> areaPicker;
   MoveVerticesWidget *moveWidget;
   CreateBlockWidget *createBlockWidget;
+  ToolBoxWidget *toolbox;
   // Designer form
   Ui_MainWindow *ui;
 };

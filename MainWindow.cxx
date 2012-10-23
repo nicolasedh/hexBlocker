@@ -12,6 +12,8 @@
 #include "HexBlock.h" //apparently needed inorder to acces it's actors
 #include "InteractorStyleVertPick.h"
 #include "InteractorStylePatchPick.h"
+#include "ToolBoxWidget.h"
+
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
@@ -52,6 +54,9 @@ MainWindow::MainWindow()
     //Qt widgets
     moveWidget = new MoveVerticesWidget();
     createBlockWidget = new CreateBlockWidget();
+    toolbox = new ToolBoxWidget();
+    this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
+
 
     // Axes interactor and widget
     axes = vtkSmartPointer<vtkAxesActor>::New();
