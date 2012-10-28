@@ -1,13 +1,13 @@
 #ifndef CREATEBLOCKWIDGET_H
 #define CREATEBLOCKWIDGET_H
 
-#include <QDockWidget>
+#include <QWidget>
 
 namespace Ui {
 class CreateBlockWidget;
 }
 
-class CreateBlockWidget : public QDockWidget
+class CreateBlockWidget : public QWidget
 {
     Q_OBJECT
     
@@ -23,6 +23,7 @@ public slots:
 
 signals:
     void apply();
+    void cancel();
 private:
     Ui::CreateBlockWidget *ui;
 };

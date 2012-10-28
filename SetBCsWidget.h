@@ -1,13 +1,13 @@
 #ifndef MOVEVERTICESWIDGET_H
 #define MOVEVERTICESWIDGET_H
 
-#include <QWidget>
+#include <QDockWidget>
 
 namespace Ui {
 class MoveVerticesWidget;
 }
 
-class MoveVerticesWidget : public QWidget
+class MoveVerticesWidget : public QDockWidget
 {
     Q_OBJECT
     

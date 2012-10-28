@@ -37,9 +37,7 @@ class vtkOrientationMarkerWidget;
 class vtkAreaPicker;
 class InteractorStyleVertPick;
 class InteractorStylePatchPick;
-class MoveVerticesWidget;
 class vtkInteractorStyleTrackballCamera;
-class CreateBlockWidget;
 class ToolBoxWidget;
 
 class MainWindow : public QMainWindow
@@ -64,7 +62,7 @@ public slots:
   virtual void slotOpenCreateHexBlockDialog();
   virtual void slotPrintHexBlocks();
   virtual void slotExtrudePatch();
-  virtual void slotSelectVertices();
+  virtual void slotOpenMoveVerticesDialog();
   virtual void slotMoveVertices();
   virtual void slotResetInteractor();
 
@@ -80,8 +78,7 @@ private:
   vtkSmartPointer<vtkAxesActor> axes;
   vtkSmartPointer<vtkOrientationMarkerWidget> widget;
   vtkSmartPointer<vtkAreaPicker> areaPicker;
-  MoveVerticesWidget *moveWidget;
-  CreateBlockWidget *createBlockWidget;
+
   ToolBoxWidget *toolbox;
   // Designer form
   Ui_MainWindow *ui;

@@ -5,7 +5,7 @@
 #include <iostream>
 
 CreateBlockWidget::CreateBlockWidget(QWidget *parent) :
-    QDockWidget(parent),
+    QWidget(parent),
     ui(new Ui::CreateBlockWidget)
 {
     ui->setupUi(this);
@@ -58,5 +58,5 @@ void CreateBlockWidget::slotApply()
 
 void CreateBlockWidget::slotCancel()
 {
-    this->close();
+    emit cancel();
 }

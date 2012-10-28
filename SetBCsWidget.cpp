@@ -8,7 +8,7 @@
 
 
 MoveVerticesWidget::MoveVerticesWidget(QWidget *parent) :
-    QWidget(parent),
+    QDockWidget(parent),
     ui(new Ui::MoveVerticesWidget)
 {
     ui->setupUi(this);
@@ -63,4 +63,5 @@ void MoveVerticesWidget::slotApply()
 void MoveVerticesWidget::slotDone()
 {
     emit moveDone();
+    this->close();
 }

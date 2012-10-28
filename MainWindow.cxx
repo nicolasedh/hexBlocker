@@ -6,14 +6,13 @@
 
 #include "ui_MainWindow.h"
 #include "MainWindow.h"
-#include "MoveVerticesWidget.h"
-#include "CreateBlockWidget.h"
 #include "HexBlocker.h"
 #include "HexBlock.h" //apparently needed inorder to acces it's actors
 #include "InteractorStyleVertPick.h"
 #include "InteractorStylePatchPick.h"
 #include "ToolBoxWidget.h"
-
+#include "CreateBlockWidget.h"
+#include "MoveVerticesWidget.h"
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
@@ -52,8 +51,6 @@ MainWindow::MainWindow()
     renwin->AddRenderer(hexBlocker->renderer);
 
     //Qt widgets
-    moveWidget = new MoveVerticesWidget();
-    createBlockWidget = new CreateBlockWidget();
     toolbox = new ToolBoxWidget();
     this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
 
@@ -84,12 +81,13 @@ MainWindow::MainWindow()
     connect(this->ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->ui->actionCreate_HexBlock,SIGNAL(triggered()),this,SLOT(slotOpenCreateHexBlockDialog()));
-    connect(createBlockWidget,SIGNAL(apply()),this,SLOT(slotCreateHexBlock()));
+    connect(toolbox->createBlockW,SIGNAL(apply()),this,SLOT(slotCreateHexBlock()));
     connect(this->ui->actionExtrude_patch,SIGNAL(triggered()),this,SLOT(slotExtrudePatch()));
     connect(this->ui->actionHelp,SIGNAL(triggered()),this,SLOT(slotPrintHexBlocks()));
-    connect(this->ui->actionSelectVertices,SIGNAL(triggered()),this,SLOT(slotSelectVertices()));
-    connect(moveWidget,SIGNAL(moveDone()),this,SLOT(slotResetInteractor()));
-    connect(moveWidget,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
+    connect(this->ui->actionSelectVertices,SIGNAL(triggered()),this,SLOT(slotOpenMoveVerticesDialog()));
+    connect(toolbox->moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotResetInteractor()));
+    connect(toolbox->moveVerticesW,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
+    connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
 }
 
 MainWindow::~MainWindow()
@@ -105,22 +103,19 @@ void MainWindow::slotOpenFile()
     renwin->Render();
 
 
-    renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
+    //renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
 }
 
 void MainWindow::slotOpenCreateHexBlockDialog()
 {
-    if(moveWidget->isVisible())
-        moveWidget->close();
-    this->addDockWidget(Qt::LeftDockWidgetArea,createBlockWidget);
-    createBlockWidget->show();
+    //set index i toolbox
+    toolbox->show();
+    toolbox->setCurrentIndex(1);
 }
 
 void MainWindow::slotCreateHexBlock()
 {
-
-    hexBlocker->createHexBlock(createBlockWidget->c0,createBlockWidget->c1);
-    createBlockWidget->close();
+    hexBlocker->createHexBlock(toolbox->createBlockW->c0,toolbox->createBlockW->c1);
     hexBlocker->resetBounds();
     renwin->Render();
 }
@@ -136,17 +131,17 @@ void MainWindow::slotExtrudePatch()
     renwin->Render();
 }
 
-void MainWindow::slotSelectVertices()
+void MainWindow::slotOpenMoveVerticesDialog()
 {
     renwin->GetInteractor()->SetPicker(areaPicker);
     renwin->GetInteractor()->SetInteractorStyle(styleVertPick);
 
     styleVertPick->StartSelect();
 
-    this->addDockWidget(Qt::LeftDockWidgetArea,moveWidget);
+    toolbox->setCurrentIndex(2);
 
     ui->statusbar->showMessage(tr("Left button to select, press cntrl to rotate"),10000);
-    moveWidget->show();
+
 
 }
 
@@ -157,8 +152,8 @@ void MainWindow::slotMoveVertices()
         std::cout << styleVertPick->SelectedList->GetId(i)<< " ";
     std::cout << "."<< std::endl;
 
-    if(moveWidget->delta)
-        hexBlocker->moveVertices(styleVertPick->SelectedList,moveWidget->dist);
+    if(toolbox->moveVerticesW->delta)
+        hexBlocker->moveVertices(styleVertPick->SelectedList,toolbox->moveVerticesW->dist);
 
     renwin->Render();
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MoveVerticesWidget</class>
- <widget class="QDockWidget" name="MoveVerticesWidget">
+ <widget class="QWidget" name="MoveVerticesWidget">
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
@@ -13,13 +13,21 @@
     <height>300</height>
    </rect>
   </property>
-  <property name="floating">
-   <bool>true</bool>
-  </property>
   <property name="windowTitle">
    <string>Set position</string>
   </property>
+  <property name="floating" stdset="0">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="dockWidgetContents">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>226</width>
+     <height>256</height>
+    </rect>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QCheckBox" name="checkBoxDelta">
