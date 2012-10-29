@@ -88,6 +88,8 @@ MainWindow::MainWindow()
     connect(toolbox->moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotResetInteractor()));
     connect(toolbox->moveVerticesW,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
     connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
+    connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
+
 }
 
 MainWindow::~MainWindow()
@@ -164,6 +166,11 @@ void MainWindow::slotResetInteractor()
     styleVertPick->clearSelection();
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
 
+}
+
+void MainWindow::slotOpenSetBCsDialog()
+{
+    std::cout <<" Open Window"<<std::endl;
 }
 
 void MainWindow::slotExit()

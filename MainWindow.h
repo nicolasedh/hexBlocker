@@ -65,6 +65,8 @@ public slots:
   virtual void slotOpenMoveVerticesDialog();
   virtual void slotMoveVertices();
   virtual void slotResetInteractor();
+  virtual void slotOpenSetBCsDialog();
+  //virtual void slotSetBCs();
 
 
 protected:

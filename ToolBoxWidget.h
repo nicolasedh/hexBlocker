@@ -23,6 +23,8 @@ public:
     MoveVerticesWidget *moveVerticesW;
 
     void setCurrentIndex(int);
+
+public slots:
     virtual void slotCancel();
 
 signals:

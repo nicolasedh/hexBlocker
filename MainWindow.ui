@@ -92,6 +92,7 @@
    <addaction name="actionExtrude_patch"/>
    <addaction name="actionSelectVertices"/>
    <addaction name="actionHelp"/>
+   <addaction name="actionSetBCs"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpenFile">
@@ -161,6 +162,14 @@
    </property>
    <property name="text">
     <string>selectVertices</string>
+   </property>
+  </action>
+  <action name="actionSetBCs">
+   <property name="text">
+    <string>setBCs</string>
+   </property>
+   <property name="toolTip">
+    <string>Set BCs on patches</string>
    </property>
   </action>
  </widget>
