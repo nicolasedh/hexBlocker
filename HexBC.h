@@ -8,7 +8,7 @@
 //Pre declarations
 class vtkIdList;
 class vtkCollection;
-class QString;
+
 
 
 class HexBC : public vtkObject
@@ -17,7 +17,6 @@ vtkTypeMacro(HexBC,vtkObject)
 
 protected:
     HexBC();
-    HexBC(QString* nam,QString* typ);
     ~HexBC();
     HexBC(const HexBC&);  // Not implemented in order to comply with vtkObject.
     void operator=(const HexBC&);  // Not implemented in order to comply with vtkObject.
@@ -31,8 +30,8 @@ public:
     vtkSmartPointer<vtkCollection> allPatches;
 
 
-    QString *name;
-    QString *type;
+    std::string name;
+    std::string type;
 private:
 
 

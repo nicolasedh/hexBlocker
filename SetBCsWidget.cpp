@@ -2,6 +2,11 @@
 #include "ui_SetBCsWidget.h"
 #include <QStringList>
 #include <QTreeWidget>
+#include "SetBCsItem.h"
+#include "HexBC.h"
+
+#include <vtkCollection.h>
+#include <vtkSmartPointer.h>
 #include <QTreeWidgetItem>
 
 SetBCsWidget::SetBCsWidget(QWidget *parent) :
@@ -14,6 +19,7 @@ SetBCsWidget::SetBCsWidget(QWidget *parent) :
     ui->treeWidget->setHeaderLabels(headers);
 
     connect(ui->pushButtonNew,SIGNAL(clicked()),this,SLOT(slotCreateBC()));
+    connect(ui->treeWidget,SIGNAL(itemChanged(QTreeWidgetItem*,int)),this,SLOT(slotBCchanged(QTreeWidgetItem *,int)));
 }
 
 SetBCsWidget::~SetBCsWidget()
@@ -23,8 +29,21 @@ SetBCsWidget::~SetBCsWidget()
 
 void SetBCsWidget::slotCreateBC()
 {
-    QTreeWidgetItem *bc = new QTreeWidgetItem(ui->treeWidget);
+    SetBCsItem *bc = new SetBCsItem(ui->treeWidget);
+    bc->hexBC = vtkSmartPointer<HexBC>::New();
+
+    bc->setFlags(bc->flags() | Qt::ItemIsEditable);
     bc->setText(0,tr("name"));
     bc->setText(1,tr("patch"));
-    bc->setFlags(bc->flags() | Qt::ItemIsEditable);
+
+    hexBCs->AddItem(bc->hexBC);
+
+}
+
+void SetBCsWidget::slotBCchanged(QTreeWidgetItem *item, int col)
+{
+    SetBCsItem *bc = static_cast<SetBCsItem*>(item);
+    bc->hexBC->name=bc->text(0).toStdString();
+    bc->hexBC->type=bc->text(1).toStdString();
+
 }

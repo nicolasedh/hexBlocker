@@ -13,6 +13,7 @@
 #include "ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
+#include "SetBCsWidget.h"
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
@@ -52,6 +53,7 @@ MainWindow::MainWindow()
 
     //Qt widgets
     toolbox = new ToolBoxWidget();
+    toolbox->setBCsW->hexBCs = hexBlocker->hexBCs;
     this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
 
 
@@ -170,6 +172,7 @@ void MainWindow::slotResetInteractor()
 
 void MainWindow::slotOpenSetBCsDialog()
 {
+    toolbox->setCurrentIndex(3);
     std::cout <<" Open Window"<<std::endl;
 }
 

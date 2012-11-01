@@ -43,6 +43,8 @@ public:
 
     vtkSmartPointer<vtkCollection> hexBlocks;
 
+    vtkSmartPointer<vtkCollection> hexBCs;
+
     //Representations
     vtkSmartPointer<vtkSphereSource> vertSphere;
     vtkSmartPointer<vtkGlyph3D> vertGlyph;

@@ -38,10 +38,11 @@ HexBlocker::HexBlocker()
     //All patches in the model
     patches = vtkSmartPointer<vtkCollection>::New();
 
-
     //All hexblocks in the modell
     hexBlocks = vtkSmartPointer<vtkCollection>::New();
 
+    //Boundary conditions in the modell
+    hexBCs = vtkSmartPointer<vtkCollection>::New();
     //Representations
     vertSphere = vtkSmartPointer<vtkSphereSource>::New();
     vertSphere->SetThetaResolution(10);

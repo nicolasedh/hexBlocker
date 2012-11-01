@@ -2,6 +2,10 @@
 #define SETBCSWIDGET_H
 
 #include <QWidget>
+#include <vtkSmartPointer.h>
+
+class vtkCollection;
+class QTreeWidgetItem;
 
 namespace Ui {
 class SetBCsWidget;
@@ -15,8 +19,12 @@ public:
     explicit SetBCsWidget(QWidget *parent = 0);
     ~SetBCsWidget();
 
+    vtkSmartPointer<vtkCollection> hexBCs;
+
 public slots:
     void slotCreateBC();
+    void slotBCchanged(QTreeWidgetItem *,int);
+
     
 private:
     Ui::SetBCsWidget *ui;

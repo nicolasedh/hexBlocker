@@ -5,23 +5,16 @@
 #include <vtkCollection.h>
 #include <hexPatch.h>
 
-#include <QString>
 
 vtkStandardNewMacro(HexBC);
 
 //Default constructor
 HexBC::HexBC()
 {
-    name = new QString("DefaultPatches");
-    type = new QString("patch");
+    name = std::string("DefaultPatches");
+    type = std::string("patch");
     //delete name;
     //name = new QString("foo");
-}
-
-HexBC::HexBC(QString *nam, QString *typ)
-{
-    name = nam;
-    type = typ;
 }
 
 HexBC::~HexBC()
