@@ -33,13 +33,18 @@ SET(HexBlockerSrcs
     hexPatch.cpp InteractorStyleVertPick.cpp
     MoveVerticesWidget.cpp CreateBlockWidget.cpp
     InteractorStylePatchPick.cpp HexBC.cpp ToolBoxWidget.cpp
+    SetBCsWidget.cpp
     )
-SET(HexBlockerUI MainWindow.ui ToolBoxWidget.ui MoveVerticesWidget.ui CreateBlockWidget.ui)
+SET(HexBlockerUI
+    MainWindow.ui ToolBoxWidget.ui
+    MoveVerticesWidget.ui CreateBlockWidget.ui
+    SetBCsWidget.ui
+    )
 SET(HexBlockerHeaders
     MainWindow.h HexBlock.h HexBlocker.h hexPatch.h
     InteractorStyleVertPick.h MoveVerticesWidget.h
     CreateBlockWidget.h InteractorStylePatchPick.h
-    HexBC.h ToolBoxWidget.h
+    HexBC.h ToolBoxWidget.h SetBCsWidget.h
     )
 SET(HexBlockerResources Icons/icons.qrc)
 

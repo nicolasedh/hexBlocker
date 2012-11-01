@@ -5,6 +5,7 @@
 
 class CreateBlockWidget;
 class MoveVerticesWidget;
+class SetBCsWidget;
 class QWidget;
 
 namespace Ui {
@@ -19,8 +20,11 @@ public:
     explicit ToolBoxWidget(QWidget *parent = 0);
     ~ToolBoxWidget();
     QWidget *emptyPage;
+
+    //Tools views
     CreateBlockWidget *createBlockW;
     MoveVerticesWidget *moveVerticesW;
+    SetBCsWidget    *setBCsW;
 
     void setCurrentIndex(int);
 

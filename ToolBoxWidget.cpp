@@ -2,6 +2,7 @@
 #include "ui_ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
+#include "SetBCsWidget.h"
 #include <QWidget>
 
 ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
@@ -16,7 +17,9 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
     this->ui->stackedWidget->addWidget(createBlockW);
     moveVerticesW = new MoveVerticesWidget;
     this->ui->stackedWidget->addWidget(moveVerticesW);
-    //this->ui->stackedWidget->setCurrentIndex(0);
+    setBCsW = new SetBCsWidget;
+    this->ui->stackedWidget->addWidget(setBCsW);
+    this->ui->stackedWidget->setCurrentIndex(3);
 
     //connecta alla cancels till att köra setCurrentIndex(0)
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));
