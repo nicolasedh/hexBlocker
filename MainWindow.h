@@ -66,6 +66,7 @@ public slots:
   virtual void slotMoveVertices();
   virtual void slotResetInteractor();
   virtual void slotOpenSetBCsDialog();
+  void slotStartSelectPatches(vtkIdType bcID);
   //virtual void slotSetBCs();
 
 

@@ -26,6 +26,7 @@
 #include <vtkMath.h>
 
 #include "hexPatch.h"
+#include "HexBC.h"
 
 HexBlocker::HexBlocker()
 {
@@ -181,6 +182,17 @@ void HexBlocker::PrintHexBlocks()
         std::cout << "Patch" << i <<" ids: ";
         for(vtkIdType j=0;j<4;j++)
             std::cout << patch->vertIds->GetId(j) << " ";
+        std::cout << std::endl;
+    }
+
+    std::cout <<"Boundary Conditions:" <<std::endl;
+    for(vtkIdType i = 0;i<hexBCs->GetNumberOfItems();i++)
+    {
+        HexBC *bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
+        std::cout << "\t BC " << i << ": " << bc->name << ", "
+                  << bc->type << ", ";
+        for(vtkIdType j = 0;j<bc->patchIds->GetNumberOfIds();j++)
+            std::cout << bc->patchIds->GetId(j) << " ";
         std::cout << std::endl;
     }
 }

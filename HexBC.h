@@ -1,5 +1,5 @@
-#ifndef HEXBLOCK_H
-#define HEXBLOCK_H
+#ifndef HEXBC_H
+#define HEXBC_H
 
 #include <vtkSmartPointer.h>
 #include <vtkObject.h>

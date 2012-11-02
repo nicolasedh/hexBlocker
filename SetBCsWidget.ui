@@ -41,17 +41,17 @@
      <property name="columnCount">
       <number>2</number>
      </property>
-     <attribute name="headerDefaultSectionSize">
-      <number>60</number>
+     <attribute name="headerVisible">
+      <bool>true</bool>
      </attribute>
-     <attribute name="headerHighlightSections">
-      <bool>false</bool>
+     <attribute name="headerDefaultSectionSize">
+      <number>130</number>
      </attribute>
      <attribute name="headerMinimumSectionSize">
-      <number>30</number>
+      <number>40</number>
      </attribute>
      <attribute name="headerStretchLastSection">
-      <bool>false</bool>
+      <bool>true</bool>
      </attribute>
      <column>
       <property name="text">

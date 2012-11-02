@@ -14,6 +14,7 @@
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
 #include "SetBCsWidget.h"
+#include "HexBC.h"
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
@@ -51,12 +52,6 @@ MainWindow::MainWindow()
     renwin = this->ui->qvtkWidget->GetRenderWindow();
     renwin->AddRenderer(hexBlocker->renderer);
 
-    //Qt widgets
-    toolbox = new ToolBoxWidget();
-    toolbox->setBCsW->hexBCs = hexBlocker->hexBCs;
-    this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
-
-
     // Axes interactor and widget
     axes = vtkSmartPointer<vtkAxesActor>::New();
     widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
@@ -67,7 +62,7 @@ MainWindow::MainWindow()
     widget->SetEnabled( 1 );
     widget->InteractiveOff();
 
-    //Area Picker and InteractorStyleVertPicker
+    //Area Picker and InteractorStyles
     areaPicker = vtkSmartPointer<vtkAreaPicker>::New();
     styleVertPick = vtkSmartPointer<InteractorStyleVertPick>::New();
     styleVertPick->SetPoints(hexBlocker->vertData);
@@ -76,6 +71,12 @@ MainWindow::MainWindow()
     stylePatchPick->SetPatches(hexBlocker->patches);
 
     defStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+
+    //Qt widgets
+    toolbox = new ToolBoxWidget();
+    toolbox->setBCsW->hexBCs = hexBlocker->hexBCs;
+    this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
+
 
     renwin->Render();
 
@@ -91,6 +92,8 @@ MainWindow::MainWindow()
     connect(toolbox->moveVerticesW,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
     connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
+
+    connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdType)),this,SLOT(slotStartSelectPatches(vtkIdType)));
 
 }
 
@@ -173,12 +176,20 @@ void MainWindow::slotResetInteractor()
 void MainWindow::slotOpenSetBCsDialog()
 {
     toolbox->setCurrentIndex(3);
-    std::cout <<" Open Window"<<std::endl;
+
+
+}
+
+void MainWindow::slotStartSelectPatches(vtkIdType bcID)
+{
+    renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
+
 }
 
 void MainWindow::slotExit()
 {
     qApp->exit();
+
 }
 
 

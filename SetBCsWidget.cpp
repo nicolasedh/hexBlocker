@@ -7,7 +7,9 @@
 
 #include <vtkCollection.h>
 #include <vtkSmartPointer.h>
+
 #include <QTreeWidgetItem>
+#include <QList>
 
 SetBCsWidget::SetBCsWidget(QWidget *parent) :
     QWidget(parent),
@@ -20,6 +22,7 @@ SetBCsWidget::SetBCsWidget(QWidget *parent) :
 
     connect(ui->pushButtonNew,SIGNAL(clicked()),this,SLOT(slotCreateBC()));
     connect(ui->treeWidget,SIGNAL(itemChanged(QTreeWidgetItem*,int)),this,SLOT(slotBCchanged(QTreeWidgetItem *,int)));
+    connect(ui->pushButtonSelect,SIGNAL(clicked()),this,SLOT(slotSelectPatches()));
 }
 
 SetBCsWidget::~SetBCsWidget()
@@ -38,6 +41,7 @@ void SetBCsWidget::slotCreateBC()
 
     hexBCs->AddItem(bc->hexBC);
 
+
 }
 
 void SetBCsWidget::slotBCchanged(QTreeWidgetItem *item, int col)
@@ -45,5 +49,24 @@ void SetBCsWidget::slotBCchanged(QTreeWidgetItem *item, int col)
     SetBCsItem *bc = static_cast<SetBCsItem*>(item);
     bc->hexBC->name=bc->text(0).toStdString();
     bc->hexBC->type=bc->text(1).toStdString();
+}
 
+void SetBCsWidget::slotSelectPatches()
+{
+    //If non selected
+    QList<QTreeWidgetItem*> selectedTreeItem = ui->treeWidget->selectedItems();
+    if(selectedTreeItem.count()>0)
+    {
+        SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
+        std::cout << bcItem->hexBC->name << std::endl;
+
+        vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
+
+        emit startSelectPatches(hexBCId);
+
+    }
+    else
+    {
+        std::cout << "select a boundary condition first!" <<std::endl;
+    }
 }

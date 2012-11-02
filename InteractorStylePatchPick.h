@@ -5,7 +5,8 @@
 #include <vtkInteractorStyleTrackballActor.h>
 
 class vtkCollection;
-
+class vtkIdList;
+class HexBC;
 
 class InteractorStylePatchPick : public vtkInteractorStyleTrackballActor
 {
@@ -23,21 +24,20 @@ public:
     void PrintSelf(ostream &os, vtkIndent indent);
 
     void SetPatches(vtkSmartPointer<vtkCollection> pts);
+    virtual vtkIdType findClickedPatch(int x, int y);
     virtual void OnLeftButtonDown();
     virtual void OnLeftButtonUp(){}
     virtual void OnMiddleButtonDown(){}
-    virtual void OnMiddleButtonUp(){}
+    virtual void OnMiddleButtonUp();
     virtual void OnRightButtonDown(){}
-    virtual void OnRightButtonUp(){}
+    virtual void OnRightButtonUp();
     virtual void OnMouseMove(){}
 
     void OnChar(); //override from superclass
 
+    vtkIdList *selectedPatches;
+
 private:
-
-
-
-
 
 };
 

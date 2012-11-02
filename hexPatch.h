@@ -1,5 +1,5 @@
-#ifndef PATCH_H
-#define PATCH_H
+#ifndef HEXPATCH_H
+#define HEXPATCH_H
 
 #include <vtkSmartPointer.h>
 #include <vtkObject.h>

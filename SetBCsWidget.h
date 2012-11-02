@@ -7,6 +7,7 @@
 class vtkCollection;
 class QTreeWidgetItem;
 
+
 namespace Ui {
 class SetBCsWidget;
 }
@@ -21,11 +22,16 @@ public:
 
     vtkSmartPointer<vtkCollection> hexBCs;
 
+
 public slots:
     void slotCreateBC();
     void slotBCchanged(QTreeWidgetItem *,int);
-
+    void slotSelectPatches();
     
+signals:
+    void startSelectPatches(vtkIdType bcId);
+    void resetInteractor();
+
 private:
     Ui::SetBCsWidget *ui;
 };
