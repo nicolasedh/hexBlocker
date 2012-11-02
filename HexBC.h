@@ -26,7 +26,7 @@ public:
     // inorder to comply with vtkObect
     void PrintSelf(ostream &os, vtkIndent indent);
 
-    vtkSmartPointer<vtkIdList> patchIds;
+    vtkIdList *patchIds;
     vtkSmartPointer<vtkCollection> allPatches;
 
 

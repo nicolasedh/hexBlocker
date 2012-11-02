@@ -12,7 +12,7 @@
 
 vtkStandardNewMacro(InteractorStylePatchPick);
 
-InteractorStylePatchPick::InteractorStylePatchPick()
+InteractorStylePatchPick::InteractorStylePatchPick() : QObject()
 {
     selectedPatches = vtkIdList::New();
 }
@@ -43,7 +43,7 @@ vtkIdType InteractorStylePatchPick::findClickedPatch(int x,int y)
     this->FindPickedActor(x, y);
 
     vtkIdType clickedPatch=-1;
-    std::cout << "It's working" << std::endl;
+
     for(vtkIdType i = 0; i< patches->GetNumberOfItems();i++)
     {
         hexPatch *patch = static_cast<hexPatch *>(patches->GetItemAsObject(i));
@@ -97,8 +97,12 @@ void InteractorStylePatchPick::OnRightButtonUp()
 void InteractorStylePatchPick::OnMiddleButtonUp()
 {
     if(selectedPatches->GetNumberOfIds()>0)
+    {
         std::cout<< "emit signal here" << std::endl;
-    selectedPatches->Initialize();
+        emit selectionDone(selectedPatches);
+        selectedPatches->Initialize();
+    }
+
 
 }
 

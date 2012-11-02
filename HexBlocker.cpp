@@ -186,9 +186,11 @@ void HexBlocker::PrintHexBlocks()
     }
 
     std::cout <<"Boundary Conditions:" <<std::endl;
+
     for(vtkIdType i = 0;i<hexBCs->GetNumberOfItems();i++)
     {
-        HexBC *bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
+
+        vtkSmartPointer<HexBC> bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
         std::cout << "\t BC " << i << ": " << bc->name << ", "
                   << bc->type << ", ";
         for(vtkIdType j = 0;j<bc->patchIds->GetNumberOfIds();j++)

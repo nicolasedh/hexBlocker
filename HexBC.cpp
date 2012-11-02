@@ -13,6 +13,7 @@ HexBC::HexBC()
 {
     name = std::string("DefaultPatches");
     type = std::string("patch");
+    patchIds = vtkIdList::New();
     //delete name;
     //name = new QString("foo");
 }

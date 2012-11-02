@@ -3,13 +3,16 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkInteractorStyleTrackballActor.h>
+#include <QObject>
 
 class vtkCollection;
 class vtkIdList;
 class HexBC;
 
-class InteractorStylePatchPick : public vtkInteractorStyleTrackballActor
+class InteractorStylePatchPick : public QObject, public vtkInteractorStyleTrackballActor
 {
+    Q_OBJECT
+
     vtkTypeMacro(InteractorStylePatchPick,vtkInteractorStyleTrackballActor);
 protected:
     InteractorStylePatchPick();
@@ -36,6 +39,9 @@ public:
     void OnChar(); //override from superclass
 
     vtkIdList *selectedPatches;
+
+signals:
+    void selectionDone(vtkIdList *selectedPatches);
 
 private:
 

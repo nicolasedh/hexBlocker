@@ -94,7 +94,7 @@ MainWindow::MainWindow()
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
 
     connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdType)),this,SLOT(slotStartSelectPatches(vtkIdType)));
-
+    connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
 }
 
 MainWindow::~MainWindow()
@@ -183,6 +183,8 @@ void MainWindow::slotOpenSetBCsDialog()
 void MainWindow::slotStartSelectPatches(vtkIdType bcID)
 {
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
+    connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
+            toolbox->setBCsW,SLOT(slotSelectionDone(vtkIdList*)));
 
 }
 

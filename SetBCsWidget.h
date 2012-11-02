@@ -6,6 +6,7 @@
 
 class vtkCollection;
 class QTreeWidgetItem;
+class vtkIdList;
 
 
 namespace Ui {
@@ -27,6 +28,7 @@ public slots:
     void slotCreateBC();
     void slotBCchanged(QTreeWidgetItem *,int);
     void slotSelectPatches();
+    void slotSelectionDone(vtkIdList *selectedPatches);
     
 signals:
     void startSelectPatches(vtkIdType bcId);

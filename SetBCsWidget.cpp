@@ -7,6 +7,7 @@
 
 #include <vtkCollection.h>
 #include <vtkSmartPointer.h>
+#include <vtkIdList.h>
 
 #include <QTreeWidgetItem>
 #include <QList>
@@ -58,15 +59,24 @@ void SetBCsWidget::slotSelectPatches()
     if(selectedTreeItem.count()>0)
     {
         SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
-        std::cout << bcItem->hexBC->name << std::endl;
-
         vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
 
         emit startSelectPatches(hexBCId);
-
     }
     else
     {
         std::cout << "select a boundary condition first!" <<std::endl;
     }
+}
+
+void SetBCsWidget::slotSelectionDone(vtkIdList *selectedPatches)
+{
+    QList<QTreeWidgetItem*> selectedTreeItem = ui->treeWidget->selectedItems();
+    SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
+    vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
+    HexBC *hexBC = HexBC::SafeDownCast(hexBCs->GetItemAsObject(hexBCId));
+    hexBC->patchIds->DeepCopy(selectedPatches);
+    std::cout <<" patchIds: " << hexBC->patchIds->GetNumberOfIds()<<std::endl;
+
+    emit resetInteractor();
 }
