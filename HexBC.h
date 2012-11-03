@@ -4,7 +4,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkObject.h>
 #include <iostream>
-
+#include <QTextStream>
 //Pre declarations
 class vtkIdList;
 class vtkCollection;
@@ -27,7 +27,7 @@ public:
     void PrintSelf(ostream &os, vtkIndent indent);
 
     vtkIdList *patchIds;
-    vtkSmartPointer<vtkCollection> allPatches;
+    //vtkSmartPointer<vtkCollection> allPatches;
 
 
     std::string name;

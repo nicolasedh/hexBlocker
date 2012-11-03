@@ -5,7 +5,7 @@
 
    */
 #include <vtkSmartPointer.h>
-
+#include <QTextStream>
 
 //Predeclarations
 class HexBlock;
@@ -36,6 +36,10 @@ public:
     void initPatch(vtkSmartPointer<HexBlock> hex, int ids[4]);
     void moveVertices(vtkSmartPointer<vtkIdList> ids, double dist[]);
 
+
+    void exportVertices(QTextStream &os);
+    void exportBlocks(QTextStream &os);
+    void exportBCs(QTextStream &os);
     vtkSmartPointer<vtkPoints> vertices;
     vtkSmartPointer<vtkPolyData> vertData;
 
@@ -57,5 +61,6 @@ public:
 
 
 };
+
 
 #endif // HEXBLOCKER_H

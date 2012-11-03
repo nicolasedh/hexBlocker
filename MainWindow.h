@@ -67,6 +67,8 @@ public slots:
   virtual void slotResetInteractor();
   virtual void slotOpenSetBCsDialog();
   void slotStartSelectPatches(vtkIdType bcID);
+  void slotExportBlockMeshDict();
+
   //virtual void slotSetBCs();
 
 

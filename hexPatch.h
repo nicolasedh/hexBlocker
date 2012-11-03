@@ -3,6 +3,7 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkObject.h>
+#include <QTextStream>
 
 class vtkIdList;
 class vtkPoints;
@@ -46,6 +47,7 @@ public:
 
     void setColor(double,double,double);
     void resetColor();
+    void exportVertIds(QTextStream &os);
 
 private:
     vtkSmartPointer<vtkQuad> quad;

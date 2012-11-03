@@ -91,3 +91,11 @@ void hexPatch::resetColor()
 {
     actor->GetProperty()->SetColor(0.2,0.9,0.2);
 }
+
+void hexPatch::exportVertIds(QTextStream &os)
+{
+    os << "(" << vertIds->GetId(0) << " "
+       << vertIds->GetId(1) << " "
+       << vertIds->GetId(2) << " "
+       << vertIds->GetId(3) << ")" << endl;
+}

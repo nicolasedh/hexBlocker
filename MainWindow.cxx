@@ -15,11 +15,11 @@
 #include "MoveVerticesWidget.h"
 #include "SetBCsWidget.h"
 #include "HexBC.h"
+#include "HexExporter.h"
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
 #include <vtkGlyph3D.h>
-
 
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
@@ -33,6 +33,8 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkIdList.h>
 #include <vtkAreaPicker.h>
+
+#include <QFileDialog>
 
 #define VTK_CREATE(type, name) \
     vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
@@ -92,9 +94,10 @@ MainWindow::MainWindow()
     connect(toolbox->moveVerticesW,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
     connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
-
     connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdType)),this,SLOT(slotStartSelectPatches(vtkIdType)));
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
+
+    connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotExportBlockMeshDict()));
 }
 
 MainWindow::~MainWindow()
@@ -186,6 +189,23 @@ void MainWindow::slotStartSelectPatches(vtkIdType bcID)
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             toolbox->setBCsW,SLOT(slotSelectionDone(vtkIdList*)));
 
+}
+
+void MainWindow::slotExportBlockMeshDict()
+{
+    QFileDialog::Options options;
+
+    QString selectedFilter;
+    QString filename = QFileDialog::getSaveFileName(this,
+                QString("Select blockMeshDict"),
+                QString("blockMeshDict"),
+                QString("Any file (*)"),
+                &selectedFilter,
+                options
+                );
+
+    HexExporter * exporter = new HexExporter(hexBlocker);
+    exporter->exporBlockMeshDict(filename);
 }
 
 void MainWindow::slotExit()

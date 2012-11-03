@@ -29,3 +29,5 @@ void HexBC::PrintSelf(ostream &os, vtkIndent indent)
 {
     os << "This is BC! " << std::endl;
 }
+
+
