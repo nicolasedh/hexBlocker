@@ -4,11 +4,13 @@
 #include <vtkCollection.h>
 #include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkRenderWindow.h>
 #include <iostream>
 
 #include <vtkIdList.h>
 #include <vtkCollection.h>
 #include <vtkProp3D.h>
+
 
 vtkStandardNewMacro(InteractorStylePatchPick);
 
@@ -50,12 +52,14 @@ vtkIdType InteractorStylePatchPick::findClickedPatch(int x,int y)
         if(this->InteractionProp == patch->actor)
         {
             clickedPatch = i;
-            std::cout << "You selected patch " << clickedPatch << ", ";
-            for(vtkIdType j=0;j<4;j++)
-                std::cout << patch->vertIds->GetId(j) << " ";
-            std::cout <<"."<< std::endl;
+//            std::cout << "You selected patch " << clickedPatch << ", ";
+//            for(vtkIdType j=0;j<4;j++)
+//                std::cout << patch->vertIds->GetId(j) << " ";
+//            std::cout <<"."<< std::endl;
         }
     }
+
+
     return clickedPatch;
 }
 
@@ -73,10 +77,13 @@ void InteractorStylePatchPick::OnLeftButtonDown()
     if(selectedPatches->IsId(clickedPatch) == -1 && clickedPatch > -1)
         selectedPatches->InsertNextId(clickedPatch);
 
-    std::cout <<"Selected Patches: ";
-    for(vtkIdType i =0; i<selectedPatches->GetNumberOfIds();i++)
-        std::cout << selectedPatches->GetId(i) <<", ";
-    std::cout << std::endl;
+    hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
+    patch->setColor(1.0,0,0);
+    this->GetInteractor()->GetRenderWindow()->Render();
+//    std::cout <<"Selected Patches: ";
+//    for(vtkIdType i =0; i<selectedPatches->GetNumberOfIds();i++)
+//        std::cout << selectedPatches->GetId(i) <<", ";
+//    std::cout << std::endl;
 }
 
 void InteractorStylePatchPick::OnRightButtonUp()
@@ -88,10 +95,13 @@ void InteractorStylePatchPick::OnRightButtonUp()
 
     selectedPatches->DeleteId(clickedPatch);
 
-    std::cout <<"Selected Patches: ";
-    for(vtkIdType i =0; i<selectedPatches->GetNumberOfIds();i++)
-        std::cout << selectedPatches->GetId(i) <<", ";
-    std::cout << std::endl;
+    hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
+    patch->resetColor();
+    this->GetInteractor()->GetRenderWindow()->Render();
+//    std::cout <<"Selected Patches: ";
+//    for(vtkIdType i =0; i<selectedPatches->GetNumberOfIds();i++)
+//        std::cout << selectedPatches->GetId(i) <<", ";
+//    std::cout << std::endl;
 }
 
 void InteractorStylePatchPick::OnMiddleButtonUp()

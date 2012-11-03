@@ -19,7 +19,7 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
     this->ui->stackedWidget->addWidget(moveVerticesW);
     setBCsW = new SetBCsWidget;
     this->ui->stackedWidget->addWidget(setBCsW);
-    this->ui->stackedWidget->setCurrentIndex(3);
+    this->ui->stackedWidget->setCurrentIndex(1);
 
     //connecta alla cancels till att köra setCurrentIndex(0)
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));

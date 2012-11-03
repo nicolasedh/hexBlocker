@@ -44,6 +44,9 @@ public:
     vtkSmartPointer<vtkPolyDataMapper> mapper;
     vtkSmartPointer<vtkActor> actor;
 
+    void setColor(double,double,double);
+    void resetColor();
+
 private:
     vtkSmartPointer<vtkQuad> quad;
     vtkSmartPointer<vtkCellArray> quads;

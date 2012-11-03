@@ -23,8 +23,7 @@ hexPatch::hexPatch()
     quads = vtkSmartPointer<vtkCellArray>::New();
     data = vtkSmartPointer<vtkPolyData>::New();
     mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    actor  = vtkSmartPointer<vtkActor>::New();
-}
+    actor  = vtkSmartPointer<vtkActor>::New();}
 
 hexPatch::~hexPatch()
 {
@@ -79,5 +78,16 @@ void hexPatch::init(vtkSmartPointer<vtkIdList> vIds, vtkSmartPointer<vtkPoints> 
     actor->SetMapper(mapper);
     actor->SetOrigin(actor->GetCenter());
     actor->SetScale(0.6);
+    resetColor();
+}
+
+void hexPatch::setColor(double r, double g, double b)
+{
+    actor->GetProperty()->SetColor(r,b,g);
+
+}
+
+void hexPatch::resetColor()
+{
     actor->GetProperty()->SetColor(0.2,0.9,0.2);
 }
