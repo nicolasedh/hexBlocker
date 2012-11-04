@@ -23,6 +23,7 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
 
     //connecta alla cancels till att köra setCurrentIndex(0)
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));
+    connect(setBCsW,SIGNAL(done()),this,SLOT(slotCancel()));
 }
 
 ToolBoxWidget::~ToolBoxWidget()

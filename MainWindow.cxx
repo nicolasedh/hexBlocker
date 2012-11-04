@@ -77,6 +77,7 @@ MainWindow::MainWindow()
     //Qt widgets
     toolbox = new ToolBoxWidget();
     toolbox->setBCsW->hexBCs = hexBlocker->hexBCs;
+    toolbox->setBCsW->allPatches = hexBlocker->patches;
     this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
 
 
@@ -96,7 +97,7 @@ MainWindow::MainWindow()
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
     connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdType)),this,SLOT(slotStartSelectPatches(vtkIdType)));
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
-
+    connect(toolbox->setBCsW,SIGNAL(render()),this,SLOT(slotRender()));
     connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotExportBlockMeshDict()));
 }
 
@@ -151,8 +152,11 @@ void MainWindow::slotOpenMoveVerticesDialog()
     toolbox->setCurrentIndex(2);
 
     ui->statusbar->showMessage(tr("Left button to select, press cntrl to rotate"),10000);
+}
 
-
+void MainWindow::slotRender()
+{
+    renwin->Render();
 }
 
 void MainWindow::slotMoveVertices()
@@ -172,7 +176,9 @@ void MainWindow::slotResetInteractor()
 {
     styleVertPick->SelectedActor->SetVisibility(0);
     styleVertPick->clearSelection();
+    hexBlocker->resetPatchesColor();
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
+    renwin->Render();
 
 }
 

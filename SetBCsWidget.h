@@ -22,17 +22,20 @@ public:
     ~SetBCsWidget();
 
     vtkSmartPointer<vtkCollection> hexBCs;
-
+    vtkSmartPointer<vtkCollection> allPatches;
 
 public slots:
     void slotCreateBC();
     void slotBCchanged(QTreeWidgetItem *,int);
     void slotSelectPatches();
     void slotSelectionDone(vtkIdList *selectedPatches);
+    void slotShowPatchesOnSelection(QTreeWidgetItem* item,int col);
     
 signals:
     void startSelectPatches(vtkIdType bcId);
     void resetInteractor();
+    void render();
+    void done();
 
 private:
     Ui::SetBCsWidget *ui;

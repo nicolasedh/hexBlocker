@@ -23,7 +23,8 @@ hexPatch::hexPatch()
     quads = vtkSmartPointer<vtkCellArray>::New();
     data = vtkSmartPointer<vtkPolyData>::New();
     mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    actor  = vtkSmartPointer<vtkActor>::New();}
+    actor  = vtkSmartPointer<vtkActor>::New();
+}
 
 hexPatch::~hexPatch()
 {

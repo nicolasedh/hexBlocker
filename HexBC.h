@@ -27,8 +27,9 @@ public:
     void PrintSelf(ostream &os, vtkIndent indent);
 
     vtkIdList *patchIds;
-    //vtkSmartPointer<vtkCollection> allPatches;
-
+    vtkSmartPointer<vtkCollection> allPatches;
+    void setPatchColors(double r,double g, double b);
+    void resetPatchColors();
 
     std::string name;
     std::string type;

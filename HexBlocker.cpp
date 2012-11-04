@@ -153,6 +153,11 @@ void HexBlocker::resetBounds()
     renderer->Modified();
 
 }
+void HexBlocker::resetPatchesColor()
+{
+    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+        hexPatch::SafeDownCast(patches->GetItemAsObject(i))->resetColor();
+}
 
 void HexBlocker::PrintHexBlocks()
 {

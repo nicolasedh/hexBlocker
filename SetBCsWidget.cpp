@@ -21,9 +21,14 @@ SetBCsWidget::SetBCsWidget(QWidget *parent) :
     headers << tr("Name") << tr("Type");
     ui->treeWidget->setHeaderLabels(headers);
 
+    allPatches = vtkSmartPointer<vtkCollection>::New();
     connect(ui->pushButtonNew,SIGNAL(clicked()),this,SLOT(slotCreateBC()));
-    connect(ui->treeWidget,SIGNAL(itemChanged(QTreeWidgetItem*,int)),this,SLOT(slotBCchanged(QTreeWidgetItem *,int)));
+    connect(ui->treeWidget,SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+            this,SLOT(slotBCchanged(QTreeWidgetItem *,int)));
+    connect(ui->treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),
+            this,SLOT(slotShowPatchesOnSelection(QTreeWidgetItem*,int)));
     connect(ui->pushButtonSelect,SIGNAL(clicked()),this,SLOT(slotSelectPatches()));
+    connect(ui->pushButtonDone,SIGNAL(clicked()),this,SIGNAL(done()));
 }
 
 SetBCsWidget::~SetBCsWidget()
@@ -39,7 +44,7 @@ void SetBCsWidget::slotCreateBC()
     bc->setFlags(bc->flags() | Qt::ItemIsEditable);
     bc->setText(0,tr("name"));
     bc->setText(1,tr("patch"));
-
+    bc->hexBC->allPatches = allPatches;
     hexBCs->AddItem(bc->hexBC);
 
 
@@ -65,7 +70,7 @@ void SetBCsWidget::slotSelectPatches()
     }
     else
     {
-        std::cout << "select a boundary condition first!" <<std::endl;
+        std::cout << "select a boundary condition in the list first!" <<std::endl;
     }
 }
 
@@ -79,4 +84,14 @@ void SetBCsWidget::slotSelectionDone(vtkIdList *selectedPatches)
     std::cout <<" patchIds: " << hexBC->patchIds->GetNumberOfIds()<<std::endl;
 
     emit resetInteractor();
+}
+
+void SetBCsWidget::slotShowPatchesOnSelection(QTreeWidgetItem *item, int col)
+{
+    //Reset all colors first!
+    emit resetInteractor();
+    SetBCsItem *bcitem = static_cast<SetBCsItem*>(item);
+    bcitem->hexBC->setPatchColors(0.0,1.0,0.0);
+    emit render();
+
 }

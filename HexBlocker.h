@@ -36,7 +36,7 @@ public:
     void initPatch(vtkSmartPointer<HexBlock> hex, int ids[4]);
     void moveVertices(vtkSmartPointer<vtkIdList> ids, double dist[]);
 
-
+    void resetPatchesColor();
     void exportVertices(QTextStream &os);
     void exportBlocks(QTextStream &os);
     void exportBCs(QTextStream &os);
