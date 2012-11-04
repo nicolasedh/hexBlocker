@@ -24,6 +24,10 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
     //connecta alla cancels till att köra setCurrentIndex(0)
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));
     connect(setBCsW,SIGNAL(done()),this,SLOT(slotCancel()));
+    connect(moveVerticesW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
+    connect(createBlockW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString));
+    connect(setBCsW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
+
 }
 
 ToolBoxWidget::~ToolBoxWidget()
@@ -40,4 +44,9 @@ void ToolBoxWidget::slotCancel()
 {
     this->ui->stackedWidget->setCurrentIndex(0);
     emit cancel();
+}
+
+void ToolBoxWidget::slotSetStatusText(QString text)
+{
+    emit setStatusText(text);
 }

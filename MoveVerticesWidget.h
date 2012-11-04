@@ -25,6 +25,7 @@ public slots:
 signals:
     void moveVertices();
     void moveDone();
+    void setStatusText(QString);
 private:
     Ui::MoveVerticesWidget *ui;
 

@@ -46,8 +46,6 @@ void SetBCsWidget::slotCreateBC()
     bc->setText(1,tr("patch"));
     bc->hexBC->allPatches = allPatches;
     hexBCs->AddItem(bc->hexBC);
-
-
 }
 
 void SetBCsWidget::slotBCchanged(QTreeWidgetItem *item, int col)
@@ -70,7 +68,7 @@ void SetBCsWidget::slotSelectPatches()
     }
     else
     {
-        std::cout << "select a boundary condition in the list first!" <<std::endl;
+        setStatusText("Select a boundary condition in the list first");
     }
 }
 

@@ -36,6 +36,8 @@ signals:
     void resetInteractor();
     void render();
     void done();
+    //below dont work
+    void setStatusText(QString);
 
 private:
     Ui::SetBCsWidget *ui;

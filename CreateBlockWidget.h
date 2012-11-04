@@ -24,6 +24,7 @@ public slots:
 signals:
     void apply();
     void cancel();
+    void setStatusText(QString);
 private:
     Ui::CreateBlockWidget *ui;
 };

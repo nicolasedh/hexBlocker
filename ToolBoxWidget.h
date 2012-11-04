@@ -30,9 +30,11 @@ public:
 
 public slots:
     virtual void slotCancel();
+    virtual void slotSetStatusText(QString text);
 
 signals:
     void cancel();
+    void setStatusText(QString);
 
 private:
     Ui::ToolBoxWidget *ui;

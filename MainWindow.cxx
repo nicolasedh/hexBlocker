@@ -99,6 +99,8 @@ MainWindow::MainWindow()
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
     connect(toolbox->setBCsW,SIGNAL(render()),this,SLOT(slotRender()));
     connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotExportBlockMeshDict()));
+
+    connect(toolbox,SIGNAL(setStatusText(QString)),this,SLOT(slotShowStatusText(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -212,6 +214,11 @@ void MainWindow::slotExportBlockMeshDict()
 
     HexExporter * exporter = new HexExporter(hexBlocker);
     exporter->exporBlockMeshDict(filename);
+}
+
+void MainWindow::slotShowStatusText(QString text)
+{
+    ui->statusbar->showMessage(text,15000);
 }
 
 void MainWindow::slotExit()
