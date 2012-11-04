@@ -199,6 +199,66 @@ void HexBlocker::PrintHexBlocks()
     }
 }
 
+void HexBlocker::exportVertices(QTextStream &os)
+{
+    os << endl << "vertices" <<endl << "(" <<endl;
+    for(vtkIdType i=0;i<vertices->GetNumberOfPoints();i++)
+    {
+        double x[3];
+        vertices->GetPoint(i,x);
+        os << "\t(" << x[0] <<", " << x[1] << ", " << x[2] <<") //"<<i <<endl;
+    }
+    os << endl <<");" << endl;
+}
+
+void HexBlocker::exportBlocks(QTextStream &os)
+{
+    os << "blocks" << endl << "(" << endl;
+
+    for(vtkIdType i=0; i<hexBlocks->GetNumberOfItems(); i++)
+    {
+        HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        os << "\t hex (";
+        for(vtkIdType j=0; j<hb->vertIds->GetNumberOfIds();j++)
+        {
+            os << hb->vertIds->GetId(j);
+            if(j < hb->vertIds->GetNumberOfIds()-1)
+                os << " ";
+            else
+                os << ") ";
+        }
+
+        os << "(10 10 10) simpleGrading (1 1 1) " << endl;
+
+    }
+    os << endl << ");" << endl;
+}
+
+void HexBlocker::exportBCs(QTextStream &os)
+{
+    os << "boundary" << endl << "(" << endl;
+    HexBC *bc;
+    for(vtkIdType i = 0;i<hexBCs->GetNumberOfItems();i++)
+    {
+        bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
+        QString name = QString::fromUtf8(bc->name.c_str());
+        QString type = QString::fromUtf8(bc->type.c_str());
+        os << "\t" << name << endl
+           << "\t{" <<endl
+           << "\t\ttype\t" << type <<";" << endl
+           << "\t\tfaces\t" << endl
+           << "\t\t(" << endl;
+        vtkSmartPointer<hexPatch> p;
+        for(vtkIdType j=0; j<bc->patchIds->GetNumberOfIds();j++)
+        {
+            p = hexPatch::SafeDownCast(patches->GetItemAsObject(bc->patchIds->GetId(j)));
+            os << "\t\t\t";
+            p->exportVertIds(os);
+        }
+        os << "\t\t);" << endl<<"\t}"<<endl;
+    }
+    os << ");" <<endl;
+}
 
 void HexBlocker::initPatches(vtkSmartPointer<HexBlock> hex)
 {
