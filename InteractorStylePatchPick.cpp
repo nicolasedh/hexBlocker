@@ -109,6 +109,12 @@ void InteractorStylePatchPick::OnMiddleButtonUp()
     if(selectedPatches->GetNumberOfIds()>0)
     {
         std::cout<< "emit signal here" << std::endl;
+        for(vtkIdType i = 0; i<selectedPatches->GetNumberOfIds();i++)
+        {
+            hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(selectedPatches->GetId(i)));
+            p->resetColor();
+        }
+        this->GetInteractor()->GetRenderWindow()->Render();
         emit selectionDone(selectedPatches);
         selectedPatches->Initialize();
     }
