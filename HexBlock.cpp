@@ -73,7 +73,8 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
             p->vertIds;
 
     //We want to keep extruded blocks aligned
-    //so there's one order for each patch
+    //so the extrude operation is diffierent depending
+    //on which patch was selected
     switch (fromHex->getPatchInternalId(p))
     {
 
@@ -86,6 +87,26 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
         vertIds->InsertNextId(oldIds->GetId(1));
         vertIds->InsertNextId(oldIds->GetId(2));
         vertIds->InsertNextId(oldIds->GetId(3));
+        break;
+    case 1:
+        vertIds->InsertNextId(nGv);
+        vertIds->InsertNextId(nGv+1);
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(nGv+3);
+        vertIds->InsertNextId(nGv+2);
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        break;
+    case 2:
+        vertIds->InsertNextId(nGv);
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(nGv+3);
+        vertIds->InsertNextId(nGv+1);
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(nGv+2);
         break;
     default:
         std::cout << "unexpected patch number" << std::endl;

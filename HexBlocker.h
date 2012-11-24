@@ -9,6 +9,7 @@
 
 //Predeclarations
 class HexBlock;
+class hexPatch;
 class vtkPoints;
 class vtkPolyData;
 class vtkGlyph3D;
@@ -27,6 +28,8 @@ class HexBlocker
 public:
     HexBlocker();
     ~HexBlocker();
+
+    //FUNCTIONS
     void createHexBlock();
     void createHexBlock(double [3],double [3]);
     void extrudePatch(vtkIdList *selectedPatches);
@@ -35,30 +38,26 @@ public:
     void initPatches(vtkSmartPointer<HexBlock> hex);
     void initPatch(vtkSmartPointer<HexBlock> hex, int ids[4]);
     void moveVertices(vtkSmartPointer<vtkIdList> ids, double dist[]);
+    vtkIdType isPatchInGlobalList(vtkSmartPointer<hexPatch> p);
 
     void resetPatchesColor();
     void exportVertices(QTextStream &os);
     void exportBlocks(QTextStream &os);
     void exportBCs(QTextStream &os);
+
+    //DATA
     vtkSmartPointer<vtkPoints> vertices;
     vtkSmartPointer<vtkPolyData> vertData;
-
-    vtkSmartPointer<vtkCollection> patches;
-
+    vtkSmartPointer<vtkCollection> patches; //global patch list
     vtkSmartPointer<vtkCollection> hexBlocks;
-
-    vtkSmartPointer<vtkCollection> hexBCs;
+    vtkSmartPointer<vtkCollection> hexBCs; //BCs
 
     //Representations
     vtkSmartPointer<vtkSphereSource> vertSphere;
     vtkSmartPointer<vtkGlyph3D> vertGlyph;
     vtkSmartPointer<vtkPolyDataMapper> vertMapper;
     vtkSmartPointer<vtkActor> vertActor;
-
     vtkSmartPointer<vtkRenderer> renderer;
-
-
-
 
 };
 

@@ -5,6 +5,7 @@
 
 #include "HexBlocker.h"
 #include "HexBlock.h"
+#include "hexPatch.h"
 
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
@@ -106,13 +107,12 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches)
         return;
     }
 
-    std::cout << "no patches selected!" << std::endl;
     vtkSmartPointer<hexPatch> p =
             hexPatch::SafeDownCast(
                 patches->GetItemAsObject(selectedPatches->GetId(0)));
     vtkSmartPointer<HexBlock> hex = p->getPrimaryHexBlock();
 
-    std::cout << "I'am block " << hexBlocks->IsItemPresent(hex) << " patch: "
+    std::cout << "I'am block " << hexBlocks->IsItemPresent(hex) -1 << " patch: "
               << hex->getPatchInternalId(p)
               << ", verts are ("
               << p->vertIds->GetId(0) << " "
@@ -127,6 +127,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches)
     newHex->init(p,1.5,vertices);
 
     initPatches(newHex);
+    hexBlocks->AddItem(newHex);
     vertices->Modified();
     renderer->Render();
       //det nya blocket kör init med gammal patch.
@@ -322,11 +323,25 @@ void HexBlocker::initPatch(vtkSmartPointer<HexBlock> hex,int ids[4])
     vlist->InsertId(3,hex->vertIds->GetId(ids[3]));
 
     patch->init(vlist,vertices,hex);
-    renderer->AddActor(patch->actor);
-    //add to global list
-    patches->AddItem(patch);
-    hex->patches->AddItem(patch);
 
+    vtkIdType pId=isPatchInGlobalList(patch);
+    if(pId < 0) //i.e. it doesn't exist in global list
+    {
+        renderer->AddActor(patch->actor);
+        //add to global list
+        patches->AddItem(patch);
+        hex->patches->AddItem(patch);
+    }
+    else
+    {
+        //patch already exist, only add reference to
+        //the existing one, needed by extrude.
+        //std::cout << "item is present" << std::endl;
+        vtkSmartPointer<hexPatch> existingPatch =
+                hexPatch::SafeDownCast(patches->GetItemAsObject(pId));
+        existingPatch->setHex(hex);
+        hex->patches->AddItem(existingPatch);
+    }
 }
 
 
@@ -347,4 +362,21 @@ void HexBlocker::moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
         vertices->Modified();
     }
 
+}
+
+vtkIdType HexBlocker::isPatchInGlobalList(vtkSmartPointer<hexPatch> p)
+{
+    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+    {
+        //std::cout << "checking with patch: " << i << std::endl;
+        vtkSmartPointer<hexPatch> op =
+                hexPatch::SafeDownCast(patches->GetItemAsObject(i) );
+        if(op->operator ==(p))
+        {
+            //std::cout << "Patch" << i <<" already exist" << std::endl;
+            return i;
+        }
+    }
+
+    return -1;
 }

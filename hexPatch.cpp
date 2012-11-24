@@ -48,7 +48,7 @@ void hexPatch::orderVertices(){
     //use vtkMath to calc normal and crossproducts
 }
 
-bool hexPatch::operator ==(vtkSmartPointer<hexPatch> other)
+bool hexPatch::operator==(vtkSmartPointer<hexPatch> other)
 {
     bool same=true;
     bool existInOther=false;
@@ -59,49 +59,30 @@ bool hexPatch::operator ==(vtkSmartPointer<hexPatch> other)
       if(vertIds->GetId(i) == other->vertIds->GetId(j))
           existInOther=true;
      same = same && existInOther;
-
     }
+    return same;
 }
 
 void hexPatch::init(vtkSmartPointer<vtkIdList> vIds,
                     vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<HexBlock> hex)
 {
-    std::cout << "called prim" << hasPrimaryHex << " sec: " << hasSecondaryHex<< std::endl;
-    if(!hasPrimaryHex)
-    {
-        hasPrimaryHex=true;
-        primaryHex=hex;
-        globalVertices = verts;
-        vertIds=vIds;
+    hasPrimaryHex=true;
+    primaryHex=hex;
+    globalVertices = verts;
+    vertIds=vIds;
+    for(vtkIdType i=0; i<4 ;i++)
+        quad->GetPointIds()->SetId(i,vIds->GetId(i));
+    quads->Allocate(1,1);
+    quads->InsertNextCell(quad);
 
+    data->SetPoints(globalVertices);
+    data->SetPolys(quads);
 
-        for(vtkIdType i=0; i<4 ;i++)
-            quad->GetPointIds()->SetId(i,vIds->GetId(i));
+    mapper->SetInput(data);
 
-        quads->Allocate(1,1);
-        quads->InsertNextCell(quad);
-
-        data->SetPoints(globalVertices);
-        data->SetPolys(quads);
-
-        mapper->SetInput(data);
-
-        actor->SetMapper(mapper);
-        actor->SetOrigin(actor->GetCenter());
-        actor->SetScale(0.6);
-
-    }
-    else if(!hasSecondaryHex)
-    {
-        std::cout<<"hej"<<std::endl;
-        //verify vertsIds
-        actor->SetOrigin(actor->GetCenter());
-        actor->SetScale(0.4);
-        secondaryHex=hex;
-        hasSecondaryHex=true;
-    }
-    else
-        std::cout << "Error tried to assign three (or more) hexblocks two one patch " << std::endl;
+    actor->SetMapper(mapper);
+    actor->SetOrigin(actor->GetCenter());
+    actor->SetScale(0.6);
     resetColor();
 }
 
@@ -116,7 +97,10 @@ void hexPatch::resetColor()
     if(!hasSecondaryHex)
         actor->GetProperty()->SetColor(0.2,0.9,0.2);
     else
+    {
         actor->GetProperty()->SetColor(0.2,0.2,0.9);
+        actor->GetProperty()->SetOpacity(0.5);
+    }
 }
 
 void hexPatch::exportVertIds(QTextStream &os)
@@ -155,11 +139,12 @@ void hexPatch::setHex(vtkSmartPointer<HexBlock> hex)
         primaryHex=hex;
     else //
     {
+        //std::cout << "setting secondary" <<  std::endl;
         secondaryHex=hex;
+        actor->SetOrigin(actor->GetCenter());
         actor->SetScale(0.4);
-        actor->GetProperty()->SetColor(0.1,0.8,0.1);
-        actor->GetProperty()->SetOpacity(0.2);
-
+        hasSecondaryHex=true;
+        resetColor();
     }
 
 }
