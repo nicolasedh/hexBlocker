@@ -1,15 +1,15 @@
 #include "HexBlock.h"
 
 #include <vtkObjectFactory.h>
+#include <vtkMath.h>
 #include <vtkPoints.h>
 #include <vtkIdList.h>
 #include <vtkPolyData.h>
 #include <vtkQuad.h>
-#include <vtkCellArray.h>
-
+#include <hexPatch.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
-
+#include <vtkCollection.h>
 
 vtkStandardNewMacro(HexBlock);
 
@@ -19,8 +19,7 @@ HexBlock::HexBlock()
     vertIds = vtkSmartPointer<vtkIdList>::New();
     hexVertices = vtkSmartPointer<vtkPoints>::New();
     hexData = vtkSmartPointer<vtkPolyData>::New();
-    patches = vtkSmartPointer<vtkCellArray>::New();
-    patches->SetNumberOfCells(6);
+    patches = vtkSmartPointer<vtkCollection>::New();
 }
 
 HexBlock::~HexBlock()
@@ -59,13 +58,54 @@ void HexBlock::init(double corner0[3], double corner1[3], vtkSmartPointer<vtkPoi
 }
 
 
-//Construct from list of 4 points, and ofset
-//2do borde ta face som argument dist ska vara skalar*normal, eller?
-void HexBlock::init(vtkSmartPointer<vtkIdList> vIds, double dist[3], vtkSmartPointer<vtkPoints> verts)
+//Extrude from patch and distance
+void HexBlock::init(vtkSmartPointer<hexPatch> p,
+                    double dist,
+                    vtkSmartPointer<vtkPoints> verts)
 {
-
+    vtkSmartPointer<HexBlock> fromHex = p->getPrimaryHexBlock();
     globalVertices=verts;
 
+    // number of vertices before extrude
+    vtkIdType nGv=globalVertices->GetNumberOfPoints();
+
+    vtkSmartPointer<vtkIdList> oldIds =
+            p->vertIds;
+
+    //We want to keep extruded blocks aligned
+    //so there's one order for each patch
+    switch (fromHex->getPatchInternalId(p))
+    {
+
+    case 0:
+        vertIds->InsertNextId(nGv);
+        vertIds->InsertNextId(nGv+1);
+        vertIds->InsertNextId(nGv+2);
+        vertIds->InsertNextId(nGv+3);
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        break;
+    default:
+        std::cout << "unexpected patch number" << std::endl;
+        return;
+    }
+
+    double n_dist[3];
+    p->getNormal(n_dist);
+    vtkMath::MultiplyScalar(n_dist,dist);
+    //Insert the new 4 points into globalVertices
+    for(vtkIdType i=0;i<4;i++)
+    {
+        double oldCoords[3];
+        double newCoords[3];
+        globalVertices->GetPoint(p->vertIds->GetId(i),oldCoords);
+        vtkMath::Add(oldCoords,n_dist,newCoords);
+        globalVertices->InsertNextPoint(newCoords);
+    }
+
+/*
     //vIds are old ids.
     //insert old ids
     for (vtkIdType i =0;i<4;i++)
@@ -80,15 +120,28 @@ void HexBlock::init(vtkSmartPointer<vtkIdList> vIds, double dist[3], vtkSmartPoi
         globalVertices->GetPoint(vertIds->GetId(i-4),coords);
         vertIds->InsertNextId(globalVertices->GetNumberOfPoints());
         globalVertices->InsertNextPoint(coords[0]+dist[0],coords[1]+dist[1],coords[2]+dist[2]);
-
-
     }
-
+*/
 }
 
-
+vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<hexPatch> otherP)
+{
+    vtkIdType patchId=-1;
+    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+    {
+        vtkSmartPointer<hexPatch> p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        if(p==otherP)
+            patchId=i;
+    }
+    return patchId;
+}
 
 void HexBlock::PrintSelf(ostream &os, vtkIndent indent)
 {
     os << "This is the hexblock! " << hexVertices->GetPoint(0)[0] << std::endl;
+}
+
+void HexBlock::initPatch()
+{
+
 }

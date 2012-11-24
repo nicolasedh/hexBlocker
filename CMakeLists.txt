@@ -94,4 +94,17 @@ TARGET_LINK_LIBRARIES(HexBlocker
 )
 
 
-
+get_cmake_property(CacheVars CACHE_VARIABLES)
+foreach(CacheVar ${CacheVars})
+  get_property(CacheVarHelpString CACHE ${CacheVar} PROPERTY HELPSTRING)
+  if(CacheVarHelpString STREQUAL "No help, variable specified on the command line.")
+    get_property(CacheVarType CACHE ${CacheVar} PROPERTY TYPE)
+    if(CacheVarType STREQUAL "UNINITIALIZED")
+      set(CacheVarType)
+    else()
+      set(CacheVarType :${CacheVarType})
+    endif()
+    set(CMakeArgs "${CMakeArgs} -D${CacheVar}${CacheVarType}=\"${${CacheVar}}\"")
+  endif()
+endforeach()
+message("CMakeArgs: ${CMakeArgs}")

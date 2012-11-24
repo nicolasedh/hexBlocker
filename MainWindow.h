@@ -39,6 +39,7 @@ class InteractorStyleVertPick;
 class InteractorStylePatchPick;
 class vtkInteractorStyleTrackballCamera;
 class ToolBoxWidget;
+class vtkIdList;
 
 class MainWindow : public QMainWindow
 {
@@ -61,11 +62,13 @@ public slots:
   virtual void slotCreateHexBlock();
   virtual void slotOpenCreateHexBlockDialog();
   virtual void slotPrintHexBlocks();
-  virtual void slotExtrudePatch();
+  virtual void slotStartExtrudePatch();
+  virtual void slotExtrudePatch(vtkIdList *selectedPatches);
   virtual void slotOpenMoveVerticesDialog();
   virtual void slotMoveVertices();
   virtual void slotResetInteractor();
   virtual void slotOpenSetBCsDialog();
+  virtual void slotPatchSelectionDone();
   void slotStartSelectPatches(vtkIdType bcID);
   void slotExportBlockMeshDict();
   void slotRender();

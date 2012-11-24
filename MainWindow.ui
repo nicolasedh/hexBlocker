@@ -91,8 +91,8 @@
    <addaction name="actionOpenFile"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
-   <addaction name="actionCreate_HexBlock"/>
-   <addaction name="actionExtrude_patch"/>
+   <addaction name="actionCreateHexBlock"/>
+   <addaction name="actionExtrudePatch"/>
    <addaction name="actionSelectVertices"/>
    <addaction name="actionHelp"/>
    <addaction name="actionSetBCs"/>
@@ -133,7 +133,7 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionCreate_HexBlock">
+  <action name="actionCreateHexBlock">
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/createHexBlock.png</normaloff>:/Icons/createHexBlock.png</iconset>
@@ -145,7 +145,7 @@
     <string>Create a new HexBlock</string>
    </property>
   </action>
-  <action name="actionExtrude_patch">
+  <action name="actionExtrudePatch">
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/ExtrudeBlock.png</normaloff>:/Icons/ExtrudeBlock.png</iconset>

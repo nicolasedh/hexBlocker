@@ -86,9 +86,9 @@ MainWindow::MainWindow()
     // Set up action signals and slots
     connect(this->ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
-    connect(this->ui->actionCreate_HexBlock,SIGNAL(triggered()),this,SLOT(slotOpenCreateHexBlockDialog()));
+    connect(this->ui->actionCreateHexBlock,SIGNAL(triggered()),this,SLOT(slotOpenCreateHexBlockDialog()));
     connect(toolbox->createBlockW,SIGNAL(apply()),this,SLOT(slotCreateHexBlock()));
-    connect(this->ui->actionExtrude_patch,SIGNAL(triggered()),this,SLOT(slotExtrudePatch()));
+    connect(this->ui->actionExtrudePatch,SIGNAL(triggered()),this,SLOT(slotStartExtrudePatch()));
     connect(this->ui->actionHelp,SIGNAL(triggered()),this,SLOT(slotPrintHexBlocks()));
     connect(this->ui->actionSelectVertices,SIGNAL(triggered()),this,SLOT(slotOpenMoveVerticesDialog()));
     connect(toolbox->moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotResetInteractor()));
@@ -138,9 +138,20 @@ void MainWindow::slotPrintHexBlocks()
     hexBlocker->PrintHexBlocks();
 }
 
-void MainWindow::slotExtrudePatch()
+void MainWindow::slotStartExtrudePatch()
 {
-    hexBlocker->extrudePatch();
+    renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
+    connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
+            this,SLOT(slotExtrudePatch(vtkIdList *)));
+}
+
+void MainWindow::slotExtrudePatch(vtkIdList *selectedPatches)
+{
+    hexBlocker->extrudePatch(selectedPatches);
+    disconnect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
+               this,SLOT(slotExtrudePatch(vtkIdList *)));
+
+    renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
 }
 
@@ -196,7 +207,18 @@ void MainWindow::slotStartSelectPatches(vtkIdType bcID)
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             toolbox->setBCsW,SLOT(slotSelectionDone(vtkIdList*)));
+    connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList*)),
+            this,SLOT(slotPatchSelectionDone()));
 
+}
+
+void MainWindow::slotPatchSelectionDone()
+{
+    disconnect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
+               toolbox->setBCsW,SLOT(slotSelectionDone(vtkIdList*)));
+    disconnect(stylePatchPick,SIGNAL(selectionDone(vtkIdList*)),
+               this,SLOT(slotPatchSelectionDone()));
+//    std::cout << "disconnecting" << std::endl;
 }
 
 void MainWindow::slotExportBlockMeshDict()
@@ -215,6 +237,8 @@ void MainWindow::slotExportBlockMeshDict()
     HexExporter * exporter = new HexExporter(hexBlocker);
     exporter->exporBlockMeshDict(filename);
 }
+
+
 
 void MainWindow::slotShowStatusText(QString text)
 {

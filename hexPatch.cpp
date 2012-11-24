@@ -1,6 +1,7 @@
 #include "hexPatch.h"
 #include <vtkObjectFactory.h>
 
+#include <HexBlock.h>
 #include <vtkIdList.h>
 #include <vtkPoints.h>
 #include <vtkQuad.h>
@@ -9,13 +10,14 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkProperty.h>
+#include <vtkMath.h>
+
 //include vtkVector för att beräkna grejor.
 vtkStandardNewMacro(hexPatch);
 
 hexPatch::hexPatch()
 {
-    primaryHexId=-1;
-    secondaryHexId=-1;
+
     vertIds = vtkSmartPointer<vtkIdList>::New();
     vertIds->SetNumberOfIds(4);
 
@@ -24,6 +26,9 @@ hexPatch::hexPatch()
     data = vtkSmartPointer<vtkPolyData>::New();
     mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     actor  = vtkSmartPointer<vtkActor>::New();
+
+    hasPrimaryHex = false;
+    hasSecondaryHex = false;
 }
 
 hexPatch::~hexPatch()
@@ -36,9 +41,7 @@ void hexPatch::PrintSelf(ostream &os, vtkIndent indent)
     os << "verts:" ;
     for(vtkIdType i=0;i<4;i++)
         os << indent << vertIds->GetId(i);
-    os << "," <<indent
-       <<"hexIds:" << indent <<primaryHexId
-      <<indent << secondaryHexId <<std::endl;
+    os << "." << std::endl;
 }
 
 void hexPatch::orderVertices(){
@@ -53,32 +56,52 @@ bool hexPatch::operator ==(vtkSmartPointer<hexPatch> other)
     {
      existInOther=false;
      for(vtkIdType j=0;j<4;j++)
-      if(vertIds->GetId(0) == other->vertIds->GetId(j))
+      if(vertIds->GetId(i) == other->vertIds->GetId(j))
           existInOther=true;
      same = same && existInOther;
 
     }
 }
 
-void hexPatch::init(vtkSmartPointer<vtkIdList> vIds, vtkSmartPointer<vtkPoints> verts)
+void hexPatch::init(vtkSmartPointer<vtkIdList> vIds,
+                    vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<HexBlock> hex)
 {
-    globalVertices = verts;
-    vertIds=vIds;
+    std::cout << "called prim" << hasPrimaryHex << " sec: " << hasSecondaryHex<< std::endl;
+    if(!hasPrimaryHex)
+    {
+        hasPrimaryHex=true;
+        primaryHex=hex;
+        globalVertices = verts;
+        vertIds=vIds;
 
-    for(vtkIdType i=0; i<4 ;i++)
-        quad->GetPointIds()->SetId(i,vIds->GetId(i));
 
-    quads->Allocate(1,1);
-    quads->InsertNextCell(quad);
+        for(vtkIdType i=0; i<4 ;i++)
+            quad->GetPointIds()->SetId(i,vIds->GetId(i));
 
-    data->SetPoints(globalVertices);
-    data->SetPolys(quads);
+        quads->Allocate(1,1);
+        quads->InsertNextCell(quad);
 
-    mapper->SetInput(data);
+        data->SetPoints(globalVertices);
+        data->SetPolys(quads);
 
-    actor->SetMapper(mapper);
-    actor->SetOrigin(actor->GetCenter());
-    actor->SetScale(0.6);
+        mapper->SetInput(data);
+
+        actor->SetMapper(mapper);
+        actor->SetOrigin(actor->GetCenter());
+        actor->SetScale(0.6);
+
+    }
+    else if(!hasSecondaryHex)
+    {
+        std::cout<<"hej"<<std::endl;
+        //verify vertsIds
+        actor->SetOrigin(actor->GetCenter());
+        actor->SetScale(0.4);
+        secondaryHex=hex;
+        hasSecondaryHex=true;
+    }
+    else
+        std::cout << "Error tried to assign three (or more) hexblocks two one patch " << std::endl;
     resetColor();
 }
 
@@ -90,7 +113,10 @@ void hexPatch::setColor(double r, double g, double b)
 
 void hexPatch::resetColor()
 {
-    actor->GetProperty()->SetColor(0.2,0.9,0.2);
+    if(!hasSecondaryHex)
+        actor->GetProperty()->SetColor(0.2,0.9,0.2);
+    else
+        actor->GetProperty()->SetColor(0.2,0.2,0.9);
 }
 
 void hexPatch::exportVertIds(QTextStream &os)
@@ -99,4 +125,51 @@ void hexPatch::exportVertIds(QTextStream &os)
        << vertIds->GetId(1) << " "
        << vertIds->GetId(2) << " "
        << vertIds->GetId(3) << ")" << endl;
+}
+
+void hexPatch::getNormal(double n[3])
+{
+    double v0[3],v1[3],v3[3],x[3],y[3];
+    globalVertices->GetPoint(vertIds->GetId(0),v0);
+    globalVertices->GetPoint(vertIds->GetId(1),v1);
+    globalVertices->GetPoint(vertIds->GetId(3),v3);
+
+    vtkMath::Subtract(v1,v0,x);
+    vtkMath::Subtract(v3,v0,y);
+
+    vtkMath::Cross(x,y,n);
+    vtkMath::Normalize(n);
+
+    std::cout << "n =(" << n[0]  <<" " << n[1]  << " " << n[2]  << "), " << std::endl
+              << "v0=(" << v0[0] <<" " << v0[1] << " " << v0[2] << "), " << std::endl
+              << "v1=(" << v1[0] <<" " << v1[1] << " " << v1[2] << "), " << std::endl
+              << "v3=(" << v3[0] <<" " << v3[1] << " " << v3[2] << "), " << std::endl
+              << "x =(" << x[0]  <<" " << x[1] << " "  << x[2] << "), "  << std::endl
+              << "y =(" << y[0]  <<" " << y[1] << " "  << y[2] << "), "  << std::endl;
+}
+
+void hexPatch::setHex(vtkSmartPointer<HexBlock> hex)
+{
+    //error check?
+    if (!hasPrimaryHex)
+        primaryHex=hex;
+    else //
+    {
+        secondaryHex=hex;
+        actor->SetScale(0.4);
+        actor->GetProperty()->SetColor(0.1,0.8,0.1);
+        actor->GetProperty()->SetOpacity(0.2);
+
+    }
+
+}
+
+vtkSmartPointer<HexBlock> hexPatch::getPrimaryHexBlock()
+{
+    return primaryHex;
+}
+
+vtkSmartPointer<HexBlock> hexPatch::getSecondaryHexBlock()
+{
+    return secondaryHex;
 }

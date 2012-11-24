@@ -79,7 +79,7 @@ void SetBCsWidget::slotSelectionDone(vtkIdList *selectedPatches)
     vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
     HexBC *hexBC = HexBC::SafeDownCast(hexBCs->GetItemAsObject(hexBCId));
     hexBC->patchIds->DeepCopy(selectedPatches);
-    std::cout <<" patchIds: " << hexBC->patchIds->GetNumberOfIds()<<std::endl;
+//    std::cout <<" patchIds: " << hexBC->patchIds->GetNumberOfIds()<<std::endl;
 
     emit resetInteractor();
 }

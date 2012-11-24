@@ -29,7 +29,7 @@ public:
     ~HexBlocker();
     void createHexBlock();
     void createHexBlock(double [3],double [3]);
-    void extrudePatch();
+    void extrudePatch(vtkIdList *selectedPatches);
     void resetBounds();
     void PrintHexBlocks();
     void initPatches(vtkSmartPointer<HexBlock> hex);

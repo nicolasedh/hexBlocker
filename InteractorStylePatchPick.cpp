@@ -75,15 +75,17 @@ void InteractorStylePatchPick::OnLeftButtonDown()
 
     //only insert if not already in list and only if we clicked a patch
     if(selectedPatches->IsId(clickedPatch) == -1 && clickedPatch > -1)
+    {
         selectedPatches->InsertNextId(clickedPatch);
 
-    hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
-    patch->setColor(1.0,0,0);
-    this->GetInteractor()->GetRenderWindow()->Render();
+        hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
+        patch->setColor(1.0,0,0);
+        this->GetInteractor()->GetRenderWindow()->Render();
 //    std::cout <<"Selected Patches: ";
 //    for(vtkIdType i =0; i<selectedPatches->GetNumberOfIds();i++)
 //        std::cout << selectedPatches->GetId(i) <<", ";
 //    std::cout << std::endl;
+    }
 }
 
 void InteractorStylePatchPick::OnRightButtonUp()
@@ -108,7 +110,7 @@ void InteractorStylePatchPick::OnMiddleButtonUp()
 {
     if(selectedPatches->GetNumberOfIds()>0)
     {
-        std::cout<< "emit signal here" << std::endl;
+//        std::cout<< "emit signal here" << std::endl;
         for(vtkIdType i = 0; i<selectedPatches->GetNumberOfIds();i++)
         {
             hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(selectedPatches->GetId(i)));

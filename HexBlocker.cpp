@@ -98,34 +98,57 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
     //HexBlock* hex2=HexBlock::SafeDownCast(col->GetItemAsObject(0));
 }
 
-void HexBlocker::extrudePatch()
+void HexBlocker::extrudePatch(vtkIdList *selectedPatches)
 {
-    if(hexBlocks->GetNumberOfItems() < 1)
+    if(selectedPatches->GetNumberOfIds()<1)
     {
-        std::cout << "create a block first!" << std::endl;
+        std::cout << "no patches selected!" << std::endl;
         return;
     }
-    vtkSmartPointer<HexBlock> hex=
+
+    std::cout << "no patches selected!" << std::endl;
+    vtkSmartPointer<hexPatch> p =
+            hexPatch::SafeDownCast(
+                patches->GetItemAsObject(selectedPatches->GetId(0)));
+    vtkSmartPointer<HexBlock> hex = p->getPrimaryHexBlock();
+
+    std::cout << "I'am block " << hexBlocks->IsItemPresent(hex) << " patch: "
+              << hex->getPatchInternalId(p)
+              << ", verts are ("
+              << p->vertIds->GetId(0) << " "
+              << p->vertIds->GetId(1) << " "
+              << p->vertIds->GetId(2) << " "
+              << p->vertIds->GetId(3) << ")"<<std::endl;
+    //KONTROLLERA ATT DETTA FUNKAR
+
+
+    vtkSmartPointer<HexBlock> newHex=
             vtkSmartPointer<HexBlock>::New();
+    newHex->init(p,1.5,vertices);
 
-    int numBlocks= hexBlocks->GetNumberOfItems();
-    vtkIdType lastId = vertices->GetNumberOfPoints() -1;
-    double dist[3]={0.0,0.0,1.5};
-    vtkSmartPointer<vtkIdList> exlist =
-            vtkSmartPointer<vtkIdList>::New();
+    initPatches(newHex);
+    vertices->Modified();
+    renderer->Render();
+      //det nya blocket kör init med gammal patch.
+/*
+    //calc normal
+    double n[3];
 
-    exlist->InsertNextId(lastId);
-    exlist->InsertNextId(lastId-1);
-    exlist->InsertNextId(lastId-2);
-    exlist->InsertNextId(lastId-3);
+    extrudeFromPatch->getNormal(n);
 
-    hex->init(exlist,dist,vertices);
+  //ÄR HÄR!//fixa något som kontrollerar getPatchId
+
+
+    hex->init(exlist,n,vertices);
+
+    hex->getPatchInternalId(extrudeFromPatch);
 
     initPatches(hex);
     hexBlocks->AddItem(hex);
     vertices->Modified();
     //renderer->AddActor(hex->hexActor);
     HexBlocker::resetBounds();
+    */
 }
 
 void HexBlocker::resetBounds()
@@ -268,7 +291,7 @@ void HexBlocker::exportBCs(QTextStream &os)
 void HexBlocker::initPatches(vtkSmartPointer<HexBlock> hex)
 {
     //insert patches like a dice
-    //first and last patches define the hexbloc.
+    //first and last patches define the hexblock.
     //order of points according to OF:
     //Normal is out of domain and according to right hand rule
     //when cycling vertices in patch
@@ -298,9 +321,11 @@ void HexBlocker::initPatch(vtkSmartPointer<HexBlock> hex,int ids[4])
     vlist->InsertId(2,hex->vertIds->GetId(ids[2]));
     vlist->InsertId(3,hex->vertIds->GetId(ids[3]));
 
-    patch->init(vlist,vertices);
+    patch->init(vlist,vertices,hex);
     renderer->AddActor(patch->actor);
+    //add to global list
     patches->AddItem(patch);
+    hex->patches->AddItem(patch);
 
 }
 
