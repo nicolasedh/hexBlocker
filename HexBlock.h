@@ -12,7 +12,7 @@ class vtkPolyData;
 class vtkQuads;
 class hexPatch;
 class vtkCollection;
-
+class vtkLine;
 class vtkMapper;
 class vtkActor;
 
@@ -53,7 +53,7 @@ public:
 
 private:
     //FUNCTIONS
-    void initPatch();
+    void drawLocalaxes();
 
     //DATA
     vtkSmartPointer<vtkMapper> hexMapper;

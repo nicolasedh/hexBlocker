@@ -123,13 +123,14 @@ void hexPatch::getNormal(double n[3])
 
     vtkMath::Cross(x,y,n);
     vtkMath::Normalize(n);
-
+/*
     std::cout << "n =(" << n[0]  <<" " << n[1]  << " " << n[2]  << "), " << std::endl
               << "v0=(" << v0[0] <<" " << v0[1] << " " << v0[2] << "), " << std::endl
               << "v1=(" << v1[0] <<" " << v1[1] << " " << v1[2] << "), " << std::endl
               << "v3=(" << v3[0] <<" " << v3[1] << " " << v3[2] << "), " << std::endl
               << "x =(" << x[0]  <<" " << x[1] << " "  << x[2] << "), "  << std::endl
               << "y =(" << y[0]  <<" " << y[1] << " "  << y[2] << "), "  << std::endl;
+*/
 }
 
 void hexPatch::setHex(vtkSmartPointer<HexBlock> hex)

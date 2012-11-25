@@ -92,6 +92,7 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
 
     initPatches(hex);
     hexBlocks->AddItem(hex);
+    renderer->AddActor(hex->hexActor);
     vertices->Modified();
     //renderer->AddActor(hex->hexActor);
     HexBlocker::resetBounds();
@@ -99,7 +100,7 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
     //HexBlock* hex2=HexBlock::SafeDownCast(col->GetItemAsObject(0));
 }
 
-void HexBlocker::extrudePatch(vtkIdList *selectedPatches)
+void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
 {
     if(selectedPatches->GetNumberOfIds()<1)
     {
@@ -112,6 +113,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches)
                 patches->GetItemAsObject(selectedPatches->GetId(0)));
     vtkSmartPointer<HexBlock> hex = p->getPrimaryHexBlock();
 
+    /*
     std::cout << "I'am block " << hexBlocks->IsItemPresent(hex) -1 << " patch: "
               << hex->getPatchInternalId(p)
               << ", verts are ("
@@ -119,37 +121,19 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches)
               << p->vertIds->GetId(1) << " "
               << p->vertIds->GetId(2) << " "
               << p->vertIds->GetId(3) << ")"<<std::endl;
-    //KONTROLLERA ATT DETTA FUNKAR
-
+    */
 
     vtkSmartPointer<HexBlock> newHex=
             vtkSmartPointer<HexBlock>::New();
-    newHex->init(p,1.5,vertices);
+    newHex->init(p,dist,vertices);
 
     initPatches(newHex);
     hexBlocks->AddItem(newHex);
     vertices->Modified();
+
+    renderer->AddActor(newHex->hexActor);
     renderer->Render();
-      //det nya blocket kör init med gammal patch.
-/*
-    //calc normal
-    double n[3];
 
-    extrudeFromPatch->getNormal(n);
-
-  //ÄR HÄR!//fixa något som kontrollerar getPatchId
-
-
-    hex->init(exlist,n,vertices);
-
-    hex->getPatchInternalId(extrudeFromPatch);
-
-    initPatches(hex);
-    hexBlocks->AddItem(hex);
-    vertices->Modified();
-    //renderer->AddActor(hex->hexActor);
-    HexBlocker::resetBounds();
-    */
 }
 
 void HexBlocker::resetBounds()

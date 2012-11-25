@@ -10,6 +10,9 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkCollection.h>
+#include <vtkCellArray.h>
+#include <vtkCellData.h>
+#include <vtkLine.h>
 
 vtkStandardNewMacro(HexBlock);
 
@@ -20,6 +23,7 @@ HexBlock::HexBlock()
     hexVertices = vtkSmartPointer<vtkPoints>::New();
     hexData = vtkSmartPointer<vtkPolyData>::New();
     patches = vtkSmartPointer<vtkCollection>::New();
+    hexActor = vtkSmartPointer<vtkActor>::New();
 }
 
 HexBlock::~HexBlock()
@@ -55,6 +59,7 @@ void HexBlock::init(double corner0[3], double corner1[3], vtkSmartPointer<vtkPoi
     for(vtkIdType i=0;i<8;i++)
         vertIds->SetId(i,i+j);
 
+    drawLocalaxes();
 }
 
 
@@ -80,13 +85,13 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
 
     case 0:
         vertIds->InsertNextId(nGv);
-        vertIds->InsertNextId(nGv+1);
-        vertIds->InsertNextId(nGv+2);
         vertIds->InsertNextId(nGv+3);
+        vertIds->InsertNextId(nGv+2);
+        vertIds->InsertNextId(nGv+1);
         vertIds->InsertNextId(oldIds->GetId(0));
-        vertIds->InsertNextId(oldIds->GetId(1));
-        vertIds->InsertNextId(oldIds->GetId(2));
         vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(1));
         break;
     case 1:
         vertIds->InsertNextId(nGv);
@@ -108,6 +113,36 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
         vertIds->InsertNextId(oldIds->GetId(2));
         vertIds->InsertNextId(nGv+2);
         break;
+    case 3:
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(nGv);
+        vertIds->InsertNextId(nGv+1);
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(nGv+3);
+        vertIds->InsertNextId(nGv+2);
+        vertIds->InsertNextId(oldIds->GetId(2));
+        break;
+    case 4:
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(nGv+3);
+        vertIds->InsertNextId(nGv);
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(nGv+2);
+        vertIds->InsertNextId(nGv+1);
+        break;
+    case 5:
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(nGv);
+        vertIds->InsertNextId(nGv+1);
+        vertIds->InsertNextId(nGv+2);
+        vertIds->InsertNextId(nGv+3);
+        break;
     default:
         std::cout << "unexpected patch number" << std::endl;
         return;
@@ -126,6 +161,7 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
         globalVertices->InsertNextPoint(newCoords);
     }
 
+    drawLocalaxes();
 /*
     //vIds are old ids.
     //insert old ids
@@ -162,7 +198,59 @@ void HexBlock::PrintSelf(ostream &os, vtkIndent indent)
     os << "This is the hexblock! " << hexVertices->GetPoint(0)[0] << std::endl;
 }
 
-void HexBlock::initPatch()
+void HexBlock::drawLocalaxes()
 {
+    unsigned char red[3] = {255, 0, 0};
+    unsigned char green[3] = {0, 255, 0};
+    unsigned char blue[3] = {0, 0, 255};
+    vtkSmartPointer<vtkUnsignedCharArray> colors =
+            vtkSmartPointer<vtkUnsignedCharArray>::New();
+    colors->SetNumberOfComponents(3);
+    colors->SetName("Colors");
+    colors->InsertNextTupleValue(red);
+    colors->InsertNextTupleValue(green);
+    colors->InsertNextTupleValue(blue);
+
+    vtkSmartPointer<vtkCellArray> axes =
+        vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkLine> xaxes =
+           vtkSmartPointer<vtkLine>::New();
+    xaxes->GetPointIds()->SetId(0,vertIds->GetId(0));
+    xaxes->GetPointIds()->SetId(1,vertIds->GetId(1));
+    axes->InsertNextCell(xaxes);
+    vtkSmartPointer<vtkLine> yaxes =
+            vtkSmartPointer<vtkLine>::New();
+    yaxes->GetPointIds()->SetId(0,vertIds->GetId(0));
+    yaxes->GetPointIds()->SetId(1,vertIds->GetId(3));
+    axes->InsertNextCell(yaxes);
+    vtkSmartPointer<vtkLine> zaxes =
+           vtkSmartPointer<vtkLine>::New();
+    zaxes->GetPointIds()->SetId(0,vertIds->GetId(0));
+    zaxes->GetPointIds()->SetId(1,vertIds->GetId(4));
+    axes->InsertNextCell(zaxes);
+
+
+    vtkSmartPointer<vtkPolyData> axesData =
+        vtkSmartPointer<vtkPolyData>::New();
+    axesData->SetPoints(globalVertices);
+    axesData->SetLines(axes);
+
+    axesData->GetCellData()->SetScalars(colors);
+
+    // Visualize
+    vtkSmartPointer<vtkPolyDataMapper> axesMapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+  #if VTK_MAJOR_VERSION <= 5
+    axesMapper->SetInput(axesData);
+  #else
+    axesMapper->SetInputData(axesData);
+  #endif
+
+    hexActor->SetMapper(axesMapper);
+    double x[3];
+    globalVertices->GetPoint(vertIds->GetId(0),x);
+    hexActor->SetOrigin(x);
+    hexActor->SetScale(0.4);
+
 
 }

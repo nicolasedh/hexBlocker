@@ -32,7 +32,7 @@ public:
     //FUNCTIONS
     void createHexBlock();
     void createHexBlock(double [3],double [3]);
-    void extrudePatch(vtkIdList *selectedPatches);
+    void extrudePatch(vtkIdList *selectedPatches, double dist);
     void resetBounds();
     void PrintHexBlocks();
     void initPatches(vtkSmartPointer<HexBlock> hex);

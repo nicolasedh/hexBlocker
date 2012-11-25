@@ -34,7 +34,9 @@
 #include <vtkIdList.h>
 #include <vtkAreaPicker.h>
 
+#include <QInputDialog>
 #include <QFileDialog>
+
 
 #define VTK_CREATE(type, name) \
     vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
@@ -140,6 +142,8 @@ void MainWindow::slotPrintHexBlocks()
 
 void MainWindow::slotStartExtrudePatch()
 {
+    ui->statusbar->showMessage(
+                tr("Left button to select a patch, middle button to confirm, rightbutton to deselect"));
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             this,SLOT(slotExtrudePatch(vtkIdList *)));
@@ -147,7 +151,28 @@ void MainWindow::slotStartExtrudePatch()
 
 void MainWindow::slotExtrudePatch(vtkIdList *selectedPatches)
 {
-    hexBlocker->extrudePatch(selectedPatches);
+    ui->statusbar->clearMessage();
+    if(selectedPatches->GetNumberOfIds()>0)
+    {
+        bool ok;
+        QString title = tr("Distance");
+        QString label = tr("Set the distance to extrude, has to be a positive number");
+
+        double dist = QInputDialog::getDouble(this,title,label,1.0,0,1e12,1,&ok);
+        if(ok && (dist >0.0) )
+        {
+            hexBlocker->extrudePatch(selectedPatches,dist);
+        }
+        else
+        {
+            ui->statusbar->showMessage("Cancled",3000);
+        }
+    }
+    else
+    {
+        ui->statusbar->showMessage("No patches selected!",3000);
+    }
+
     disconnect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
                this,SLOT(slotExtrudePatch(vtkIdList *)));
 

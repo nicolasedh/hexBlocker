@@ -50,9 +50,10 @@ void CreateBlockWidget::slotApply()
     c1[1]=content.toDouble();
     content = ui->lineEditC1Z->text();
     c1[2]=content.toDouble();
-
+/*
     std::cout << "creating block at c0=("<<c0[0]<<"," <<c0[1]<<","<<c0[2]<<"), ("
               << c1[0]<<"," <<c1[1]<<","<<c1[2]<<")"<<std::endl;
+              */
     emit apply();
 }
 
