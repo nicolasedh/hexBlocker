@@ -276,19 +276,19 @@ void HexBlock::initEdges()
     //Keep the same order of edges as on
     //docs on blockMesh
     initEdge(vertIds->GetId(1),vertIds->GetId(0)); //0
-    initEdge(vertIds->GetId(3),vertIds->GetId(2)); //1
-    initEdge(vertIds->GetId(7),vertIds->GetId(6)); //2
-    initEdge(vertIds->GetId(4),vertIds->GetId(5)); //3
+    initEdge(vertIds->GetId(2),vertIds->GetId(3)); //1
+    initEdge(vertIds->GetId(6),vertIds->GetId(7)); //2
+    initEdge(vertIds->GetId(5),vertIds->GetId(4)); //3
 
-    initEdge(vertIds->GetId(0),vertIds->GetId(3)); //4
-    initEdge(vertIds->GetId(1),vertIds->GetId(2)); //5
-    initEdge(vertIds->GetId(5),vertIds->GetId(6)); //6
-    initEdge(vertIds->GetId(4),vertIds->GetId(7)); //7
+    initEdge(vertIds->GetId(3),vertIds->GetId(0)); //4
+    initEdge(vertIds->GetId(2),vertIds->GetId(1)); //5
+    initEdge(vertIds->GetId(6),vertIds->GetId(5)); //6
+    initEdge(vertIds->GetId(7),vertIds->GetId(4)); //7
 
-    initEdge(vertIds->GetId(0),vertIds->GetId(4)); //8
-    initEdge(vertIds->GetId(1),vertIds->GetId(5)); //9
-    initEdge(vertIds->GetId(2),vertIds->GetId(6)); //10
-    initEdge(vertIds->GetId(3),vertIds->GetId(7)); //11
+    initEdge(vertIds->GetId(4),vertIds->GetId(0)); //8
+    initEdge(vertIds->GetId(5),vertIds->GetId(1)); //9
+    initEdge(vertIds->GetId(6),vertIds->GetId(2)); //10
+    initEdge(vertIds->GetId(7),vertIds->GetId(3)); //11
 }
 
 void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)

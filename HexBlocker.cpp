@@ -238,6 +238,16 @@ void HexBlocker::PrintHexBlocks()
             std::cout << bc->patchIds->GetId(j) << " ";
         std::cout << std::endl;
     }
+
+    std::cout << "Edges: " << edges->GetNumberOfItems() << std::endl;
+
+    for(vtkIdType i= 0;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        std::cout << "\t e" << i <<": ("
+                  << e->vertIds->GetId(0) << ", "
+                  << e->vertIds->GetId(1) << ")" << std::endl;
+    }
 }
 
 void HexBlocker::exportVertices(QTextStream &os)
