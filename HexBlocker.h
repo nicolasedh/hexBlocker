@@ -22,6 +22,8 @@ class vtkCollection;
 class vtkCellArray;
 class vtkQuad;
 class vtkIdList;
+class vtkLabeledDataMapper;
+class vtkActor2D;
 
 
 class HexBlocker
@@ -60,7 +62,11 @@ public:
     vtkSmartPointer<vtkGlyph3D> vertGlyph;
     vtkSmartPointer<vtkPolyDataMapper> vertMapper;
     vtkSmartPointer<vtkActor> vertActor;
+
+    vtkSmartPointer<vtkLabeledDataMapper> vertLabelMapper;
+    vtkSmartPointer<vtkActor2D> vertLabelActor;
     vtkSmartPointer<vtkRenderer> renderer;
+
 
 };
 

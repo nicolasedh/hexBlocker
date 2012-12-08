@@ -28,8 +28,9 @@
 
 #include <vtkMath.h>
 
-
-
+#include <vtkLabeledDataMapper.h>
+#include <vtkActor2D.h>
+#include <vtkProperty2D.h>
 
 HexBlocker::HexBlocker()
 {
@@ -66,10 +67,16 @@ HexBlocker::HexBlocker()
     vertActor = vtkSmartPointer<vtkActor>::New();
     vertActor->SetMapper(vertMapper);
 
+    vertLabelMapper = vtkSmartPointer<vtkLabeledDataMapper>::New();
+    vertLabelMapper->SetInput(vertData);
+
+    vertLabelActor = vtkSmartPointer<vtkActor2D>::New();
+    vertLabelActor->SetMapper(vertLabelMapper);
+    vertLabelActor->GetProperty()->SetColor(1,0,0);
 
     renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor(vertActor);
-
+    renderer->AddActor(vertLabelActor);
 }
 
 HexBlocker::~HexBlocker()
