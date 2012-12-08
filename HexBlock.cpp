@@ -1,18 +1,22 @@
 #include "HexBlock.h"
-
 #include <vtkObjectFactory.h>
+
+#include "hexPatch.h"
+#include "HexEdge.h"
+
+
 #include <vtkMath.h>
 #include <vtkPoints.h>
 #include <vtkIdList.h>
 #include <vtkPolyData.h>
-#include <vtkQuad.h>
-#include <hexPatch.h>
+
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkCollection.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkLine.h>
+#include <vtkProperty.h>
 
 vtkStandardNewMacro(HexBlock);
 
@@ -22,8 +26,11 @@ HexBlock::HexBlock()
     vertIds = vtkSmartPointer<vtkIdList>::New();
     hexVertices = vtkSmartPointer<vtkPoints>::New();
     hexData = vtkSmartPointer<vtkPolyData>::New();
-    patches = vtkSmartPointer<vtkCollection>::New();
+    globalPatches = vtkSmartPointer<vtkCollection>::New();
+    globalEdges = vtkSmartPointer<vtkCollection>::New();
     hexActor = vtkSmartPointer<vtkActor>::New();
+
+
 }
 
 HexBlock::~HexBlock()
@@ -31,8 +38,12 @@ HexBlock::~HexBlock()
 
 }
 
-void HexBlock::init(double corner0[3], double corner1[3], vtkSmartPointer<vtkPoints> verts)
+void HexBlock::init(double corner0[3], double corner1[3],
+                    vtkSmartPointer<vtkPoints> verts,
+                    vtkSmartPointer<vtkCollection> edges)
 {
+
+
     double x0=corner0[0];
     double y0=corner0[1];
     double z0=corner0[2];
@@ -41,6 +52,7 @@ void HexBlock::init(double corner0[3], double corner1[3], vtkSmartPointer<vtkPoi
     double z1=corner1[2];
 
     globalVertices = verts;
+    globalEdges = edges;
 
     vtkIdType j = globalVertices->GetNumberOfPoints();
 
@@ -59,6 +71,7 @@ void HexBlock::init(double corner0[3], double corner1[3], vtkSmartPointer<vtkPoi
     for(vtkIdType i=0;i<8;i++)
         vertIds->SetId(i,i+j);
 
+    initEdges();
     drawLocalaxes();
 }
 
@@ -66,10 +79,12 @@ void HexBlock::init(double corner0[3], double corner1[3], vtkSmartPointer<vtkPoi
 //Extrude from patch and distance
 void HexBlock::init(vtkSmartPointer<hexPatch> p,
                     double dist,
-                    vtkSmartPointer<vtkPoints> verts)
+                    vtkSmartPointer<vtkPoints> verts,
+                    vtkSmartPointer<vtkCollection> edges)
 {
     vtkSmartPointer<HexBlock> fromHex = p->getPrimaryHexBlock();
     globalVertices=verts;
+    globalEdges = edges;
 
     // number of vertices before extrude
     vtkIdType nGv=globalVertices->GetNumberOfPoints();
@@ -161,6 +176,8 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
         globalVertices->InsertNextPoint(newCoords);
     }
 
+    initEdges();
+
     drawLocalaxes();
 /*
     //vIds are old ids.
@@ -184,9 +201,9 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
 vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<hexPatch> otherP)
 {
     vtkIdType patchId=-1;
-    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
     {
-        vtkSmartPointer<hexPatch> p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        vtkSmartPointer<hexPatch> p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
         if(p==otherP)
             patchId=i;
     }
@@ -229,7 +246,6 @@ void HexBlock::drawLocalaxes()
     zaxes->GetPointIds()->SetId(1,vertIds->GetId(4));
     axes->InsertNextCell(zaxes);
 
-
     vtkSmartPointer<vtkPolyData> axesData =
         vtkSmartPointer<vtkPolyData>::New();
     axesData->SetPoints(globalVertices);
@@ -251,6 +267,36 @@ void HexBlock::drawLocalaxes()
     globalVertices->GetPoint(vertIds->GetId(0),x);
     hexActor->SetOrigin(x);
     hexActor->SetScale(0.4);
+    hexActor->GetProperty()->SetLineWidth(3);
+    hexActor->SetPickable(false);
+}
 
+void HexBlock::initEdges()
+{
+    //Keep the same order of edges as on
+    //docs on blockMesh
+    initEdge(vertIds->GetId(1),vertIds->GetId(0)); //0
+    initEdge(vertIds->GetId(3),vertIds->GetId(2)); //1
+    initEdge(vertIds->GetId(7),vertIds->GetId(6)); //2
+    initEdge(vertIds->GetId(4),vertIds->GetId(5)); //3
 
+    initEdge(vertIds->GetId(0),vertIds->GetId(3)); //4
+    initEdge(vertIds->GetId(1),vertIds->GetId(2)); //5
+    initEdge(vertIds->GetId(5),vertIds->GetId(6)); //6
+    initEdge(vertIds->GetId(4),vertIds->GetId(7)); //7
+
+    initEdge(vertIds->GetId(0),vertIds->GetId(4)); //8
+    initEdge(vertIds->GetId(1),vertIds->GetId(5)); //9
+    initEdge(vertIds->GetId(2),vertIds->GetId(6)); //10
+    initEdge(vertIds->GetId(3),vertIds->GetId(7)); //11
+}
+
+void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
+{
+
+    vtkSmartPointer<HexEdge> e =
+            vtkSmartPointer<HexEdge>::New();
+    e->init(p0,p1,globalVertices);
+//Check if unique first.
+    globalEdges->AddItem(e);
 }

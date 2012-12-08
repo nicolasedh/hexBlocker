@@ -12,7 +12,7 @@
 #include <vtkProperty.h>
 #include <vtkMath.h>
 
-//include vtkVector för att beräkna grejor.
+
 vtkStandardNewMacro(hexPatch);
 
 hexPatch::hexPatch()

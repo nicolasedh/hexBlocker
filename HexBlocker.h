@@ -10,6 +10,7 @@
 //Predeclarations
 class HexBlock;
 class hexPatch;
+class HexEdge;
 class vtkPoints;
 class vtkPolyData;
 class vtkGlyph3D;
@@ -51,6 +52,8 @@ public:
     vtkSmartPointer<vtkCollection> patches; //global patch list
     vtkSmartPointer<vtkCollection> hexBlocks;
     vtkSmartPointer<vtkCollection> hexBCs; //BCs
+    vtkSmartPointer<vtkCollection> edges; //global list of edges
+
 
     //Representations
     vtkSmartPointer<vtkSphereSource> vertSphere;

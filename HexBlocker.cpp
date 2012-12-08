@@ -6,6 +6,8 @@
 #include "HexBlocker.h"
 #include "HexBlock.h"
 #include "hexPatch.h"
+#include "HexEdge.h"
+#include "HexBC.h"
 
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
@@ -26,8 +28,8 @@
 
 #include <vtkMath.h>
 
-#include "hexPatch.h"
-#include "HexBC.h"
+
+
 
 HexBlocker::HexBlocker()
 {
@@ -40,11 +42,15 @@ HexBlocker::HexBlocker()
     //All patches in the model
     patches = vtkSmartPointer<vtkCollection>::New();
 
+    //All edges in the model
+    edges = vtkSmartPointer<vtkCollection>::New();
+
     //All hexblocks in the modell
     hexBlocks = vtkSmartPointer<vtkCollection>::New();
 
     //Boundary conditions in the modell
     hexBCs = vtkSmartPointer<vtkCollection>::New();
+
     //Representations
     vertSphere = vtkSmartPointer<vtkSphereSource>::New();
     vertSphere->SetThetaResolution(10);
@@ -78,17 +84,21 @@ void HexBlocker::createHexBlock()
     double c1[3]={1.0+2.1*numBlocks,1.0,1.0};
 
     createHexBlock(c0,c1);
+
+
+
 }
 
 void HexBlocker::createHexBlock(double c0[3], double c1[3])
 {
+    vtkIdType numEdges = edges->GetNumberOfItems();
     vtkSmartPointer<HexBlock> hex=
             vtkSmartPointer<HexBlock>::New();
 
     int numBlocks= hexBlocks->GetNumberOfItems();
 
 
-    hex->init(c0,c1,vertices);
+    hex->init(c0,c1,vertices,edges);
 
     initPatches(hex);
     hexBlocks->AddItem(hex);
@@ -96,8 +106,16 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
     vertices->Modified();
     //renderer->AddActor(hex->hexActor);
     HexBlocker::resetBounds();
-    // för att hämta tillbaka
-    //HexBlock* hex2=HexBlock::SafeDownCast(col->GetItemAsObject(0));
+
+    //add edge actors renderer, but not already added ones.
+    for (vtkIdType i =numEdges;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        renderer->AddActor(e->actor);
+    }
+
+
+    renderer->Render();
 }
 
 void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
@@ -107,6 +125,8 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
         std::cout << "no patches selected!" << std::endl;
         return;
     }
+
+    vtkIdType numEdges = edges->GetNumberOfItems();
 
     vtkSmartPointer<hexPatch> p =
             hexPatch::SafeDownCast(
@@ -125,14 +145,22 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
 
     vtkSmartPointer<HexBlock> newHex=
             vtkSmartPointer<HexBlock>::New();
-    newHex->init(p,dist,vertices);
+    newHex->init(p,dist,vertices,edges);
 
     initPatches(newHex);
     hexBlocks->AddItem(newHex);
     vertices->Modified();
 
+    //add edge actors renderer, but not already added ones.
+    for (vtkIdType i =numEdges;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        renderer->AddActor(e->actor);
+    }
+
     renderer->AddActor(newHex->hexActor);
     renderer->Render();
+
 
 }
 
@@ -314,7 +342,7 @@ void HexBlocker::initPatch(vtkSmartPointer<HexBlock> hex,int ids[4])
         renderer->AddActor(patch->actor);
         //add to global list
         patches->AddItem(patch);
-        hex->patches->AddItem(patch);
+        hex->globalPatches->AddItem(patch);
     }
     else
     {
@@ -324,7 +352,7 @@ void HexBlocker::initPatch(vtkSmartPointer<HexBlock> hex,int ids[4])
         vtkSmartPointer<hexPatch> existingPatch =
                 hexPatch::SafeDownCast(patches->GetItemAsObject(pId));
         existingPatch->setHex(hex);
-        hex->patches->AddItem(existingPatch);
+        hex->globalPatches->AddItem(existingPatch);
     }
 }
 

@@ -6,11 +6,12 @@
 #include <iostream>
 
 //Pre declarations
+class hexPatch;
+class HexEdge;
 class vtkIdList;
 class vtkPoints;
 class vtkPolyData;
 class vtkQuads;
-class hexPatch;
 class vtkCollection;
 class vtkLine;
 class vtkMapper;
@@ -37,28 +38,31 @@ public:
     void PrintSelf(ostream &os, vtkIndent indent);
 
     // Construct from two corner vertices
-    void init(double corner0[3], double corner1[3], vtkSmartPointer<vtkPoints> verts);
+    void init(double corner0[3], double corner1[3],
+              vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<vtkCollection> edges);
 
     // Construct from a list of vertices and the global list of vertices
-    void init(vtkSmartPointer<hexPatch> p, double dist, vtkSmartPointer<vtkPoints> verts);
+    void init(vtkSmartPointer<hexPatch> p, double dist, vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<vtkCollection> edges);
 
     vtkIdType getPatchInternalId(vtkSmartPointer<hexPatch> otherP);
 
     //DATA
-    vtkSmartPointer<vtkCollection> patches;
+    vtkSmartPointer<vtkCollection> globalPatches;
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices
+    vtkSmartPointer<vtkCollection> globalEdges;
     vtkSmartPointer<vtkPolyData> hexData;
     vtkSmartPointer<vtkIdList> vertIds; // own list of Ids
-    vtkSmartPointer<vtkActor> hexActor;
+    vtkSmartPointer<vtkActor> hexActor; //for axes.
 
 private:
     //FUNCTIONS
     void drawLocalaxes();
+    void initEdges();
+    void initEdge(vtkIdType p0,vtkIdType p1);
 
     //DATA
     vtkSmartPointer<vtkMapper> hexMapper;
     vtkSmartPointer<vtkPoints> hexVertices;
-
 
 };
 
