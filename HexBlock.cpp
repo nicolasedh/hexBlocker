@@ -29,7 +29,7 @@ HexBlock::HexBlock()
     globalPatches = vtkSmartPointer<vtkCollection>::New();
     globalEdges = vtkSmartPointer<vtkCollection>::New();
     hexActor = vtkSmartPointer<vtkActor>::New();
-
+    edgeIds  = vtkSmartPointer<vtkIdList>::New();
 
 }
 
@@ -293,10 +293,29 @@ void HexBlock::initEdges()
 
 void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
 {
-
-    vtkSmartPointer<HexEdge> e =
+    vtkSmartPointer<HexEdge> newEdge =
             vtkSmartPointer<HexEdge>::New();
-    e->init(p0,p1,globalVertices);
-//Check if unique first.
-    globalEdges->AddItem(e);
+    newEdge->init(p0,p1,globalVertices);
+    bool existsInGlobal = false;
+    vtkIdType posInGlobal=-1;
+
+    for(vtkIdType i=0;i<globalEdges->GetNumberOfItems();i++){
+        HexEdge *e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(i));
+        if(newEdge->equals(e))
+        {
+            std::cout<< " edge already exists!" << std::endl;
+            existsInGlobal = true;
+            posInGlobal=i;
+        }
+    }
+
+    if(!existsInGlobal)
+    {
+        globalEdges->AddItem(newEdge);
+        edgeIds->InsertNextId(globalEdges->GetNumberOfItems()-1);
+    }
+    else
+    {
+        edgeIds->InsertNextId(posInGlobal);
+    }
 }

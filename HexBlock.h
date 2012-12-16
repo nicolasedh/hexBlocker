@@ -53,7 +53,7 @@ public:
     vtkSmartPointer<vtkPolyData> hexData;
     vtkSmartPointer<vtkIdList> vertIds; // own list of Ids
     vtkSmartPointer<vtkActor> hexActor; //for axes.
-
+    vtkSmartPointer<vtkIdList> edgeIds;
 private:
     //FUNCTIONS
     void drawLocalaxes();
