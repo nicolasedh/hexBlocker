@@ -34,7 +34,7 @@ public:
     // initializes the ids and points
     void init(vtkIdType p0,vtkIdType p1, vtkSmartPointer<vtkPoints> verts);
 
-    bool operator==(vtkSmartPointer<HexEdge> other);
+    bool equals(const HexEdge * other);
 
 
     void setColor(double,double,double);

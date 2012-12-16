@@ -248,13 +248,31 @@ void HexBlocker::PrintHexBlocks()
 
     std::cout << "Edges: " << edges->GetNumberOfItems() << std::endl;
 
-    for(vtkIdType i= 0;i<edges->GetNumberOfItems();i++)
-    {
-        HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
-        std::cout << "\t e" << i <<": ("
-                  << e->vertIds->GetId(0) << ", "
-                  << e->vertIds->GetId(1) << ")" << std::endl;
-    }
+
+    HexEdge * f = HexEdge::SafeDownCast(edges->GetItemAsObject(0));
+//    for(vtkIdType i= 0;i<edges->GetNumberOfItems();i++)
+//    {
+//        HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+//        bool aresame=(f==e);
+//        std::cout << "\t e" << i <<": ("
+//                  << e->vertIds->GetId(0) << ", "
+//                  << e->vertIds->GetId(1) << ")"
+//                  << ", is same as e0: "
+//                  << aresame
+//                  << std::endl;
+//    }
+    HexEdge * g = HexEdge::New();
+    g->init(0,1,vertices);
+
+    HexEdge * h = HexEdge::New();
+    h->init(1,0,vertices);
+
+    HexEdge *hh = HexEdge::New();
+    hh->init(3,0,vertices);
+
+    std::cout << "\t same but different:" << bool(f->equals(h)) << std::endl;
+    std::cout << "\t reversed:" << bool(f->equals(g)) << std::endl;
+    std::cout << "\t not same:" << bool(hh->equals(h)) << std::endl;
 }
 
 void HexBlocker::exportVertices(QTextStream &os)

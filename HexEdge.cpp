@@ -41,8 +41,16 @@ void HexEdge::PrintSelf(ostream &os, vtkIndent indent)
 }
 
 
-bool HexEdge::operator==(vtkSmartPointer<HexEdge> other)
+bool HexEdge::equals(const HexEdge  *other)
 {
+    return (
+                other->vertIds->GetId(0) == this->vertIds->GetId(0) &&
+                other->vertIds->GetId(1) == this->vertIds->GetId(1)
+            ) ||
+            (
+                other->vertIds->GetId(0) == this->vertIds->GetId(1) &&
+                other->vertIds->GetId(1) == this->vertIds->GetId(0)
+            );
 
 }
 
