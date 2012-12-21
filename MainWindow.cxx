@@ -7,9 +7,11 @@
 #include "ui_MainWindow.h"
 #include "MainWindow.h"
 #include "HexBlocker.h"
-#include "HexBlock.h" //apparently needed inorder to acces it's actors
+#include "HexBlock.h"
+#include "HexEdge.h"
 #include "InteractorStyleVertPick.h"
 #include "InteractorStylePatchPick.h"
+#include "InteractorStyleEdgePick.h"
 #include "ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
@@ -26,6 +28,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
+
 
 #include <vtkAxesActor.h>
 #include <vtkOrientationMarkerWidget.h>
@@ -73,6 +76,8 @@ MainWindow::MainWindow()
     styleVertPick->SelectedSphere=hexBlocker->vertSphere;
     stylePatchPick = vtkSmartPointer<InteractorStylePatchPick>::New();
     stylePatchPick->SetPatches(hexBlocker->patches);
+    styleEdgePick = vtkSmartPointer<InteractorStyleEdgePick>::New();
+    styleEdgePick->SetEdges(hexBlocker->edges);
 
     defStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
 
@@ -102,7 +107,11 @@ MainWindow::MainWindow()
     connect(toolbox->setBCsW,SIGNAL(render()),this,SLOT(slotRender()));
     connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotExportBlockMeshDict()));
 
+    connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotStartSelectEdges()));
+
     connect(toolbox,SIGNAL(setStatusText(QString)),this,SLOT(slotShowStatusText(QString)));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -268,6 +277,41 @@ void MainWindow::slotExportBlockMeshDict()
 void MainWindow::slotShowStatusText(QString text)
 {
     ui->statusbar->showMessage(text,15000);
+}
+
+void MainWindow::slotStartSelectEdges()
+{
+    std::cout << "Start selection" << std::endl;
+    renwin->GetInteractor()->SetInteractorStyle(styleEdgePick);
+    connect(styleEdgePick,SIGNAL(selectionDone(vtkIdList*)),
+            this,SLOT(slotEdgeSelectionDone()));
+
+    for(vtkIdType i=0;i<hexBlocker->edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(hexBlocker->edges->GetItemAsObject(i));
+        e->setLineWidth(15.0);
+    }
+    renwin->Render();
+}
+
+void MainWindow::slotSetNumberOnEdges()
+{
+    std::cout << "Start Selection" << std::endl;
+}
+
+void MainWindow::slotEdgeSelectionDone()
+{
+    std::cout << "Selection Done" << std::endl;
+    disconnect(styleEdgePick,SIGNAL(selectionDone(vtkIdList*)),
+               this,SLOT(slotEdgeSelectionDone()));
+
+    for(vtkIdType i=0;i<hexBlocker->edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(hexBlocker->edges->GetItemAsObject(i));
+        e->resetLineWidth();
+    }
+    renwin->GetInteractor()->SetInteractorStyle(defStyle);
+    renwin->Render();
 }
 
 void MainWindow::slotExit()

@@ -39,6 +39,8 @@ public:
 
     void setColor(double,double,double);
     void resetColor();
+    void setLineWidth(float);
+    void resetLineWidth();
     void exportVertIds(QTextStream &os);
 
 

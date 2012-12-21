@@ -37,6 +37,7 @@ class vtkOrientationMarkerWidget;
 class vtkAreaPicker;
 class InteractorStyleVertPick;
 class InteractorStylePatchPick;
+class InteractorStyleEdgePick;
 class vtkInteractorStyleTrackballCamera;
 class ToolBoxWidget;
 class vtkIdList;
@@ -55,6 +56,7 @@ public:
   vtkSmartPointer<vtkPolyData> mydata;
   vtkSmartPointer<InteractorStyleVertPick> styleVertPick;
   vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
+  vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;
 public slots:
 
   virtual void slotOpenFile();
@@ -73,7 +75,9 @@ public slots:
   void slotExportBlockMeshDict();
   void slotRender();
   void slotShowStatusText(QString text);
-
+  void slotStartSelectEdges();
+  void slotSetNumberOnEdges();
+  void slotEdgeSelectionDone();
   //virtual void slotSetBCs();
 
 

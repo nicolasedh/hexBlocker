@@ -96,6 +96,7 @@
    <addaction name="actionSelectVertices"/>
    <addaction name="actionHelp"/>
    <addaction name="actionSetBCs"/>
+   <addaction name="actionSetNumber"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpenFile">
@@ -173,6 +174,14 @@
    </property>
    <property name="toolTip">
     <string>Set BCs on patches</string>
+   </property>
+  </action>
+  <action name="actionSetNumber">
+   <property name="text">
+    <string>setNumber</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;set number of cells on edges&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
  </widget>

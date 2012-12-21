@@ -84,6 +84,17 @@ void HexEdge::resetColor()
     actor->GetProperty()->SetColor(0.8,0.9,0.8);
 }
 
+void HexEdge::setLineWidth(float width)
+{
+    actor->GetProperty()->SetLineWidth(width);
+    actor->PickableOn();
+}
+
+void HexEdge::resetLineWidth()
+{
+    actor->GetProperty()->SetLineWidth(1.0);
+}
+
 void HexEdge::exportVertIds(QTextStream &os)
 {
     os << "(" << vertIds->GetId(0) << " "
