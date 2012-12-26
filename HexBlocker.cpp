@@ -165,6 +165,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
         renderer->AddActor(e->actor);
     }
 
+    this->resetBounds();
     renderer->AddActor(newHex->hexActor);
     renderer->Render();
 
@@ -173,6 +174,8 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
 
 void HexBlocker::resetBounds()
 {
+
+
     double minDiag=1e6;
     for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
     {
@@ -187,19 +190,42 @@ void HexBlocker::resetBounds()
         fmin(minDiag,diag);
 
     }
-    //Remember to calculate radius
+
+    double vertRadius=minDiag*0.02;
+    double edgeRadius=vertRadius*0.4;
+    double locAxesRadius=edgeRadius*4;
+
+    vertSphere->SetRadius(vertRadius);
+    //set radius on edges
+    for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        e->setRadius(edgeRadius);
+        e->resetColor();
+    }
+
+    //set radius on local axes
+    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+    {
+        HexBlock * hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        hb->setAxesRadius(locAxesRadius);
+    }
+
     double bounds[6];
     renderer->ComputeVisiblePropBounds(bounds);
-
-    vertSphere->SetRadius(minDiag*0.02);
     renderer->ResetCamera(bounds);
     renderer->Modified();
 
+
 }
-void HexBlocker::resetPatchesColor()
+void HexBlocker::resetColors()
 {
+    //patches
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
         hexPatch::SafeDownCast(patches->GetItemAsObject(i))->resetColor();
+    //edges
+    for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
+        HexEdge::SafeDownCast(edges->GetItemAsObject(i))->resetColor();
 }
 
 void HexBlocker::PrintHexBlocks()

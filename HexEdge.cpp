@@ -11,7 +11,7 @@
 #include <vtkActor.h>
 #include <vtkProperty.h>
 #include <vtkMath.h>
-
+#include <vtkTubeFilter.h>
 
 vtkStandardNewMacro(HexEdge);
 
@@ -23,6 +23,8 @@ HexEdge::HexEdge()
     line = vtkSmartPointer<vtkLine>::New();
     lines = vtkSmartPointer<vtkCellArray>::New();
     data = vtkSmartPointer<vtkPolyData>::New();
+    tube = vtkSmartPointer<vtkTubeFilter>::New();
+    tube->SetNumberOfSides(24);
     mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     actor  = vtkSmartPointer<vtkActor>::New();
 
@@ -69,7 +71,10 @@ void HexEdge::init(vtkIdType p0,
 
     data->SetPoints(globalVertices);
     data->SetLines(lines);
-    mapper->SetInput(data);
+
+    tube->SetInput(data);
+    tube->SetRadius(0.05);
+    mapper->SetInputConnection(tube->GetOutputPort());
 
     actor->SetMapper(mapper);
 
@@ -86,15 +91,9 @@ void HexEdge::resetColor()
     actor->GetProperty()->SetColor(0.8,0.9,0.8);
 }
 
-void HexEdge::setLineWidth(float width)
+void HexEdge::setRadius(double rad)
 {
-    actor->GetProperty()->SetLineWidth(width);
-
-}
-
-void HexEdge::resetLineWidth()
-{
-    actor->GetProperty()->SetLineWidth(1.0);
+    tube->SetRadius(rad);
 }
 
 void HexEdge::exportVertIds(QTextStream &os)

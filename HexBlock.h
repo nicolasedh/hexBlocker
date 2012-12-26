@@ -16,6 +16,7 @@ class vtkCollection;
 class vtkLine;
 class vtkMapper;
 class vtkActor;
+class vtkTubeFilter;
 
 
 
@@ -48,6 +49,8 @@ public:
     vtkSmartPointer<vtkIdList> getParallelEdges(vtkIdType edgeId);
     void getNumberOfCells(int nCells[3]);
 
+    void setAxesRadius(double rad);
+
     //DATA
     vtkSmartPointer<vtkCollection> globalPatches;
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices
@@ -65,6 +68,7 @@ private:
     //DATA
     vtkSmartPointer<vtkMapper> hexMapper;
     vtkSmartPointer<vtkPoints> hexVertices;
+    vtkSmartPointer<vtkTubeFilter> axesTubes;
 
 };
 

@@ -17,6 +17,7 @@
 #include <vtkCellData.h>
 #include <vtkLine.h>
 #include <vtkProperty.h>
+#include <vtkTubeFilter.h>
 
 vtkStandardNewMacro(HexBlock);
 
@@ -26,6 +27,7 @@ HexBlock::HexBlock()
     vertIds = vtkSmartPointer<vtkIdList>::New();
     hexVertices = vtkSmartPointer<vtkPoints>::New();
     hexData = vtkSmartPointer<vtkPolyData>::New();
+    axesTubes = vtkSmartPointer<vtkTubeFilter>::New();
     globalPatches = vtkSmartPointer<vtkCollection>::New();
     globalEdges = vtkSmartPointer<vtkCollection>::New();
     hexActor = vtkSmartPointer<vtkActor>::New();
@@ -253,21 +255,22 @@ void HexBlock::drawLocalaxes()
 
     axesData->GetCellData()->SetScalars(colors);
 
+    axesTubes->SetInput(axesData);
+    axesTubes->SetNumberOfSides(24);
+    axesTubes->SetCapping(1);
+
     // Visualize
     vtkSmartPointer<vtkPolyDataMapper> axesMapper =
       vtkSmartPointer<vtkPolyDataMapper>::New();
-  #if VTK_MAJOR_VERSION <= 5
-    axesMapper->SetInput(axesData);
-  #else
-    axesMapper->SetInputData(axesData);
-  #endif
+    axesMapper->SetInputConnection(axesTubes->GetOutputPort());
+
 
     hexActor->SetMapper(axesMapper);
     double x[3];
     globalVertices->GetPoint(vertIds->GetId(0),x);
     hexActor->SetOrigin(x);
     hexActor->SetScale(0.4);
-    hexActor->GetProperty()->SetLineWidth(3);
+    //hexActor->GetProperty()->SetLineWidth(3);
     hexActor->SetPickable(false);
 }
 
@@ -368,4 +371,9 @@ void HexBlock::getNumberOfCells(int nCells[3])
     nCells[1] = e->nCells;
     e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(2)));
     nCells[2] = e->nCells;
+}
+
+void HexBlock::setAxesRadius(double rad)
+{
+    axesTubes->SetRadius(rad);
 }

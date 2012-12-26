@@ -12,6 +12,7 @@ class vtkActor;
 class vtkLine;
 class vtkCellArray;
 class vtkPolyData;
+class vtkTubeFilter;
 
 
 class HexEdge : public vtkObject
@@ -39,8 +40,7 @@ public:
 
     void setColor(double,double,double);
     void resetColor();
-    void setLineWidth(float);
-    void resetLineWidth();
+    void setRadius(double rad);
     void exportVertIds(QTextStream &os);
 
 
@@ -48,6 +48,7 @@ public:
     vtkSmartPointer<vtkIdList> vertIds;
     vtkSmartPointer<vtkPoints> globalVertices;
     vtkSmartPointer<vtkPolyData> data;
+    vtkSmartPointer<vtkTubeFilter> tube;
     vtkSmartPointer<vtkPolyDataMapper> mapper;
     vtkSmartPointer<vtkActor> actor;
     int nCells; // number of cells on edge

@@ -222,7 +222,7 @@ void MainWindow::slotResetInteractor()
 {
     styleVertPick->SelectedActor->SetVisibility(0);
     styleVertPick->clearSelection();
-    hexBlocker->resetPatchesColor();
+    hexBlocker->resetColors();
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
 
@@ -312,6 +312,7 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
     else
     {
         ui->statusbar->showMessage(QString("Cancelled or bad integer"),3000);
+        hexBlocker->resetColors();
     }
 
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
