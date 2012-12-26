@@ -253,7 +253,8 @@ void HexBlocker::PrintHexBlocks()
         HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
         std::cout << "\t e" << i <<": ("
                   << e->vertIds->GetId(0) << ", "
-                  << e->vertIds->GetId(1) << ")"
+                  << e->vertIds->GetId(1) << ") nCells "
+                  << e->nCells
                   << std::endl;
     }
 
@@ -410,4 +411,79 @@ vtkIdType HexBlocker::isPatchInGlobalList(vtkSmartPointer<hexPatch> p)
     }
 
     return -1;
+}
+
+
+
+void HexBlocker::showParallelEdges(vtkIdType edgeId)
+{
+    vtkSmartPointer<vtkIdList> allParallelEdges =
+            vtkSmartPointer<vtkIdList>::New();
+
+    addParallelEdges(allParallelEdges,edgeId);
+
+
+    //color the selectedEdges
+    for(vtkIdType i=0;i<allParallelEdges->GetNumberOfIds();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(
+                    edges->GetItemAsObject(allParallelEdges->GetId(i)));
+        e->setColor(0.0,8.0,0.0);
+    }
+}
+
+void HexBlocker::addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,
+                                  vtkIdType edgeId)
+{
+//    std::cout << "running on edge " << edgeId << std::endl;
+    vtkIdType numEdges = allParallelEdges->GetNumberOfIds();
+
+    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+    {
+        vtkSmartPointer<vtkIdList> parallelOnBlock =
+                vtkSmartPointer<vtkIdList>::New();
+        HexBlock * b = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        parallelOnBlock = b->getParallelEdges(edgeId);
+
+        HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(edgeId));
+//        std::cout << " block num: " << i << ", numPar: "
+//                  << parallelOnBlock->GetNumberOfIds()
+//                  <<" to edge " << edgeId
+//                 << "(" << e->vertIds->GetId(0) << " "
+//                 << e->vertIds->GetId(1) <<")"
+//                 << std::endl;
+        //insert the new edges if unique
+        for(vtkIdType j=0;j<parallelOnBlock->GetNumberOfIds();j++)
+        {
+//            std::cout << "\tinserting edge " << parallelOnBlock->GetId(j)<<std::endl;
+            allParallelEdges->InsertUniqueId(parallelOnBlock->GetId(j));
+        }
+    }
+
+    //if we added more edges we have to redo for those edges.
+    vtkIdType newNumEdges = allParallelEdges->GetNumberOfIds();
+    for(vtkIdType i=numEdges;i<newNumEdges;i++)
+    {
+//        std::cout << "\trerunning on " << i <<", " << allParallelEdges->GetId(i) <<std::endl;
+        addParallelEdges(allParallelEdges,allParallelEdges->GetId(i));
+    }
+}
+
+
+void HexBlocker::setNumberOnParallelEdges(vtkIdType edgeId, int nCells)
+{
+    vtkSmartPointer<vtkIdList> allParallelEdges =
+            vtkSmartPointer<vtkIdList>::New();
+
+    addParallelEdges(allParallelEdges,edgeId);
+
+
+    //set number on selected Edges
+    for(vtkIdType i=0;i<allParallelEdges->GetNumberOfIds();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(
+                    edges->GetItemAsObject(allParallelEdges->GetId(i)));
+        e->resetColor();
+        e->nCells=nCells;
+    }
 }

@@ -15,7 +15,7 @@ vtkStandardNewMacro(InteractorStyleEdgePick);
 
 InteractorStyleEdgePick::InteractorStyleEdgePick() : QObject()
 {
-    selectedEdges = vtkIdList::New();
+//    selectedEdges = vtkIdList::New();
     globalEdges = vtkSmartPointer<vtkCollection>::New();
 
 }
@@ -71,47 +71,46 @@ void InteractorStyleEdgePick::OnLeftButtonDown()
 
     vtkIdType clickedEdge = findClickedEdge(x,y);
 
-    //only insert if not already in list and only if we clicked an edge
-    if(selectedEdges->IsId(clickedEdge) == -1 && clickedEdge > -1)
+    //return only if and edge was clicked
+    if(clickedEdge > -1)
     {
-        selectedEdges->InsertNextId(clickedEdge);
-
         HexEdge * edge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(clickedEdge));
         edge->setColor(1.0,0,0);
         this->GetInteractor()->GetRenderWindow()->Render();
+        emit selectionDone(clickedEdge);
     }
 }
 
 void InteractorStyleEdgePick::OnRightButtonUp()
 {
-        int x = this->Interactor->GetEventPosition()[0];
-        int y = this->Interactor->GetEventPosition()[1];
-        vtkIdType clickedEdge = findClickedEdge(x,y);
+//        int x = this->Interactor->GetEventPosition()[0];
+//        int y = this->Interactor->GetEventPosition()[1];
+//        vtkIdType clickedEdge = findClickedEdge(x,y);
 
-        if(selectedEdges->IsId(clickedEdge)>-1){
+//        if(selectedEdges->IsId(clickedEdge)>-1){
 
-            selectedEdges->DeleteId(clickedEdge);
-            HexEdge *edge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(clickedEdge));
-            edge->resetColor();
-        }
-        this->GetInteractor()->GetRenderWindow()->Render();
+//            selectedEdges->DeleteId(clickedEdge);
+//            HexEdge *edge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(clickedEdge));
+//            edge->resetColor();
+//        }
+//        this->GetInteractor()->GetRenderWindow()->Render();
 }
 
 void InteractorStyleEdgePick::OnMiddleButtonUp()
 {
-    if(selectedEdges->GetNumberOfIds()>0)
-    {
-//        std::cout<< "emit signal here" << std::endl;
-        for(vtkIdType i = 0; i<selectedEdges->GetNumberOfIds();i++)
-        {
-            HexEdge * edge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(selectedEdges->GetId(i)));
-            edge->resetColor();
-        }
-        this->GetInteractor()->GetRenderWindow()->Render();
-        emit selectionDone(selectedEdges);
-        selectedEdges->Initialize();
-    }
-
+//    if(selectedEdges->GetNumberOfIds()>0)
+//    {
+////        std::cout<< "emit signal here" << std::endl;
+//        for(vtkIdType i = 0; i<selectedEdges->GetNumberOfIds();i++)
+//        {
+//            HexEdge * edge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(selectedEdges->GetId(i)));
+//            edge->resetColor();
+//        }
+//        this->GetInteractor()->GetRenderWindow()->Render();
+//        emit selectionDone(selectedEdges);
+//        selectedEdges->Initialize();
+//    }
+    emit selectionDone(vtkIdType(-1));
 
 }
 

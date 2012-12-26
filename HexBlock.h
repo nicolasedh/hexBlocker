@@ -46,6 +46,9 @@ public:
 
     vtkIdType getPatchInternalId(vtkSmartPointer<hexPatch> otherP);
 
+    vtkSmartPointer<vtkIdList> getParallelEdges(vtkIdType edgeId);
+
+
     //DATA
     vtkSmartPointer<vtkCollection> globalPatches;
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices

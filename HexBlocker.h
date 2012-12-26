@@ -47,6 +47,8 @@ public:
     void exportVertices(QTextStream &os);
     void exportBlocks(QTextStream &os);
     void exportBCs(QTextStream &os);
+    void showParallelEdges(vtkIdType edgeId); // shows all parallel edges
+    void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
 
     //DATA
     vtkSmartPointer<vtkPoints> vertices;
@@ -67,7 +69,10 @@ public:
     vtkSmartPointer<vtkActor2D> vertLabelActor;
     vtkSmartPointer<vtkRenderer> renderer;
 
+private:
 
+    //Functions
+    void addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,vtkIdType edgeId);
 };
 
 

@@ -25,6 +25,8 @@ HexEdge::HexEdge()
     data = vtkSmartPointer<vtkPolyData>::New();
     mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     actor  = vtkSmartPointer<vtkActor>::New();
+
+    nCells = 10; //default value
 }
 
 HexEdge::~HexEdge()
@@ -87,7 +89,7 @@ void HexEdge::resetColor()
 void HexEdge::setLineWidth(float width)
 {
     actor->GetProperty()->SetLineWidth(width);
-    actor->PickableOn();
+
 }
 
 void HexEdge::resetLineWidth()

@@ -50,6 +50,7 @@ public:
     vtkSmartPointer<vtkPolyData> data;
     vtkSmartPointer<vtkPolyDataMapper> mapper;
     vtkSmartPointer<vtkActor> actor;
+    int nCells; // number of cells on edge
 
 private:
     vtkSmartPointer<vtkLine> line;

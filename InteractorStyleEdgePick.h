@@ -6,7 +6,7 @@
 #include <QObject>
 
 class vtkCollection;
-class vtkIdList;
+//class vtkIdList;
 class HexBC;
 
 class InteractorStyleEdgePick : public QObject, public vtkInteractorStyleTrackballActor
@@ -37,11 +37,10 @@ public:
 
     void OnChar(); //override from superclass
 
-    vtkIdList *selectedEdges;
     vtkSmartPointer<vtkCollection> globalEdges;
 
 signals:
-    void selectionDone(vtkIdList *selectedEdges);
+    void selectionDone(vtkIdType selectedEdge);
 
 private:
 };

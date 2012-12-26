@@ -283,35 +283,48 @@ void MainWindow::slotStartSelectEdges()
 {
     std::cout << "Start selection" << std::endl;
     renwin->GetInteractor()->SetInteractorStyle(styleEdgePick);
-    connect(styleEdgePick,SIGNAL(selectionDone(vtkIdList*)),
-            this,SLOT(slotEdgeSelectionDone()));
+    connect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
+            this,SLOT(slotEdgeSelectionDone(vtkIdType)));
 
     for(vtkIdType i=0;i<hexBlocker->edges->GetNumberOfItems();i++)
     {
         HexEdge *e = HexEdge::SafeDownCast(hexBlocker->edges->GetItemAsObject(i));
-        e->setLineWidth(15.0);
+        e->setLineWidth(2.0);
     }
     renwin->Render();
 }
 
-void MainWindow::slotSetNumberOnEdges()
-{
-    std::cout << "Start Selection" << std::endl;
-}
 
-void MainWindow::slotEdgeSelectionDone()
+
+void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
 {
     std::cout << "Selection Done" << std::endl;
-    disconnect(styleEdgePick,SIGNAL(selectionDone(vtkIdList*)),
-               this,SLOT(slotEdgeSelectionDone()));
+    disconnect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
+               this,SLOT(slotEdgeSelectionDone(vtkIdType)));
 
-    for(vtkIdType i=0;i<hexBlocker->edges->GetNumberOfItems();i++)
+    hexBlocker->showParallelEdges(edgeId);
+
+    QString title = tr("Number");
+    QString label = tr("Set the number of cells of this and parallel edges.");
+    bool ok;
+    int nCells = QInputDialog::getInt(this,title,label,10,1,1e12,1,&ok);
+    if(ok && (nCells >= 1) )
     {
-        HexEdge *e = HexEdge::SafeDownCast(hexBlocker->edges->GetItemAsObject(i));
-        e->resetLineWidth();
+        hexBlocker->setNumberOnParallelEdges(edgeId,nCells);
     }
+    else
+    {
+        ui->statusbar->showMessage(QString("Cancelled or bad integer"),30000);
+    }
+
+//    for(vtkIdType i=0;i<hexBlocker->edges->GetNumberOfItems();i++)
+//    {
+//        HexEdge *e = HexEdge::SafeDownCast(hexBlocker->edges->GetItemAsObject(i));
+//        e->resetLineWidth();
+//    }
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
+
 }
 
 void MainWindow::slotExit()

@@ -303,7 +303,7 @@ void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
         HexEdge *e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(i));
         if(newEdge->equals(e))
         {
-            std::cout<< " edge already exists!" << std::endl;
+//            std::cout<< " edge already exists!" << std::endl;
             existsInGlobal = true;
             posInGlobal=i;
         }
@@ -318,4 +318,44 @@ void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
     {
         edgeIds->InsertNextId(posInGlobal);
     }
+}
+
+vtkSmartPointer<vtkIdList> HexBlock::getParallelEdges(vtkIdType edgeId)
+{
+    vtkSmartPointer<vtkIdList> parallelEdges =
+            vtkSmartPointer<vtkIdList>::New();
+    // check if we've got a positive edgeId as arg
+    if(edgeId<0)
+        return parallelEdges;
+
+
+    HexEdge *edge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeId));
+
+    //do we have the edge?
+    bool haveEdge = false;
+    vtkIdType internalEdgeId=-1;
+    for( vtkIdType i = 0; i<edgeIds->GetNumberOfIds();i++)
+    {
+        HexEdge * e = HexEdge::SafeDownCast(
+                    globalEdges->GetItemAsObject(edgeIds->GetId(i)));
+        if(edge->equals(e))
+        {
+            haveEdge=true;
+            internalEdgeId=i;
+        }
+    }
+
+    if(haveEdge)
+    {
+        // edges 0-3 are parallel and so are 4-7, 8-11.
+        // the list of parrallel are alwas edgeId -mod(edgeId) + 0 1 2 3
+        vtkIdType mainEdgeId = internalEdgeId - internalEdgeId%4;
+
+        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId));
+        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId+1));
+        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId+2));
+        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId+3));
+    }
+
+    return parallelEdges;
 }
