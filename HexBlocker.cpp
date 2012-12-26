@@ -289,7 +289,11 @@ void HexBlocker::exportBlocks(QTextStream &os)
                 os << ") ";
         }
 
-        os << "(10 10 10) simpleGrading (1 1 1) " << endl;
+        int nCells[3];
+        hb->getNumberOfCells(nCells);
+        os << "("
+           << nCells[0] <<" "<< nCells[1]<<" " << nCells[2]
+           << ") simpleGrading (1 1 1) " << endl;
 
     }
     os << endl << ");" << endl;

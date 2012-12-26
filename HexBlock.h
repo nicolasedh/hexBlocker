@@ -45,9 +45,8 @@ public:
     void init(vtkSmartPointer<hexPatch> p, double dist, vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<vtkCollection> edges);
 
     vtkIdType getPatchInternalId(vtkSmartPointer<hexPatch> otherP);
-
     vtkSmartPointer<vtkIdList> getParallelEdges(vtkIdType edgeId);
-
+    void getNumberOfCells(int nCells[3]);
 
     //DATA
     vtkSmartPointer<vtkCollection> globalPatches;
