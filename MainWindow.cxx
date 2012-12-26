@@ -8,7 +8,6 @@
 #include "MainWindow.h"
 #include "HexBlocker.h"
 #include "HexBlock.h"
-#include "HexEdge.h"
 #include "InteractorStyleVertPick.h"
 #include "InteractorStylePatchPick.h"
 #include "InteractorStyleEdgePick.h"
@@ -286,11 +285,6 @@ void MainWindow::slotStartSelectEdges()
     connect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
             this,SLOT(slotEdgeSelectionDone(vtkIdType)));
 
-    for(vtkIdType i=0;i<hexBlocker->edges->GetNumberOfItems();i++)
-    {
-        HexEdge *e = HexEdge::SafeDownCast(hexBlocker->edges->GetItemAsObject(i));
-        e->setLineWidth(2.0);
-    }
     renwin->Render();
 }
 
@@ -302,12 +296,12 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
     disconnect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
                this,SLOT(slotEdgeSelectionDone(vtkIdType)));
 
-    hexBlocker->showParallelEdges(edgeId);
+    int prevNCells=hexBlocker->showParallelEdges(edgeId);
 
     QString title = tr("Number");
     QString label = tr("Set the number of cells of this and parallel edges.");
     bool ok;
-    int nCells = QInputDialog::getInt(this,title,label,10,1,1e12,1,&ok);
+    int nCells = QInputDialog::getInt(this,title,label,prevNCells,1,2147483647,1,&ok);
     if(ok && (nCells >= 1) )
     {
         hexBlocker->setNumberOnParallelEdges(edgeId,nCells);
@@ -317,11 +311,6 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
         ui->statusbar->showMessage(QString("Cancelled or bad integer"),30000);
     }
 
-//    for(vtkIdType i=0;i<hexBlocker->edges->GetNumberOfItems();i++)
-//    {
-//        HexEdge *e = HexEdge::SafeDownCast(hexBlocker->edges->GetItemAsObject(i));
-//        e->resetLineWidth();
-//    }
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
 

@@ -415,21 +415,25 @@ vtkIdType HexBlocker::isPatchInGlobalList(vtkSmartPointer<hexPatch> p)
 
 
 
-void HexBlocker::showParallelEdges(vtkIdType edgeId)
+int HexBlocker::showParallelEdges(vtkIdType edgeId)
 {
     vtkSmartPointer<vtkIdList> allParallelEdges =
             vtkSmartPointer<vtkIdList>::New();
 
     addParallelEdges(allParallelEdges,edgeId);
 
-
+    int nCells=-1;
     //color the selectedEdges
     for(vtkIdType i=0;i<allParallelEdges->GetNumberOfIds();i++)
     {
         HexEdge *e = HexEdge::SafeDownCast(
                     edges->GetItemAsObject(allParallelEdges->GetId(i)));
         e->setColor(0.0,8.0,0.0);
+        if(i==0)
+            nCells=e->nCells;
     }
+
+    return nCells;
 }
 
 void HexBlocker::addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,

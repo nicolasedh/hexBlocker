@@ -47,7 +47,7 @@ public:
     void exportVertices(QTextStream &os);
     void exportBlocks(QTextStream &os);
     void exportBCs(QTextStream &os);
-    void showParallelEdges(vtkIdType edgeId); // shows all parallel edges
+    int showParallelEdges(vtkIdType edgeId); // shows all parallel edges
     void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
 
     //DATA
