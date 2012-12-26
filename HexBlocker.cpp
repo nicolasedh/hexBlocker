@@ -158,7 +158,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     hexBlocks->AddItem(newHex);
     vertices->Modified();
 
-    //add edge actors renderer, but not already added ones.
+    //add edge actors to renderer, but not already added ones.
     for (vtkIdType i =numEdges;i<edges->GetNumberOfItems();i++)
     {
         HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));

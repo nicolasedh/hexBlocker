@@ -280,7 +280,9 @@ void MainWindow::slotShowStatusText(QString text)
 
 void MainWindow::slotStartSelectEdges()
 {
-    std::cout << "Start selection" << std::endl;
+    toolbox->setCurrentIndex(0); // show empty page
+    ui->statusbar->showMessage(tr("Select an edge, middle button to cancel"),5000);
+
     renwin->GetInteractor()->SetInteractorStyle(styleEdgePick);
     connect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
             this,SLOT(slotEdgeSelectionDone(vtkIdType)));
@@ -292,7 +294,7 @@ void MainWindow::slotStartSelectEdges()
 
 void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
 {
-    std::cout << "Selection Done" << std::endl;
+
     disconnect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
                this,SLOT(slotEdgeSelectionDone(vtkIdType)));
 
@@ -305,10 +307,11 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
     if(ok && (nCells >= 1) )
     {
         hexBlocker->setNumberOnParallelEdges(edgeId,nCells);
+        ui->statusbar->showMessage(QString("Number of Cells has been set"),3000);
     }
     else
     {
-        ui->statusbar->showMessage(QString("Cancelled or bad integer"),30000);
+        ui->statusbar->showMessage(QString("Cancelled or bad integer"),3000);
     }
 
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
