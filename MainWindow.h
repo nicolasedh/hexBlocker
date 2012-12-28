@@ -77,6 +77,8 @@ public slots:
   void slotShowStatusText(QString text);
   void slotStartSelectEdges();
   void slotEdgeSelectionDone(vtkIdType edgeId);
+
+  void slotReadBlockMeshDict();
   //virtual void slotSetBCs();
 
 

@@ -83,6 +83,8 @@ HexBlocker::~HexBlocker()
 {
 
 }
+
+//obsolete
 void HexBlocker::createHexBlock()
 {
     int numBlocks= hexBlocks->GetNumberOfItems();
@@ -92,6 +94,7 @@ void HexBlocker::createHexBlock()
 
     createHexBlock(c0,c1);
 
+    //add patches to renderer or remove this function
 
 
 }
@@ -99,20 +102,16 @@ void HexBlocker::createHexBlock()
 void HexBlocker::createHexBlock(double c0[3], double c1[3])
 {
     vtkIdType numEdges = edges->GetNumberOfItems();
+    vtkIdType numPatches= patches->GetNumberOfItems();
     vtkSmartPointer<HexBlock> hex=
             vtkSmartPointer<HexBlock>::New();
 
     int numBlocks= hexBlocks->GetNumberOfItems();
 
 
-    hex->init(c0,c1,vertices,edges);
+    hex->init(c0,c1,vertices,edges, patches);
 
-    initPatches(hex);
     hexBlocks->AddItem(hex);
-    renderer->AddActor(hex->hexActor);
-    vertices->Modified();
-    //renderer->AddActor(hex->hexActor);
-    HexBlocker::resetBounds();
 
     //add edge actors renderer, but not already added ones.
     for (vtkIdType i =numEdges;i<edges->GetNumberOfItems();i++)
@@ -121,6 +120,16 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
         renderer->AddActor(e->actor);
     }
 
+    //add patch actors to renderer, but not already added ones.
+    for(vtkIdType i=numPatches;i<patches->GetNumberOfItems();i++)
+    {
+        hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        renderer->AddActor(p->actor);
+    }
+
+    renderer->AddActor(hex->hexActor);
+    vertices->Modified();
+    resetBounds();
 
     renderer->Render();
 }
@@ -134,6 +143,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     }
 
     vtkIdType numEdges = edges->GetNumberOfItems();
+    vtkIdType numPatches = patches->GetNumberOfItems();
 
     vtkSmartPointer<hexPatch> p =
             hexPatch::SafeDownCast(
@@ -152,9 +162,8 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
 
     vtkSmartPointer<HexBlock> newHex=
             vtkSmartPointer<HexBlock>::New();
-    newHex->init(p,dist,vertices,edges);
+    newHex->init(p,dist,vertices,edges,patches);
 
-    initPatches(newHex);
     hexBlocks->AddItem(newHex);
     vertices->Modified();
 
@@ -163,6 +172,13 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     {
         HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
         renderer->AddActor(e->actor);
+    }
+
+    //add patch actors to renderer, but not already added ones.
+    for(vtkIdType i=numPatches;i<patches->GetNumberOfItems();i++)
+    {
+        hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        renderer->AddActor(p->actor);
     }
 
     this->resetBounds();
@@ -351,61 +367,6 @@ void HexBlocker::exportBCs(QTextStream &os)
     os << ");" <<endl;
 }
 
-void HexBlocker::initPatches(vtkSmartPointer<HexBlock> hex)
-{
-    //insert patches like a dice
-    //first and last patches define the hexblock.
-    //order of points according to OF:
-    //Normal is out of domain and according to right hand rule
-    //when cycling vertices in patch
-    //(dice #1)
-    initPatch(hex,(int[4]){0,3,2,1});
-    //(dice #2)
-    initPatch(hex,(int[4]){0,1,5,4});
-    //(dice #3)
-    initPatch(hex,(int[4]){0,4,7,3});
-    //(dice #4)
-    initPatch(hex,(int[4]){1,2,6,5});
-    //(dice #5)
-    initPatch(hex,(int[4]){3,7,6,2});
-    //(dice #6)
-    initPatch(hex,(int[4]){4,5,6,7});
-
-    patches->Modified();
-}
-
-void HexBlocker::initPatch(vtkSmartPointer<HexBlock> hex,int ids[4])
-{
-    vtkSmartPointer<hexPatch> patch = vtkSmartPointer<hexPatch>::New();
-    vtkSmartPointer<vtkIdList> vlist = vtkSmartPointer<vtkIdList>::New();
-
-    vlist->InsertId(0,hex->vertIds->GetId(ids[0]));
-    vlist->InsertId(1,hex->vertIds->GetId(ids[1]));
-    vlist->InsertId(2,hex->vertIds->GetId(ids[2]));
-    vlist->InsertId(3,hex->vertIds->GetId(ids[3]));
-
-    patch->init(vlist,vertices,hex);
-
-    vtkIdType pId=isPatchInGlobalList(patch);
-    if(pId < 0) //i.e. it doesn't exist in global list
-    {
-        renderer->AddActor(patch->actor);
-        //add to global list
-        patches->AddItem(patch);
-        hex->globalPatches->AddItem(patch);
-    }
-    else
-    {
-        //patch already exist, only add reference to
-        //the existing one, needed by extrude.
-        //std::cout << "item is present" << std::endl;
-        vtkSmartPointer<hexPatch> existingPatch =
-                hexPatch::SafeDownCast(patches->GetItemAsObject(pId));
-        existingPatch->setHex(hex);
-        hex->globalPatches->AddItem(existingPatch);
-    }
-}
-
 
 void HexBlocker::moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
 {
@@ -426,22 +387,7 @@ void HexBlocker::moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
 
 }
 
-vtkIdType HexBlocker::isPatchInGlobalList(vtkSmartPointer<hexPatch> p)
-{
-    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
-    {
-        //std::cout << "checking with patch: " << i << std::endl;
-        vtkSmartPointer<hexPatch> op =
-                hexPatch::SafeDownCast(patches->GetItemAsObject(i) );
-        if(op->operator ==(p))
-        {
-            //std::cout << "Patch" << i <<" already exist" << std::endl;
-            return i;
-        }
-    }
 
-    return -1;
-}
 
 
 

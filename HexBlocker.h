@@ -38,10 +38,8 @@ public:
     void extrudePatch(vtkIdList *selectedPatches, double dist);
     void resetBounds();
     void PrintHexBlocks();
-    void initPatches(vtkSmartPointer<HexBlock> hex);
-    void initPatch(vtkSmartPointer<HexBlock> hex, int ids[4]);
     void moveVertices(vtkSmartPointer<vtkIdList> ids, double dist[]);
-    vtkIdType isPatchInGlobalList(vtkSmartPointer<hexPatch> p);
+
 
     void resetColors();
     void exportVertices(QTextStream &os);

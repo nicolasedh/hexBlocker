@@ -48,7 +48,7 @@ void hexPatch::orderVertices(){
     //use vtkMath to calc normal and crossproducts
 }
 
-bool hexPatch::operator==(vtkSmartPointer<hexPatch> other)
+bool hexPatch::equals(vtkSmartPointer<hexPatch> other)
 {
     bool same=true;
     bool existInOther=false;

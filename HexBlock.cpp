@@ -25,14 +25,15 @@ vtkStandardNewMacro(HexBlock);
 HexBlock::HexBlock()
 {
     vertIds = vtkSmartPointer<vtkIdList>::New();
+    edgeIds  = vtkSmartPointer<vtkIdList>::New();
+    patchIds = vtkSmartPointer<vtkIdList>::New();
     hexVertices = vtkSmartPointer<vtkPoints>::New();
     hexData = vtkSmartPointer<vtkPolyData>::New();
     axesTubes = vtkSmartPointer<vtkTubeFilter>::New();
-    globalPatches = vtkSmartPointer<vtkCollection>::New();
     globalEdges = vtkSmartPointer<vtkCollection>::New();
-    hexActor = vtkSmartPointer<vtkActor>::New();
-    edgeIds  = vtkSmartPointer<vtkIdList>::New();
+    globalPatches = vtkSmartPointer<vtkCollection>::New();
 
+    hexActor = vtkSmartPointer<vtkActor>::New();
 }
 
 HexBlock::~HexBlock()
@@ -42,7 +43,8 @@ HexBlock::~HexBlock()
 
 void HexBlock::init(double corner0[3], double corner1[3],
                     vtkSmartPointer<vtkPoints> verts,
-                    vtkSmartPointer<vtkCollection> edges)
+                    vtkSmartPointer<vtkCollection> edges,
+                    vtkSmartPointer<vtkCollection> patches)
 {
 
 
@@ -55,6 +57,7 @@ void HexBlock::init(double corner0[3], double corner1[3],
 
     globalVertices = verts;
     globalEdges = edges;
+    globalPatches = patches;
 
     vtkIdType j = globalVertices->GetNumberOfPoints();
 
@@ -74,6 +77,7 @@ void HexBlock::init(double corner0[3], double corner1[3],
         vertIds->SetId(i,i+j);
 
     initEdges();
+    initPatches();
     drawLocalaxes();
 }
 
@@ -82,11 +86,13 @@ void HexBlock::init(double corner0[3], double corner1[3],
 void HexBlock::init(vtkSmartPointer<hexPatch> p,
                     double dist,
                     vtkSmartPointer<vtkPoints> verts,
-                    vtkSmartPointer<vtkCollection> edges)
+                    vtkSmartPointer<vtkCollection> edges,
+                    vtkSmartPointer<vtkCollection> patches)
 {
     vtkSmartPointer<HexBlock> fromHex = p->getPrimaryHexBlock();
     globalVertices=verts;
     globalEdges = edges;
+    globalPatches = patches;
 
     // number of vertices before extrude
     vtkIdType nGv=globalVertices->GetNumberOfPoints();
@@ -179,37 +185,27 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
     }
 
     initEdges();
-
+    initPatches();
     drawLocalaxes();
-/*
-    //vIds are old ids.
-    //insert old ids
-    for (vtkIdType i =0;i<4;i++)
-    {
-        //3-i; 3,2,1,0
-        vertIds->InsertNextId(vIds->GetId(i));
-    }
 
-    double coords[3];
-    for (vtkIdType i=4;i<8;i++)
-    {
-        globalVertices->GetPoint(vertIds->GetId(i-4),coords);
-        vertIds->InsertNextId(globalVertices->GetNumberOfPoints());
-        globalVertices->InsertNextPoint(coords[0]+dist[0],coords[1]+dist[1],coords[2]+dist[2]);
-    }
-*/
 }
 
 vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<hexPatch> otherP)
 {
-    vtkIdType patchId=-1;
-    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
+    vtkIdType pId=-1;
+    for(vtkIdType i=0;i<patchIds->GetNumberOfIds();i++)
     {
-        vtkSmartPointer<hexPatch> p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
-        if(p==otherP)
-            patchId=i;
+        hexPatch * p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
+        if(p->equals(otherP))
+            pId=i;
     }
-    return patchId;
+//    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
+//    {
+//        vtkSmartPointer<hexPatch> p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
+//        if(p->equals(otherP))
+//            patchId=i;
+//    }
+    return pId;
 }
 
 void HexBlock::PrintSelf(ostream &os, vtkIndent indent)
@@ -323,6 +319,65 @@ void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
     }
 }
 
+void HexBlock::initPatches()
+{
+    //insert patches like a dice
+    //first and last patches define the hexblock.
+    //order of points according to OF:
+    //Normal is out of domain and according to right hand rule
+    //when cycling vertices in patch
+    //(dice #1)
+    initPatch((int[4]){0,3,2,1});
+    //(dice #2)
+    initPatch((int[4]){0,1,5,4});
+    //(dice #3)
+    initPatch((int[4]){0,4,7,3});
+    //(dice #4)
+    initPatch((int[4]){1,2,6,5});
+    //(dice #5)
+    initPatch((int[4]){3,7,6,2});
+    //(dice #6)
+    initPatch((int[4]){4,5,6,7});
+
+    globalPatches->Modified();
+}
+
+void HexBlock::initPatch(int ids[])
+{
+    vtkSmartPointer<hexPatch> patch = vtkSmartPointer<hexPatch>::New();
+
+    vtkSmartPointer<vtkIdList> vlist = //patch list of vertIds
+            vtkSmartPointer<vtkIdList>::New();
+
+    vlist->InsertId(0,vertIds->GetId(ids[0]));
+    vlist->InsertId(1,vertIds->GetId(ids[1]));
+    vlist->InsertId(2,vertIds->GetId(ids[2]));
+    vlist->InsertId(3,vertIds->GetId(ids[3]));
+
+    patch->init(vlist,globalVertices,this);
+
+    vtkIdType pId=patchIdInGlobalList(patch);
+    if(pId >= 0)
+    {
+        //patch already exist, only add reference to this
+        //in the existing one, needed by extrude.
+        //std::cout << "item is present" << std::endl;
+        vtkSmartPointer<hexPatch> existingPatch =
+                hexPatch::SafeDownCast(globalPatches->GetItemAsObject(pId));
+        existingPatch->setHex(this);
+        patchIds->InsertNextId(pId);
+    }
+    else //i.e. it doesn't exist in global list
+    {
+        //add to global list
+        globalPatches->AddItem(patch);
+        patchIds->InsertNextId(globalPatches->GetNumberOfItems()-1);
+
+    }
+}
+
+
+
 vtkSmartPointer<vtkIdList> HexBlock::getParallelEdges(vtkIdType edgeId)
 {
     vtkSmartPointer<vtkIdList> parallelEdges =
@@ -376,4 +431,23 @@ void HexBlock::getNumberOfCells(int nCells[3])
 void HexBlock::setAxesRadius(double rad)
 {
     axesTubes->SetRadius(rad);
+}
+
+
+
+vtkIdType HexBlock::patchIdInGlobalList(vtkSmartPointer<hexPatch> p)
+{
+    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
+    {
+        //std::cout << "checking with patch: " << i << std::endl;
+        vtkSmartPointer<hexPatch> op =
+                hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i) );
+        if(op->equals(p))
+        {
+            //std::cout << "Patch" << i <<" already exist" << std::endl;
+            return i;
+        }
+    }
+
+    return -1;
 }

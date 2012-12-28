@@ -34,7 +34,7 @@ SET(HexBlockerSrcs
     MoveVerticesWidget.cpp CreateBlockWidget.cpp
     InteractorStylePatchPick.cpp HexBC.cpp ToolBoxWidget.cpp
     SetBCsWidget.cpp SetBCsItem.cpp HexExporter.cpp HexEdge.cpp
-    InteractorStyleEdgePick.cpp
+    InteractorStyleEdgePick.cpp HexReader.cpp
     )
 SET(HexBlockerUI
     MainWindow.ui ToolBoxWidget.ui
@@ -48,6 +48,7 @@ SET(HexBlockerHeaders
     HexBC.h ToolBoxWidget.h SetBCsWidget.h SetBCsItem.h
     HexExporter.h HexEdge.h
     InteractorStyleEdgePick.h
+    HexReader.h
     )
 SET(HexBlockerResources Icons/icons.qrc)
 

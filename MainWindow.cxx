@@ -17,6 +17,8 @@
 #include "SetBCsWidget.h"
 #include "HexBC.h"
 #include "HexExporter.h"
+#include "HexReader.h"
+
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
@@ -107,9 +109,9 @@ MainWindow::MainWindow()
     connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotExportBlockMeshDict()));
 
     connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotStartSelectEdges()));
-
     connect(toolbox,SIGNAL(setStatusText(QString)),this,SLOT(slotShowStatusText(QString)));
 
+    connect(this->ui->actionReadBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotReadBlockMeshDict()));
 
 }
 
@@ -318,6 +320,12 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
 
+}
+
+void MainWindow::slotReadBlockMeshDict()
+{
+    HexReader reader;
+    reader.readBlockMeshDict(QString("blockMeshDict"));
 }
 
 void MainWindow::slotExit()

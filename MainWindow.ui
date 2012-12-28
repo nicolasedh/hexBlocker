@@ -73,6 +73,9 @@
    <addaction name="menuFile"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>Toolbar</string>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
@@ -97,6 +100,7 @@
    <addaction name="actionHelp"/>
    <addaction name="actionSetBCs"/>
    <addaction name="actionSetNumber"/>
+   <addaction name="actionReadBlockMeshDict"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpenFile">
@@ -182,6 +186,18 @@
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;set number of cells on edges&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionReadBlockMeshDict">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
+   </property>
+   <property name="text">
+    <string>Read BlockMeshDict</string>
+   </property>
+   <property name="toolTip">
+    <string>Read a blockMeshDict</string>
    </property>
   </action>
  </widget>
