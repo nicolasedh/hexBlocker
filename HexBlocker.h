@@ -11,6 +11,7 @@
 class HexBlock;
 class hexPatch;
 class HexEdge;
+class HexReader;
 class vtkPoints;
 class vtkPolyData;
 class vtkGlyph3D;
@@ -47,6 +48,8 @@ public:
     void exportBCs(QTextStream &os);
     int showParallelEdges(vtkIdType edgeId); // shows all parallel edges
     void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
+
+    void readBlockMeshDict(HexReader * reader);
 
     //DATA
     vtkSmartPointer<vtkPoints> vertices;

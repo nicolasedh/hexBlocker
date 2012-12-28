@@ -52,8 +52,7 @@ public:
   MainWindow();
   ~MainWindow();
 
-  vtkSmartPointer<vtkPoints> mypoints;
-  vtkSmartPointer<vtkPolyData> mydata;
+
   vtkSmartPointer<InteractorStyleVertPick> styleVertPick;
   vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
   vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;

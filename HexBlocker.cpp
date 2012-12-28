@@ -8,6 +8,7 @@
 #include "hexPatch.h"
 #include "HexEdge.h"
 #include "HexBC.h"
+#include "HexReader.h"
 
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
@@ -93,9 +94,6 @@ void HexBlocker::createHexBlock()
     double c1[3]={1.0+2.1*numBlocks,1.0,1.0};
 
     createHexBlock(c0,c1);
-
-    //add patches to renderer or remove this function
-
 
 }
 
@@ -466,4 +464,44 @@ void HexBlocker::setNumberOnParallelEdges(vtkIdType edgeId, int nCells)
         e->resetColor();
         e->nCells=nCells;
     }
+}
+
+
+void HexBlocker::readBlockMeshDict(HexReader *reader)
+{
+
+    //Clear everything first!
+    vertices=reader->readVertices;
+    hexBlocks = reader->readBlocks;
+    edges = reader->readEdges;
+    patches = reader->readPatches;
+    hexBCs = reader->readBCs;
+
+    vertData->SetPoints(vertices);
+    vertices->Modified();
+
+    //add edge actors renderer
+    for (vtkIdType i =0;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        renderer->AddActor(e->actor);
+    }
+
+    //add patch actors to renderer
+    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+    {
+        hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        renderer->AddActor(p->actor);
+    }
+
+    // add local coord axis actor of blocks
+    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+    {
+        HexBlock *b = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        renderer->AddActor(b->hexActor);
+    }
+
+    resetBounds();
+    renderer->Modified();
+    renderer->Render();
 }

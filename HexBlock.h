@@ -52,10 +52,10 @@ public:
 
     //Construct from a list of vertices that exists in globalVertices,
     // edges and patches are added if not already existing
-//    void init(vtkIdList myVertIds,
-//              vtkSmartPointer<vtkPoints> verts,
-//              vtkSmartPointer<vtkCollection> edges,
-//              vtkSmartPointer<vtkCollection> patches);
+    void init(vtkSmartPointer<vtkIdList> myVertIds,
+              vtkSmartPointer<vtkPoints> verts,
+              vtkSmartPointer<vtkCollection> edges,
+              vtkSmartPointer<vtkCollection> patches);
 
     vtkIdType getPatchInternalId(vtkSmartPointer<hexPatch> otherP);
     vtkSmartPointer<vtkIdList> getParallelEdges(vtkIdType edgeId);
@@ -75,6 +75,8 @@ public:
 
 private:
     //FUNCTIONS
+    //
+    void initAll();
     void drawLocalaxes();
     void initEdges();
     void initEdge(vtkIdType p0,vtkIdType p1);

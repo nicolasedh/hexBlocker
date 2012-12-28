@@ -19,17 +19,9 @@
 #include "HexExporter.h"
 #include "HexReader.h"
 
-#include <vtkPoints.h>
-#include <vtkPolyData.h>
-#include <vtkSphereSource.h>
-#include <vtkGlyph3D.h>
-
-#include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include <vtkSmartPointer.h>
-
 
 #include <vtkAxesActor.h>
 #include <vtkOrientationMarkerWidget.h>
@@ -192,8 +184,9 @@ void MainWindow::slotExtrudePatch(vtkIdList *selectedPatches)
 
 void MainWindow::slotOpenMoveVerticesDialog()
 {
-    renwin->GetInteractor()->SetPicker(areaPicker);
+
     renwin->GetInteractor()->SetInteractorStyle(styleVertPick);
+    renwin->GetInteractor()->SetPicker(areaPicker);
 
     styleVertPick->StartSelect();
 
@@ -324,8 +317,19 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
 
 void MainWindow::slotReadBlockMeshDict()
 {
-    HexReader reader;
-    reader.readBlockMeshDict(QString("blockMeshDict"));
+    HexReader * reader = new HexReader();
+    reader->readBlockMeshDict(QString("blockMeshDict"));
+
+    hexBlocker->readBlockMeshDict(reader);
+
+    //Repoint interactors.
+    styleVertPick->SetPoints(hexBlocker->vertData);
+    styleVertPick->SelectedSphere=hexBlocker->vertSphere;
+    stylePatchPick->SetPatches(hexBlocker->patches);
+    styleEdgePick->SetEdges(hexBlocker->edges);
+
+    renwin->Render();
+
 }
 
 void MainWindow::slotExit()

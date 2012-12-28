@@ -42,6 +42,10 @@ private:
     //fills vtkPoints with points from fileContents,
     //returns true if succesfull
     bool getVertices();
+
+    //Reads and creates blocks
+    bool getBlocks();
+
     //returns an entry as a QString e.g. vertices or blocks from fileContents
     QString getEntry(QString entry);
     //DATA

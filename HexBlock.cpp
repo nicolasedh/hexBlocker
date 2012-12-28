@@ -76,11 +76,23 @@ void HexBlock::init(double corner0[3], double corner1[3],
     for(vtkIdType i=0;i<8;i++)
         vertIds->SetId(i,i+j);
 
-    initEdges();
-    initPatches();
-    drawLocalaxes();
+    initAll();
 }
 
+void HexBlock::init(vtkSmartPointer<vtkIdList> myVertIds,
+                    vtkSmartPointer<vtkPoints> verts,
+                    vtkSmartPointer<vtkCollection> edges,
+                    vtkSmartPointer<vtkCollection> patches)
+{
+    globalVertices = verts;
+    globalEdges = edges;
+    globalPatches = patches;
+
+    vertIds = myVertIds;
+
+    initAll();
+
+}
 
 //Extrude from patch and distance
 void HexBlock::init(vtkSmartPointer<hexPatch> p,
@@ -184,9 +196,7 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
         globalVertices->InsertNextPoint(newCoords);
     }
 
-    initEdges();
-    initPatches();
-    drawLocalaxes();
+    initAll();
 
 }
 
@@ -268,6 +278,13 @@ void HexBlock::drawLocalaxes()
     hexActor->SetScale(0.4);
     //hexActor->GetProperty()->SetLineWidth(3);
     hexActor->SetPickable(false);
+}
+
+void HexBlock::initAll()
+{
+    initEdges();
+    initPatches();
+    drawLocalaxes();
 }
 
 void HexBlock::initEdges()
