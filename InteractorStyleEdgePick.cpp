@@ -53,10 +53,10 @@ vtkIdType InteractorStyleEdgePick::findClickedEdge(int x,int y)
         if(this->InteractionProp == edge->actor)
         {
             clickedEdge = i;
-            std::cout << "You selected edge " << clickedEdge << ", ( ";
+//            std::cout << "You selected edge " << clickedEdge << ", ( ";
             for(vtkIdType j=0;j<2;j++)
                 std::cout << edge->vertIds->GetId(j) << " ";
-            std::cout <<")."<< std::endl;
+//            std::cout <<")."<< std::endl;
         }
     }
 

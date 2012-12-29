@@ -13,7 +13,7 @@ HexBC::HexBC()
 {
     name = std::string("DefaultPatches");
     type = std::string("patch");
-    patchIds = vtkIdList::New();
+    patchIds = vtkSmartPointer<vtkIdList>::New();
     allPatches = vtkSmartPointer<vtkCollection>::New();
     //delete name;
     //name = new QString("foo");
@@ -50,4 +50,45 @@ void HexBC::PrintSelf(ostream &os, vtkIndent indent)
     os << "This is BC! " << std::endl;
 }
 
+bool HexBC::insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids)
+{
 
+    bool foundIt=false;
+    for(vtkIdType i=0;i<allPatches->GetNumberOfItems();i++)
+    {
+        hexPatch * p = hexPatch::SafeDownCast(allPatches->GetItemAsObject(i));
+        if(p->equals(ids))
+        {
+//            std::cout << "patch exists " << i <<std::endl;
+            patchIds->InsertUniqueId(i);
+            foundIt=true;
+        }
+    }
+
+//    for(vtkIdType i=0;i<allPatches->GetNumberOfItems();i++)
+//    {
+
+//        hexPatch * p = hexPatch::SafeDownCast(allPatches->GetItemAsObject(i));
+//        bool idsInP[4];
+//        //return true if all ids in ids exist in patch
+//        for(vtkIdType j=0;j<ids->GetNumberOfIds();j++)
+//        {
+//            idsInP[j]=false;
+//            for(vtkIdType k=0;p->vertIds->GetNumberOfIds();k++)
+//            {
+//                if(p->vertIds->GetId(k) == ids->GetId(j))
+//                {
+
+//                    idsInP[j]=true;
+//                }
+//            }
+
+//        }
+//        if(foundIt)
+//        {
+//            std::cout << "patches are equal, glbpatc" << i << std::endl;
+//            patchIds->InsertNextId(i);
+//        }
+//    }
+    return foundIt;
+}

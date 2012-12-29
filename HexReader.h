@@ -39,6 +39,7 @@ private:
     // removes // and everyting after from a QString
     QString removeDoubleSlashes(QString line);
 
+
     //fills vtkPoints with points from fileContents,
     //returns true if succesfull
     bool getVertices();
@@ -46,8 +47,13 @@ private:
     //Reads and creates blocks
     bool getBlocks();
 
+    //Reads BCs
+    bool getBCs();
+
+
+
     //returns an entry as a QString e.g. vertices or blocks from fileContents
-    QString getEntry(QString entry);
+    QString getEntry(QString entry,QString container);
     //DATA
     QString fileContents;
 };

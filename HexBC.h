@@ -5,9 +5,12 @@
 #include <vtkObject.h>
 #include <iostream>
 #include <QTextStream>
+
+
 //Pre declarations
 class vtkIdList;
 class vtkCollection;
+class hexPatch;
 
 
 
@@ -26,11 +29,13 @@ public:
     // inorder to comply with vtkObect
     void PrintSelf(ostream &os, vtkIndent indent);
 
-    vtkIdList *patchIds;
+    vtkSmartPointer<vtkIdList> patchIds;
     vtkSmartPointer<vtkCollection> allPatches;
     void setPatchColors(double r,double g, double b);
     void resetPatchColors();
 
+    // finds id of patch in global list returns true if it was found
+    bool insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids);
     std::string name;
     std::string type;
 private:

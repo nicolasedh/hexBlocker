@@ -7,7 +7,7 @@
 class vtkCollection;
 class QTreeWidgetItem;
 class vtkIdList;
-
+class HexReader;
 
 namespace Ui {
 class SetBCsWidget;
@@ -20,6 +20,9 @@ class SetBCsWidget : public QWidget
 public:
     explicit SetBCsWidget(QWidget *parent = 0);
     ~SetBCsWidget();
+
+
+    void changeBCs(HexReader * reader);
 
     vtkSmartPointer<vtkCollection> hexBCs;
     vtkSmartPointer<vtkCollection> allPatches;

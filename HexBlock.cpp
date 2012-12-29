@@ -456,12 +456,12 @@ vtkIdType HexBlock::patchIdInGlobalList(vtkSmartPointer<hexPatch> p)
 {
     for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
     {
-        //std::cout << "checking with patch: " << i << std::endl;
+//        std::cout << "checking with patch: " << i << std::endl;
         vtkSmartPointer<hexPatch> op =
                 hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i) );
         if(op->equals(p))
         {
-            //std::cout << "Patch" << i <<" already exist" << std::endl;
+//            std::cout << "Patch" << i <<" already exist" << std::endl;
             return i;
         }
     }

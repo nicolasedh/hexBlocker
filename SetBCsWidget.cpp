@@ -4,7 +4,7 @@
 #include <QTreeWidget>
 #include "SetBCsItem.h"
 #include "HexBC.h"
-
+#include "HexReader.h"
 #include <vtkCollection.h>
 #include <vtkSmartPointer.h>
 #include <vtkIdList.h>
@@ -91,5 +91,41 @@ void SetBCsWidget::slotShowPatchesOnSelection(QTreeWidgetItem *item, int col)
     SetBCsItem *bcitem = static_cast<SetBCsItem*>(item);
     bcitem->hexBC->setPatchColors(0.0,1.0,0.0);
     emit render();
+
+}
+
+void SetBCsWidget::changeBCs(HexReader * reader)
+{
+
+
+    //ui->treeWidget->clear();
+    hexBCs = reader->readBCs;
+    allPatches = reader->readPatches;
+    for(vtkIdType i=0;i<hexBCs->GetNumberOfItems();i++)
+    {
+        vtkSmartPointer<HexBC> bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
+        SetBCsItem *bcitem = new SetBCsItem(ui->treeWidget);
+        bcitem->hexBC = bc;
+
+        QString name = QString::fromUtf8(bc->name.c_str());
+        QString type = QString::fromUtf8(bc->type.c_str());
+
+        bcitem->setFlags(bcitem->flags() | Qt::ItemIsEditable);
+        bcitem->setText(0,name.simplified());
+        bcitem->setText(1,type.simplified());
+        bcitem->hexBC->allPatches = allPatches;
+        ui->treeWidget->addTopLevelItem(bcitem);
+
+    }
+
+//    vtkSmartPointer<vtkCollection> bccoll = reader->readBCs;
+//    std::cout << "readBCs names (" << bccoll->GetNumberOfItems() <<") in widget1:";
+//    for(vtkIdType k=0;k<bccoll->GetNumberOfItems();k++)
+//    {
+//        HexBC * testbc = HexBC::SafeDownCast(bccoll->GetItemAsObject(k));
+//        std::cout << "(" << testbc->patchIds->GetNumberOfIds() << ")"
+//                  << " (" << testbc->name << "," << testbc->type << ")";
+//    }
+//    std::cout << ", did names show up?" << std::endl;
 
 }

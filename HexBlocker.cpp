@@ -2,7 +2,7 @@
    hexblocks, vertices, edges and faces
 
    */
-
+#include <limits>
 #include "HexBlocker.h"
 #include "HexBlock.h"
 #include "hexPatch.h"
@@ -501,7 +501,44 @@ void HexBlocker::readBlockMeshDict(HexReader *reader)
         renderer->AddActor(b->hexActor);
     }
 
+
     resetBounds();
     renderer->Modified();
     renderer->Render();
 }
+
+int HexBlocker::calculateTotalNumberOfCells()
+{
+    long int totNumCells=0;
+    for(vtkIdType i = 0; i< hexBlocks->GetNumberOfItems();i++)
+    {
+        HexBlock * block = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        int bNCells[3];
+        block->getNumberOfCells(bNCells);
+        totNumCells += bNCells[0]*bNCells[1]*bNCells[2];
+    }
+    return totNumCells;
+}
+
+void HexBlocker::arbitraryTest()
+{
+
+    this->createHexBlock();
+
+    std::cout << " numP" << patches->GetNumberOfItems() << std::endl;
+    hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(0));
+    vtkSmartPointer<vtkIdList> testList =
+            vtkSmartPointer<vtkIdList>::New();
+    testList->InsertNextId(p->vertIds->GetId(3));
+    testList->InsertNextId(p->vertIds->GetId(1));
+    testList->InsertNextId(p->vertIds->GetId(2));
+    testList->InsertNextId(p->vertIds->GetId(0));
+
+    p->equals(testList);
+
+    long int a = 6; //Max value 9223372036854775807
+
+
+}
+
+

@@ -50,17 +50,30 @@ void hexPatch::orderVertices(){
 
 bool hexPatch::equals(vtkSmartPointer<hexPatch> other)
 {
-    bool same=true;
-    bool existInOther=false;
+
+    return equals(other->vertIds);
+
+}
+
+bool hexPatch::equals(vtkSmartPointer<vtkIdList> otherIds)
+{
+    bool IHaveOtherVert[4];
+
+//    std::cout << "Testing (true is"<< true <<"): ";
     for(vtkIdType i=0;i<4;i++)
     {
-     existInOther=false;
+     IHaveOtherVert[i]=false;
      for(vtkIdType j=0;j<4;j++)
-      if(vertIds->GetId(i) == other->vertIds->GetId(j))
-          existInOther=true;
-     same = same && existInOther;
+     {
+//         std::cout << "(" << this->vertIds->GetId(i) <<","<< otherIds->GetId(j)<<")";
+      if(this->vertIds->GetId(i) == otherIds->GetId(j))
+          IHaveOtherVert[i]=true;
+     }
+//     std::cout <<"\n\t";
     }
-    return same;
+
+//    std::cout << "\n\tresult: "<< (IHaveOtherVert[0] && IHaveOtherVert[1] && IHaveOtherVert[2] && IHaveOtherVert[3] )<< std::endl;
+    return bool(IHaveOtherVert[0] && IHaveOtherVert[1] && IHaveOtherVert[2] && IHaveOtherVert[3]);
 }
 
 void hexPatch::init(vtkSmartPointer<vtkIdList> vIds,

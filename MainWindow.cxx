@@ -116,6 +116,8 @@ MainWindow::~MainWindow()
 // Action to be taken upon file open 
 void MainWindow::slotOpenFile()
 {
+    hexBlocker->arbitraryTest();
+
     hexBlocker->resetBounds();
     renwin->Render();
 
@@ -309,7 +311,14 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
         ui->statusbar->showMessage(QString("Cancelled or bad integer"),3000);
         hexBlocker->resetColors();
     }
-
+    QString msg("Total number of cells: ");
+    long int NCells = hexBlocker->calculateTotalNumberOfCells();
+    msg=msg.append(QString::number(NCells));
+    msg.append("\n which is approximately ");
+    double aNCells = (double)NCells;
+    msg.append(QString::number(aNCells,'g',3));
+    msg.append(".");
+    ui->statusbar->showMessage(msg,10000);
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
 
@@ -320,7 +329,14 @@ void MainWindow::slotReadBlockMeshDict()
     HexReader * reader = new HexReader();
     reader->readBlockMeshDict(QString("blockMeshDict"));
 
+
+
+
+
+    toolbox->setBCsW->changeBCs(reader);
+
     hexBlocker->readBlockMeshDict(reader);
+
 
     //Repoint interactors.
     styleVertPick->SetPoints(hexBlocker->vertData);

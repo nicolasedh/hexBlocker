@@ -49,6 +49,9 @@ public:
     int showParallelEdges(vtkIdType edgeId); // shows all parallel edges
     void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
 
+    void arbitraryTest();
+
+    int calculateTotalNumberOfCells();
     void readBlockMeshDict(HexReader * reader);
 
     //DATA

@@ -35,6 +35,7 @@ public:
     void init(vtkSmartPointer<vtkIdList> vIds,vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<HexBlock> hex);
 
     bool equals(vtkSmartPointer<hexPatch> other);
+    bool equals(vtkSmartPointer<vtkIdList> otherIds);
     void orderVertices(); //not yet implemented,
 
     void setColor(double,double,double);
