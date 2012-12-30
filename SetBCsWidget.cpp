@@ -98,7 +98,7 @@ void SetBCsWidget::changeBCs(HexReader * reader)
 {
 
 
-    //ui->treeWidget->clear();
+    ui->treeWidget->clear();
     hexBCs = reader->readBCs;
     allPatches = reader->readPatches;
     for(vtkIdType i=0;i<hexBCs->GetNumberOfItems();i++)

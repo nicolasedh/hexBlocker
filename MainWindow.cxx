@@ -116,7 +116,7 @@ MainWindow::~MainWindow()
 // Action to be taken upon file open 
 void MainWindow::slotOpenFile()
 {
-    hexBlocker->arbitraryTest();
+//    hexBlocker->arbitraryTest();
 
     hexBlocker->resetBounds();
     renwin->Render();
@@ -329,14 +329,16 @@ void MainWindow::slotReadBlockMeshDict()
     HexReader * reader = new HexReader();
     reader->readBlockMeshDict(QString("blockMeshDict"));
 
+    renwin->RemoveRenderer(hexBlocker->renderer);
 
+    hexBlocker = new HexBlocker();
+    hexBlocker->renderer->SetBackground(.2, .3, .4);
 
-
-
-    toolbox->setBCsW->changeBCs(reader);
+    renwin->AddRenderer(hexBlocker->renderer);
 
     hexBlocker->readBlockMeshDict(reader);
-
+    // repoint Axes interactor and widget
+    widget->SetInteractor( renwin->GetInteractor() );
 
     //Repoint interactors.
     styleVertPick->SetPoints(hexBlocker->vertData);
@@ -344,8 +346,10 @@ void MainWindow::slotReadBlockMeshDict()
     stylePatchPick->SetPatches(hexBlocker->patches);
     styleEdgePick->SetEdges(hexBlocker->edges);
 
-    renwin->Render();
+    //Repoint widgets
+    toolbox->setBCsW->changeBCs(reader);
 
+    renwin->Render();
 }
 
 void MainWindow::slotExit()
