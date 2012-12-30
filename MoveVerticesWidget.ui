@@ -16,6 +16,9 @@
   <property name="windowTitle">
    <string>Set position</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
   <property name="floating" stdset="0">
    <bool>false</bool>
   </property>
@@ -31,6 +34,9 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QCheckBox" name="checkBoxDelta">
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
       <property name="text">
        <string>apply delta vector, i.e. move</string>
       </property>
@@ -43,6 +49,9 @@
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
        <widget class="QCheckBox" name="checkBoxX">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>X coord</string>
         </property>
@@ -53,6 +62,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="lineEditX">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="inputMethodHints">
          <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
         </property>
@@ -66,6 +78,9 @@
       </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="checkBoxY">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Y coord</string>
         </property>
@@ -76,6 +91,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="lineEditY">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="inputMethodHints">
          <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
         </property>
@@ -89,6 +107,9 @@
       </item>
       <item row="2" column="0">
        <widget class="QCheckBox" name="checkBoxZ">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Y coord</string>
         </property>
@@ -99,6 +120,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QLineEdit" name="lineEditZ">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="inputMethodHints">
          <set>Qt::ImhDigitsOnly|Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
         </property>
@@ -142,6 +166,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonCancel">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Done</string>
         </property>
@@ -149,6 +176,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonApply">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Apply</string>
         </property>

@@ -25,9 +25,15 @@
   <property name="windowTitle">
    <string>Create Hex Block</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QLabel" name="label_2">
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>Create a Hex Box </string>
      </property>
@@ -47,6 +53,9 @@
        <height>80</height>
       </size>
      </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="frameShape">
       <enum>QFrame::Box</enum>
      </property>
@@ -62,11 +71,17 @@
         <height>59</height>
        </rect>
       </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="label">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="text">
             <string>Corner point 0</string>
            </property>
@@ -74,6 +89,9 @@
          </item>
          <item>
           <spacer name="horizontalSpacer_3">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -103,6 +121,9 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="inputMethodHints">
             <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
            </property>
@@ -127,6 +148,9 @@
              <width>30</width>
              <height>16777215</height>
             </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
            </property>
            <property name="inputMethodHints">
             <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
@@ -153,6 +177,9 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="inputMethodHints">
             <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
            </property>
@@ -166,6 +193,9 @@
          </item>
          <item>
           <spacer name="horizontalSpacer_4">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -197,6 +227,9 @@
        <height>80</height>
       </size>
      </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="frameShape">
       <enum>QFrame::Box</enum>
      </property>
@@ -212,11 +245,17 @@
         <height>59</height>
        </rect>
       </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
           <widget class="QLabel" name="label_3">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="text">
             <string>Corner point 1</string>
            </property>
@@ -224,6 +263,9 @@
          </item>
          <item>
           <spacer name="horizontalSpacer_7">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -253,6 +295,9 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="inputMethodHints">
             <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
            </property>
@@ -277,6 +322,9 @@
              <width>30</width>
              <height>16777215</height>
             </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
            </property>
            <property name="inputMethodHints">
             <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
@@ -303,6 +351,9 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="inputMethodHints">
             <set>Qt::ImhFormattedNumbersOnly|Qt::ImhPreferNumbers</set>
            </property>
@@ -316,6 +367,9 @@
          </item>
          <item>
           <spacer name="horizontalSpacer_8">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -335,6 +389,9 @@
    </item>
    <item>
     <spacer name="verticalSpacer">
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -350,6 +407,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -363,6 +423,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonCancel">
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>Cancel</string>
        </property>
@@ -370,6 +433,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonApply">
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>Apply</string>
        </property>

@@ -20,12 +20,17 @@ int main( int argc, char** argv )
   // QT Stuff
   QApplication app( argc, argv );
 
-  QApplication::setStyle(new QCleanlooksStyle);
+  QCleanlooksStyle * cleanlooks = new QCleanlooksStyle;
 
+  QApplication::setStyle(cleanlooks);
+
+  app.setStyle("QToolTip {background-color: black;}");
   
   qInitResources_icons();
 
   MainWindow myMainWindow;
+
+  myMainWindow.setStyleSheet("QToolTip {background-color: black;}");
   myMainWindow.show();
 
   return app.exec();

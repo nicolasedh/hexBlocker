@@ -27,9 +27,15 @@
    </size>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -60,7 +66,13 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <widget class="QMenu" name="menuFile">
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>File</string>
     </property>
@@ -75,6 +87,9 @@
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>Toolbar</string>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -102,7 +117,11 @@
    <addaction name="actionSetNumber"/>
    <addaction name="actionReadBlockMeshDict"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+  </widget>
   <action name="actionOpenFile">
    <property name="enabled">
     <bool>true</bool>
