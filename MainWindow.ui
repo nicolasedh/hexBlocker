@@ -82,7 +82,16 @@
     <addaction name="actionHelp"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionAbout_Qt"/>
+    <addaction name="actionAbout_hexBlocker"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -217,6 +226,16 @@
    </property>
    <property name="toolTip">
     <string>Read a blockMeshDict</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionAbout_hexBlocker">
+   <property name="text">
+    <string>About hexBlocker</string>
    </property>
   </action>
  </widget>

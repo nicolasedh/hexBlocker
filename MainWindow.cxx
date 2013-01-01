@@ -30,9 +30,9 @@
 #include <vtkIdList.h>
 #include <vtkAreaPicker.h>
 
-#include <QInputDialog>
-#include <QFileDialog>
-
+//#include <QInputDialog>
+//#include <QFileDialog>
+#include <QtGui>
 
 #define VTK_CREATE(type, name) \
     vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
@@ -105,6 +105,11 @@ MainWindow::MainWindow()
 
     connect(this->ui->actionReadBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotReadBlockMeshDict()));
 
+
+    connect(this->ui->actionAbout_Qt,SIGNAL(triggered()),
+            qApp,SLOT(aboutQt()));
+    connect(this->ui->actionAbout_hexBlocker,SIGNAL(triggered()),
+            this,SLOT(slotAboutDialog()));
 }
 
 MainWindow::~MainWindow()
@@ -350,6 +355,46 @@ void MainWindow::slotReadBlockMeshDict()
     toolbox->setBCsW->changeBCs(reader);
 
     renwin->Render();
+}
+
+void MainWindow::slotAboutDialog()
+{
+    QString title("hexBlocker");
+    QString text("\t hexBlocker\t\t version 0.1 \n"
+                 "A GUI for generating a blockMeshDict for use with OpenFOAM\n\n"
+
+                 "Current capabilitys are: \n\n"
+                 "\t* Creating and extruding blocks.\n"
+                 "\t* Exporting and importing blockMeshDicts.\n"
+                 "\t  Please not that only 2.1.x has been tested.\n"
+                 "\t* Selecting boundary patches.\n"
+                 "\t* Setting the number of cells on each edge.\n"
+                 "\t* Moving vertices.\n"
+                 "\t* Bugs -- This is an alpha realease and\n"
+                 "\t  has plenty of them\n\n"
+
+                 "Copyright 2012, 2013\n"
+                 "Author Nicolas Edh, nicolas.edh@gmail.com, or \n"
+                 "user \"nsf\" at www.cfd-online.com\n\n"
+
+                 "hexBlocker is free software: you can redistribute it and/or modify "
+                 "it under the terms of the GNU General Public License as published by "
+                 "the Free Software Foundation, either version 3 of the License, or "
+                 "(at your option) any later version.\n\n"
+
+                 "hexBlocker is distributed in the hope that it will be useful, "
+                 "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+                 "GNU General Public License for more details.\n\n"
+
+                 "You should have received a copy of the GNU General Public License "
+                 "along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>. \n\n"
+
+                 "This program is not approved or endorsed by OpenCFD, "
+                 "the producer of the OpenFOAM(R) software and owner of "
+                 "the OpenFOAM(R) trade mark."
+                 );
+    QMessageBox::about(this,title, text);
 }
 
 void MainWindow::slotExit()
