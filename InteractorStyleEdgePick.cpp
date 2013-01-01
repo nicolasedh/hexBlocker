@@ -78,8 +78,8 @@ vtkIdType InteractorStyleEdgePick::findClickedEdge(int x,int y)
         {
             clickedEdge = i;
 //            std::cout << "You selected edge " << clickedEdge << ", ( ";
-            for(vtkIdType j=0;j<2;j++)
-                std::cout << edge->vertIds->GetId(j) << " ";
+//            for(vtkIdType j=0;j<2;j++)
+//                std::cout << edge->vertIds->GetId(j) << " ";
 //            std::cout <<")."<< std::endl;
         }
     }

@@ -392,13 +392,13 @@ void HexBlocker::moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
     double pos[3];
     for(vtkIdType i = 0;i<ids->GetNumberOfIds();i++)
     {
-        std::cout << "moving point " << ids->GetId(i) << " (";
+//        std::cout << "moving point " << ids->GetId(i) << " (";
         vertices->GetPoint(ids->GetId(i),pos);
-        std::cout << pos[0] << " " << pos[1] << " " << pos[2] << "), (";
+//        std::cout << pos[0] << " " << pos[1] << " " << pos[2] << "), (";
         pos[0]+=dist[0];
         pos[1]+=dist[1];
         pos[2]+=dist[2];
-        std::cout << pos[0] << " " << pos[1] << " " << pos[2] << ")." << std::endl;
+//        std::cout << pos[0] << " " << pos[1] << " " << pos[2] << ")." << std::endl;
         vertices->SetPoint(ids->GetId(i),pos);
 
         vertices->Modified();

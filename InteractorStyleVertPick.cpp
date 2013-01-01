@@ -107,7 +107,7 @@ void InteractorStyleVertPick::OnLeftButtonUp()
 {
     if(this->Interactor->GetControlKey())
     {
-        std::cout<<"you pressed ctnrl"<<std::endl;
+//        std::cout<<"you pressed ctnrl"<<std::endl;
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
         return;
      }
@@ -135,15 +135,15 @@ void InteractorStyleVertPick::OnLeftButtonUp()
     SelectedList->Initialize();
     SelectedList->SetNumberOfIds(numPoints);
 
-    std::cout << "Selected " << numPoints << " point(s)." << std::endl;
+//    std::cout << "Selected " << numPoints << " point(s)." << std::endl;
     for (vtkIdType selId = 0; selId < numPoints ;selId++ )
     {
         double pos[3];
         extractGeometry->GetOutput()->GetPoint(selId,pos);
         vtkIdType orgId = Points->FindPoint(pos);
-        std::cout << "Selected point "<< selId << ", org id " << orgId
-                  << " location at: " << pos[0] <<"," << pos[1]
-                  << "," << pos[2] << std::endl;
+//        std::cout << "Selected point "<< selId << ", org id " << orgId
+//                  << " location at: " << pos[0] <<"," << pos[1]
+//                  << "," << pos[2] << std::endl;
         SelectedList->InsertId(selId,orgId);
 
     }

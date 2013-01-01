@@ -229,10 +229,6 @@ void MainWindow::slotRender()
 
 void MainWindow::slotMoveVertices()
 {
-    std::cout << "slot is connected, selected IDs: ";
-    for(vtkIdType i=0;i<styleVertPick->SelectedList->GetNumberOfIds();i++)
-        std::cout << styleVertPick->SelectedList->GetId(i)<< " ";
-    std::cout << "."<< std::endl;
 
     if(toolbox->moveVerticesW->delta)
         hexBlocker->moveVertices(styleVertPick->SelectedList,toolbox->moveVerticesW->dist);
