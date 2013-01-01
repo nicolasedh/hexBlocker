@@ -1,12 +1,28 @@
 /*
- * Copyright 2007 Sandia Corporation.
- * Under the terms of Contract DE-AC04-94AL85000, there is a non-exclusive
- * license for use of this work by or on behalf of the
- * U.S. Government. Redistribution and use in source and binary forms, with
- * or without modification, are permitted provided that this Notice and any
- * statement of authorship are reproduced on all copies.
- */
-// QT includes
+Copyright 2012, 2013
+Author Nicolas Edh,
+Nicolas.Edh@gmail.com,
+or user "nsf" at cfd-online.com
+
+This file is part of hexBlocker.
+
+    hexBlocker is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    hexBlocker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
+
+    The license is included in the file COPYING.
+*/
+
+
 #include <QApplication>
 #include <QCleanlooksStyle>
 #include "MainWindow.h"
