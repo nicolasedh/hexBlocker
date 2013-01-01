@@ -104,13 +104,13 @@ MainWindow::MainWindow()
     renwin->Render();
 
     // Set up action signals and slots
-    connect(this->ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
+    connect(this->ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->ui->actionCreateHexBlock,SIGNAL(triggered()),this,SLOT(slotOpenCreateHexBlockDialog()));
     connect(toolbox->createBlockW,SIGNAL(apply()),this,SLOT(slotCreateHexBlock()));
     connect(this->ui->actionExtrudePatch,SIGNAL(triggered()),this,SLOT(slotStartExtrudePatch()));
-    connect(this->ui->actionHelp,SIGNAL(triggered()),this,SLOT(slotPrintHexBlocks()));
-    connect(this->ui->actionSelectVertices,SIGNAL(triggered()),this,SLOT(slotOpenMoveVerticesDialog()));
+    connect(this->ui->actionDumpData,SIGNAL(triggered()),this,SLOT(slotPrintHexBlocks()));
+    connect(this->ui->actionOpenMoveVerticesDialog,SIGNAL(triggered()),this,SLOT(slotOpenMoveVerticesDialog()));
     connect(toolbox->moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotResetInteractor()));
     connect(toolbox->moveVerticesW,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
     connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
@@ -139,9 +139,8 @@ MainWindow::~MainWindow()
 }
 
 // Action to be taken upon file open 
-void MainWindow::slotOpenFile()
+void MainWindow::slotZoomOut()
 {
-//    hexBlocker->arbitraryTest();
 
     hexBlocker->resetBounds();
     renwin->Render();

@@ -76,10 +76,9 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpenFile"/>
+    <addaction name="actionReadBlockMeshDict"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
-    <addaction name="actionHelp"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
@@ -94,6 +93,12 @@
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="windowTitle">
     <string>Toolbar</string>
    </property>
@@ -105,8 +110,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>22</width>
-     <height>22</height>
+     <width>35</width>
+     <height>35</height>
     </size>
    </property>
    <attribute name="toolBarArea">
@@ -115,32 +120,36 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionOpenFile"/>
+   <addaction name="actionReadBlockMeshDict"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
+   <addaction name="actionZoomOut"/>
    <addaction name="actionCreateHexBlock"/>
    <addaction name="actionExtrudePatch"/>
-   <addaction name="actionSelectVertices"/>
-   <addaction name="actionHelp"/>
+   <addaction name="actionOpenMoveVerticesDialog"/>
    <addaction name="actionSetBCs"/>
    <addaction name="actionSetNumber"/>
-   <addaction name="actionReadBlockMeshDict"/>
+   <addaction name="separator"/>
+   <addaction name="actionDumpData"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="autoFillBackground">
     <bool>true</bool>
    </property>
   </widget>
-  <action name="actionOpenFile">
+  <action name="actionZoomOut">
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
-     <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
+     <normaloff>:/Icons/zoomOut.png</normaloff>:/Icons/zoomOut.png</iconset>
    </property>
    <property name="text">
-    <string>Open File...</string>
+    <string>Zoom out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
    </property>
   </action>
   <action name="actionExit">
@@ -148,13 +157,16 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionHelp">
+  <action name="actionDumpData">
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
-     <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
+     <normaloff>:/Icons/print.png</normaloff>:/Icons/print.png</iconset>
    </property>
    <property name="text">
-    <string>Help</string>
+    <string>Dump data to std out</string>
+   </property>
+   <property name="toolTip">
+    <string>Dump data to std out</string>
    </property>
   </action>
   <action name="actionSave">
@@ -190,17 +202,25 @@
     <string>Extrude a patch</string>
    </property>
   </action>
-  <action name="actionSelectVertices">
+  <action name="actionOpenMoveVerticesDialog">
    <property name="icon">
     <iconset>
      <normalon>:/Icons/selectVertices.png</normalon>
     </iconset>
    </property>
    <property name="text">
-    <string>selectVertices</string>
+    <string>move vertices</string>
+   </property>
+   <property name="toolTip">
+    <string>move vertices</string>
    </property>
   </action>
   <action name="actionSetBCs">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Icons/SetBCs.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>setBCs</string>
    </property>
@@ -209,6 +229,10 @@
    </property>
   </action>
   <action name="actionSetNumber">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/edgeProperties.png</normaloff>:/Icons/edgeProperties.png</iconset>
+   </property>
    <property name="text">
     <string>setNumber</string>
    </property>
