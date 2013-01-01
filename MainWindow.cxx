@@ -351,8 +351,28 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
 
 void MainWindow::slotReadBlockMeshDict()
 {
+
+    QFileDialog::Options options;
+
+    QString selectedFilter,filter;
+    QString dir = "blockMeshDict";
+
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                "Select a blockMeshDict file to read",
+                dir,
+                filter,
+                &selectedFilter,
+                options);
+
+    if(filename.isNull())
+    {
+        this->ui->statusbar->showMessage("Reading Aborted",10000);
+        return;
+    }
+
     HexReader * reader = new HexReader();
-    reader->readBlockMeshDict(QString("blockMeshDict"));
+    reader->readBlockMeshDict(filename);
 
     renwin->RemoveRenderer(hexBlocker->renderer);
 
