@@ -2,16 +2,16 @@ PROJECT("HexBlocker")
 cmake_minimum_required(VERSION 2.8)
  
 IF(NOT VTK_DIR)
-  MESSAGE("VTK_DIR set it with export VTK_DIR=/path/to/vtk/build, trying Nicolas settings")
-  SET(VTK_DIR /home/nico/Dropbox/Projekt/myQtApps/VTK/build/)
+  MESSAGE("VTK_DIR is not set it with export VTK_DIR=/path/to/vtk/build, trying default settings")
+  SET(VTK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../build/VTK)
 ENDIF(NOT VTK_DIR)
 IF(NOT VTK_BINARY_DIR)
-FIND_PACKAGE(VTK)
-
-INCLUDE(${VTK_USE_FILE})
+    FIND_PACKAGE(VTK)
+    INCLUDE(${VTK_USE_FILE})
 ENDIF(NOT VTK_BINARY_DIR)
 
 # use what QVTK built with
+
 SET(QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "")
 SET(QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "")
 SET(QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "")
