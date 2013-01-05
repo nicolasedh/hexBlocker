@@ -41,8 +41,8 @@ public:
     double c0[3];
     double c1[3];
 public slots:
-    virtual void slotApply();
-    virtual void slotCancel();
+    void slotApply();
+    void slotCancel();
 
 signals:
     void apply();

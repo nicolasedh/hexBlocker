@@ -43,8 +43,8 @@ public:
     bool delta,checkedX,checkedY,checkedZ;
 
 public slots:
-    virtual void slotApply();
-    virtual void slotDone();
+    void slotApply();
+    void slotDone();
 
 signals:
     void moveVertices();

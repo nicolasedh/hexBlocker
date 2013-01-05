@@ -64,31 +64,30 @@ public:
   vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
   vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;
 public slots:
-
   void slotViewToolBar();
   void slotViewToolBox();
-  virtual void slotZoomOut();
-  virtual void slotExit();
-  virtual void slotCreateHexBlock();
-  virtual void slotOpenCreateHexBlockDialog();
-  virtual void slotPrintHexBlocks();
-  virtual void slotStartExtrudePatch();
-  virtual void slotExtrudePatch(vtkIdList *selectedPatches);
-  virtual void slotOpenMoveVerticesDialog();
-  virtual void slotMoveVertices();
-  virtual void slotResetInteractor();
-  virtual void slotOpenSetBCsDialog();
-  virtual void slotPatchSelectionDone();
+  void slotZoomOut();
+  void slotExit();
+  void slotCreateHexBlock();
+  void slotOpenCreateHexBlockDialog();
+  void slotPrintHexBlocks();
+  void slotStartExtrudePatch();
+  void slotExtrudePatch(vtkIdList *selectedPatches);
+  void slotOpenMoveVerticesDialog();
+  void slotMoveVertices();
+  void slotResetInteractor();
+  void slotOpenSetBCsDialog();
+  void slotPatchSelectionDone();
   void slotStartSelectPatches(vtkIdType bcID);
   void slotExportBlockMeshDict();
   void slotRender();
   void slotShowStatusText(QString text);
   void slotStartSelectEdges();
   void slotEdgeSelectionDone(vtkIdType edgeId);
-  virtual void slotAboutDialog();
+  void slotAboutDialog();
 
   void slotReadBlockMeshDict();
-  //virtual void slotSetBCs();
+  // void slotSetBCs();
 
 
 protected:

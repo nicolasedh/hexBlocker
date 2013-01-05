@@ -53,8 +53,8 @@ public:
     void setCurrentIndex(int);
 
 public slots:
-    virtual void slotCancel();
-    virtual void slotSetStatusText(QString text);
+    void slotCancel();
+    void slotSetStatusText(QString text);
 
 signals:
     void cancel();
