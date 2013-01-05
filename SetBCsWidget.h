@@ -57,7 +57,8 @@ public slots:
     void slotSelectPatches();
     void slotSelectionDone(vtkIdList *selectedPatches);
     void slotShowPatchesOnSelection(QTreeWidgetItem* item,int col);
-    
+    void slotDeleteBC();
+
 signals:
     void startSelectPatches(vtkIdType bcId);
     void resetInteractor();

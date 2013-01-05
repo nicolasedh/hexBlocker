@@ -53,6 +53,7 @@ SetBCsWidget::SetBCsWidget(QWidget *parent) :
             this,SLOT(slotShowPatchesOnSelection(QTreeWidgetItem*,int)));
     connect(ui->pushButtonSelect,SIGNAL(clicked()),this,SLOT(slotSelectPatches()));
     connect(ui->pushButtonDone,SIGNAL(clicked()),this,SIGNAL(done()));
+    connect(ui->pushButtonDel,SIGNAL(clicked()),this,SLOT(slotDeleteBC()));
 }
 
 SetBCsWidget::~SetBCsWidget()
@@ -151,5 +152,30 @@ void SetBCsWidget::changeBCs(HexReader * reader)
 //                  << " (" << testbc->name << "," << testbc->type << ")";
 //    }
 //    std::cout << ", did names show up?" << std::endl;
+
+}
+
+void SetBCsWidget::slotDeleteBC()
+{
+    QList<QTreeWidgetItem*> selectedTreeItem = ui->treeWidget->selectedItems();
+    if(selectedTreeItem.count() < 1)
+    {
+        emit setStatusText(QString("No BC selected"));
+        return;
+    }
+    SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
+    int i = ui->treeWidget->indexOfTopLevelItem(bcItem);
+    ui->treeWidget->takeTopLevelItem(i);
+
+
+    vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
+    if(hexBCId < 0)
+    {
+        return;
+    }
+    HexBC *hexBC = HexBC::SafeDownCast(hexBCs->GetItemAsObject(hexBCId));
+
+    hexBC->patchIds->Delete();
+    hexBCs->RemoveItem(hexBC);
 
 }
