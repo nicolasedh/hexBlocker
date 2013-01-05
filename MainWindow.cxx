@@ -172,6 +172,7 @@ void MainWindow::slotPrintHexBlocks()
 
 void MainWindow::slotStartExtrudePatch()
 {
+    toolbox->setCurrentIndex(0); // show empty page
     ui->statusbar->showMessage(
                 tr("Left button to select a patch, middle button to confirm, rightbutton to deselect"));
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
