@@ -89,7 +89,15 @@
     <addaction name="actionAbout_Qt"/>
     <addaction name="actionAbout_hexBlocker"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionView_tool_bar"/>
+    <addaction name="actionView_tool_box"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuView"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -260,6 +268,28 @@
   <action name="actionAbout_hexBlocker">
    <property name="text">
     <string>About hexBlocker</string>
+   </property>
+  </action>
+  <action name="actionView_tool_bar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>View tool bar</string>
+   </property>
+  </action>
+  <action name="actionView_tool_box">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>View tool box</string>
    </property>
   </action>
  </widget>

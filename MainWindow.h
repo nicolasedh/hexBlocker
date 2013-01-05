@@ -65,6 +65,8 @@ public:
   vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;
 public slots:
 
+  void slotViewToolBar();
+  void slotViewToolBox();
   virtual void slotZoomOut();
   virtual void slotExit();
   virtual void slotCreateHexBlock();
