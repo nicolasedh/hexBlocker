@@ -55,7 +55,11 @@ void InteractorStylePatchPick::PrintSelf(ostream &os, vtkIndent indent)
 
 void InteractorStylePatchPick::OnChar()
 {
-
+    char k = this->GetInteractor()->GetKeyCode();
+    if(k == ' ')
+    {
+        InteractorStylePatchPick::OnMiddleButtonUp();
+    }
 }
 
 void InteractorStylePatchPick::SetPatches(vtkSmartPointer<vtkCollection> pts)
@@ -114,16 +118,24 @@ void InteractorStylePatchPick::OnLeftButtonDown()
 
 void InteractorStylePatchPick::OnRightButtonUp()
 {
+    if(selectedPatches->GetNumberOfIds() == 0)
+    {
+        return;
+    }
     int x = this->Interactor->GetEventPosition()[0];
     int y = this->Interactor->GetEventPosition()[1];
 
     vtkIdType clickedPatch = findClickedPatch(x,y);
 
-    selectedPatches->DeleteId(clickedPatch);
-
-    hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
-    patch->resetColor();
+    if(clickedPatch > -1 )
+    {
+        selectedPatches->DeleteId(clickedPatch);
+        hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
+        patch->resetColor();
+    }
     this->GetInteractor()->GetRenderWindow()->Render();
+
+
 //    std::cout <<"Selected Patches: ";
 //    for(vtkIdType i =0; i<selectedPatches->GetNumberOfIds();i++)
 //        std::cout << selectedPatches->GetId(i) <<", ";
