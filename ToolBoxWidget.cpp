@@ -49,6 +49,7 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));
     connect(setBCsW,SIGNAL(done()),this,SLOT(slotCancel()));
     connect(moveVerticesW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
+    connect(moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotCancel()));
     connect(createBlockW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(setBCsW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
 

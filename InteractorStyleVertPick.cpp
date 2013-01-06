@@ -111,8 +111,10 @@ void InteractorStyleVertPick::OnLeftButtonUp()
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
         return;
      }
-    // Forward events
+    //Dirty hack, I have no idea what this does.
+    //but its needed in order for parent class to work.
     this->State = 0;
+    // Forward events
     vtkInteractorStyleRubberBandPick::OnLeftButtonUp();
 
 
@@ -128,7 +130,6 @@ void InteractorStyleVertPick::OnLeftButtonUp()
     extractGeometry->SetInputData(this->Points);
 #endif
     extractGeometry->Update();
-    std::cout << "VTKIS_NONE " << VTKIS_NONE << " state: " << this->State << std::endl;
 
     vtkIdType numPoints = extractGeometry->GetOutput()->GetNumberOfPoints();
 

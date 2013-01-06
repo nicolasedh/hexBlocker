@@ -199,7 +199,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Cancel</string>
+        <string>Done</string>
        </property>
       </widget>
      </item>
