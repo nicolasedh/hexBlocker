@@ -69,6 +69,8 @@ public:
     void setHex(vtkSmartPointer<HexBlock> hex);
     vtkSmartPointer<HexBlock> getPrimaryHexBlock();
     vtkSmartPointer<HexBlock> getSecondaryHexBlock();
+    void getCenter(double cog[3]);
+    void rescaleActor();
 
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;

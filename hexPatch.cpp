@@ -196,3 +196,28 @@ vtkSmartPointer<HexBlock> hexPatch::getSecondaryHexBlock()
 {
     return secondaryHex;
 }
+
+void hexPatch::getCenter(double cog[3])
+{
+    //Calculate center of gravity
+    //cog = sum(vpos)/4
+    double vpos[3];
+    cog[0]=0.0;cog[1]=0.0;cog[2]=0.0;
+    for(vtkIdType i=0;i<4;i++)
+    {
+        globalVertices->GetPoint(vertIds->GetId(i),vpos);
+        cog[0]+=vpos[0];
+        cog[1]+=vpos[1];
+        cog[2]+=vpos[2];
+    }
+    vtkMath::MultiplyScalar(cog,0.25);
+}
+
+void hexPatch::rescaleActor()
+{
+    double cog[3];
+    getCenter(cog);
+//    std::cout << "centers is (" << cog[0] << cog[1] << cog[2] << ")" << std::endl;
+    actor->SetOrigin(cog);
+    actor->SetScale(0.6);
+}

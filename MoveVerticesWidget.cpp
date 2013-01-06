@@ -43,9 +43,13 @@ MoveVerticesWidget::MoveVerticesWidget(QWidget *parent) :
     dist[0]=0.0;
     dist[1]=0.0;
     dist[2]=0.0;
+    delta=true;
+    ui->radioMove->setChecked(true);
+    ui->radioSet->setChecked(false);
     //connections
     connect(ui->pushButtonApply, SIGNAL(clicked()), this, SLOT(slotApply()));
     connect(ui->pushButtonCancel, SIGNAL(clicked()),this,SLOT(slotDone()));
+    connect(ui->pushButtonSelectV,SIGNAL(clicked()),this,SIGNAL(startSelect()));
 }
 
 MoveVerticesWidget::~MoveVerticesWidget()
@@ -58,7 +62,7 @@ void MoveVerticesWidget::slotApply()
     QString X = ui->lineEditX->text();
     QString Y = ui->lineEditY->text();
     QString Z = ui->lineEditZ->text();
-    delta=ui->checkBoxDelta->isChecked();
+    delta=ui->radioMove->isChecked();
 
     if(delta)
     {
@@ -68,9 +72,9 @@ void MoveVerticesWidget::slotApply()
     }
     else
     {
-        checkedX=ui->checkBoxX;
-        checkedY=ui->checkBoxY;
-        checkedZ=ui->checkBoxZ;
+        checkedX=ui->checkBoxX->isChecked();
+        checkedY=ui->checkBoxY->isChecked();
+        checkedZ=ui->checkBoxZ->isChecked();
     }
     dist[0] = X.toDouble();
     dist[1] = Y.toDouble();
@@ -87,4 +91,16 @@ void MoveVerticesWidget::slotApply()
 void MoveVerticesWidget::slotDone()
 {
     emit moveDone();
+}
+
+void MoveVerticesWidget::slotToggleRadio()
+{
+    if(ui->radioMove->isChecked())
+    {
+        ui->radioSet->setChecked(false);
+    }
+    if(ui->radioSet->isChecked())
+    {
+        ui->radioMove->setChecked(false);
+    }
 }

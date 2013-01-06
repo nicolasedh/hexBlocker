@@ -113,8 +113,10 @@ MainWindow::MainWindow()
     connect(this->ui->actionExtrudePatch,SIGNAL(triggered()),this,SLOT(slotStartExtrudePatch()));
     connect(this->ui->actionDumpData,SIGNAL(triggered()),this,SLOT(slotPrintHexBlocks()));
     connect(this->ui->actionOpenMoveVerticesDialog,SIGNAL(triggered()),this,SLOT(slotOpenMoveVerticesDialog()));
+    connect(toolbox->moveVerticesW,SIGNAL(startSelect()),this,SLOT(slotStartSelectVertices()));
     connect(toolbox->moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotResetInteractor()));
     connect(toolbox->moveVerticesW,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
+    connect(styleVertPick,SIGNAL(selectionDone()),this,SLOT(slotEndSelectVertices()));
     connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
     connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdType)),this,SLOT(slotStartSelectPatches(vtkIdType)));
@@ -213,28 +215,46 @@ void MainWindow::slotExtrudePatch(vtkIdList *selectedPatches)
 
 void MainWindow::slotOpenMoveVerticesDialog()
 {
-
-    renwin->GetInteractor()->SetInteractorStyle(styleVertPick);
-    renwin->GetInteractor()->SetPicker(areaPicker);
-
-    styleVertPick->StartSelect();
-
     toolbox->setCurrentIndex(2);
-
-    ui->statusbar->showMessage(tr("Left button to select, press cntrl to rotate"),10000);
 }
 
-void MainWindow::slotRender()
+void MainWindow::slotStartSelectVertices()
 {
+    renwin->GetInteractor()->SetInteractorStyle(styleVertPick);
+    renwin->GetInteractor()->SetPicker(areaPicker);
+    styleVertPick->clearSelection();
+    styleVertPick->StartSelect();
+    ui->statusbar->showMessage(tr("Left button to select, middle when finished, cntrl to control camera"),10000);
+
+}
+
+void MainWindow::slotEndSelectVertices()
+{
+    renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
 }
 
 void MainWindow::slotMoveVertices()
 {
-
     if(toolbox->moveVerticesW->delta)
+    {
         hexBlocker->moveVertices(styleVertPick->SelectedList,toolbox->moveVerticesW->dist);
+    }
+    else
+    {
+        bool setPos[3];
+        setPos[0] = toolbox->moveVerticesW->checkedX;
+        setPos[1] = toolbox->moveVerticesW->checkedY;
+        setPos[2] = toolbox->moveVerticesW->checkedZ;
+        hexBlocker->setVerticesPos(styleVertPick->SelectedList,toolbox->moveVerticesW->dist,setPos);
+    }
 
+    slotResetInteractor();
+    renwin->Render();
+}
+
+void MainWindow::slotRender()
+{
     renwin->Render();
 }
 

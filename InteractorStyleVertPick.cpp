@@ -111,8 +111,6 @@ void InteractorStyleVertPick::OnLeftButtonUp()
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
         return;
      }
-    else//kan tas bort? pga return
-    {
     // Forward events
     vtkInteractorStyleRubberBandPick::OnLeftButtonUp();
 
@@ -167,10 +165,21 @@ void InteractorStyleVertPick::OnLeftButtonUp()
     this->GetInteractor()->GetRenderWindow()->Render();
     this->HighlightProp(NULL);
 
-    }
     //this->StartRotate();
     //this->CurrentMode = 0;
 }
+
+void InteractorStyleVertPick::OnMiddleButtonUp()
+{
+    if(this->Interactor->GetControlKey())
+    {
+//        std::cout<<"you pressed ctnrl"<<std::endl;
+        vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+        return;
+     }
+    emit selectionDone();
+}
+
 void InteractorStyleVertPick::clearSelection()
 {
     SelectedList->Initialize();
@@ -179,5 +188,9 @@ void InteractorStyleVertPick::clearSelection()
 
 void InteractorStyleVertPick::OnChar()
 {
-
+    char k = this->GetInteractor()->GetKeyCode();
+    if(k == ' ')
+    {
+        InteractorStyleVertPick::OnMiddleButtonUp();
+    }
 }

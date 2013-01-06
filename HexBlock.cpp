@@ -492,3 +492,11 @@ vtkIdType HexBlock::patchIdInGlobalList(vtkSmartPointer<hexPatch> p)
 
     return -1;
 }
+
+void HexBlock::rescaleActor()
+{
+    double x[3];
+    globalVertices->GetPoint(vertIds->GetId(0),x);
+    hexActor->SetOrigin(x);
+    hexActor->SetScale(0.4);
+}

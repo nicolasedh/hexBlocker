@@ -45,8 +45,10 @@ public:
 public slots:
     void slotApply();
     void slotDone();
+    void slotToggleRadio();
 
 signals:
+    void startSelect();
     void moveVertices();
     void moveDone();
     void setStatusText(QString);

@@ -21,14 +21,14 @@ This file is part of hexBlocker.
 
     The license is included in the file COPYING.
 */
-
-
-#ifndef HEXBLOCKER_H
-#define HEXBLOCKER_H
 /* This is the class that is in charge of storing all
    hexblocks, vertices, edges and faces
 
    */
+
+#ifndef HEXBLOCKER_H
+#define HEXBLOCKER_H
+
 #include <vtkSmartPointer.h>
 #include <QTextStream>
 
@@ -65,7 +65,7 @@ public:
     void resetBounds();
     void PrintHexBlocks();
     void moveVertices(vtkSmartPointer<vtkIdList> ids, double dist[]);
-
+    void setVerticesPos(vtkSmartPointer<vtkIdList> ids, double pos[],bool setPos[]);
 
     void resetColors();
     void exportVertices(QTextStream &os);
@@ -99,9 +99,9 @@ public:
     vtkSmartPointer<vtkRenderer> renderer;
 
 private:
-
     //Functions
     void addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,vtkIdType edgeId);
+    void rescaleActors();
 };
 
 

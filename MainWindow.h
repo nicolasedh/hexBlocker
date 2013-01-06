@@ -74,6 +74,8 @@ public slots:
   void slotStartExtrudePatch();
   void slotExtrudePatch(vtkIdList *selectedPatches);
   void slotOpenMoveVerticesDialog();
+  void slotStartSelectVertices();
+  void slotEndSelectVertices();
   void slotMoveVertices();
   void slotResetInteractor();
   void slotOpenSetBCsDialog();

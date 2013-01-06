@@ -84,8 +84,8 @@ public:
     vtkIdType getPatchInternalId(vtkSmartPointer<hexPatch> otherP);
     vtkSmartPointer<vtkIdList> getParallelEdges(vtkIdType edgeId);
     void getNumberOfCells(int nCells[3]);
-
     void setAxesRadius(double rad);
+    void rescaleActor();
 
     //DATA
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices

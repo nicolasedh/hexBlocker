@@ -27,6 +27,7 @@ This file is part of hexBlocker.
 
 #include <vtkSmartPointer.h>
 #include <vtkInteractorStyleRubberBandPick.h>
+#include <QObject>
 
 class vtkPolyData;
 class vtkGlyph3D;
@@ -34,9 +35,12 @@ class vtkSphereSource;
 class vtkDataSetMapper;
 class vtkActor;
 class vtkIdList;
+class vtkExtractGeometry;
 
-class InteractorStyleVertPick : public vtkInteractorStyleRubberBandPick
+class InteractorStyleVertPick : public QObject, public vtkInteractorStyleRubberBandPick
 {
+    Q_OBJECT
+
     vtkTypeMacro(InteractorStyleVertPick,vtkInteractorStyleRubberBandPick);
 protected:
     InteractorStyleVertPick();
@@ -45,27 +49,30 @@ protected:
     void operator=(const InteractorStyleVertPick&);// Not implemented in order to comply with vtkObject.
 
 public:
+    //Functions
     static InteractorStyleVertPick* New();
     void PrintSelf(ostream &os, vtkIndent indent);
     virtual void OnLeftButtonUp();
     virtual void OnMouseMove();
     virtual void OnLeftButtonDown();
+    virtual void OnMiddleButtonUp();
     void SetPoints(vtkSmartPointer<vtkPolyData> points) {this->Points = points;}
     void clearSelection();
     void OnChar(); //override from superclass
+
+    //Data
     vtkSmartPointer<vtkSphereSource> SelectedSphere;
     vtkSmartPointer<vtkActor> SelectedActor;
     vtkSmartPointer<vtkIdList> SelectedList;
     vtkSmartPointer<vtkPolyData> Points;
-
     vtkSmartPointer<vtkGlyph3D> SelectedGlyph;
+
+signals:
+    void selectionDone();
+
 private:
-
-
-
     vtkSmartPointer<vtkDataSetMapper> SelectedMapper;
-
-
+//    vtkSmartPointer<vtkExtractGeometry> extractGeometry;
 };
 
 #endif // INTERACTORVERTPICK_H

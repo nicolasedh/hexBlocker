@@ -54,11 +54,11 @@ This file is part of hexBlocker.
 #include <vtkActor2D.h>
 #include <vtkProperty2D.h>
 
+
 HexBlocker::HexBlocker()
 {
     //All vertices in the modell
     vertices = vtkSmartPointer<vtkPoints>::New();
-
     vertData = vtkSmartPointer<vtkPolyData>::New();
     vertData->SetPoints(vertices);
 
@@ -403,9 +403,30 @@ void HexBlocker::moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
 
         vertices->Modified();
     }
-
+    rescaleActors();
 }
 
+void HexBlocker::setVerticesPos(vtkSmartPointer<vtkIdList> ids, double newPos[3], bool setPos[3])
+{
+    double pos[3];
+    for(vtkIdType i = 0;i<ids->GetNumberOfIds();i++)
+    {
+//        std::cout << "setting point " << ids->GetId(i) << " (";
+        vertices->GetPoint(ids->GetId(i),pos);
+//        std::cout << pos[0] << " " << pos[1] << " " << pos[2] << "), (";
+        if(setPos[0])
+            pos[0]=newPos[0];
+        if(setPos[1])
+            pos[1]=newPos[1];
+        if(setPos[2])
+            pos[2]=newPos[2];
+//        std::cout << pos[0] << " " << pos[1] << " " << pos[2] << ")." << std::endl;
+        vertices->SetPoint(ids->GetId(i),pos);
+
+        vertices->Modified();
+    }
+    rescaleActors();
+}
 
 
 
@@ -541,6 +562,26 @@ int HexBlocker::calculateTotalNumberOfCells()
     return totNumCells;
 }
 
+void HexBlocker::rescaleActors()
+{
+    //edges presently dont need to be reset
+    //patches
+    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+    {
+        hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        p->rescaleActor();
+    }
+
+    //blocks (local axes)
+    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+    {
+        HexBlock * b = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        b->rescaleActor();
+    }
+
+    renderer->Render();
+}
+
 void HexBlocker::arbitraryTest()
 {
 
@@ -558,8 +599,6 @@ void HexBlocker::arbitraryTest()
     p->equals(testList);
 
     long int a = 6; //Max value 9223372036854775807
-
-
 }
 
 
