@@ -112,7 +112,9 @@ void InteractorStyleVertPick::OnLeftButtonUp()
         return;
      }
     // Forward events
+    this->State = 0;
     vtkInteractorStyleRubberBandPick::OnLeftButtonUp();
+
 
     vtkPlanes* frustum =
             static_cast<vtkAreaPicker*>(this->GetInteractor()->GetPicker())->GetFrustum();
@@ -126,7 +128,7 @@ void InteractorStyleVertPick::OnLeftButtonUp()
     extractGeometry->SetInputData(this->Points);
 #endif
     extractGeometry->Update();
-
+    std::cout << "VTKIS_NONE " << VTKIS_NONE << " state: " << this->State << std::endl;
 
     vtkIdType numPoints = extractGeometry->GetOutput()->GetNumberOfPoints();
 
