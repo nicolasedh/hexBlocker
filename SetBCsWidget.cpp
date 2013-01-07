@@ -142,17 +142,6 @@ void SetBCsWidget::changeBCs(HexReader * reader)
         ui->treeWidget->addTopLevelItem(bcitem);
 
     }
-
-//    vtkSmartPointer<vtkCollection> bccoll = reader->readBCs;
-//    std::cout << "readBCs names (" << bccoll->GetNumberOfItems() <<") in widget1:";
-//    for(vtkIdType k=0;k<bccoll->GetNumberOfItems();k++)
-//    {
-//        HexBC * testbc = HexBC::SafeDownCast(bccoll->GetItemAsObject(k));
-//        std::cout << "(" << testbc->patchIds->GetNumberOfIds() << ")"
-//                  << " (" << testbc->name << "," << testbc->type << ")";
-//    }
-//    std::cout << ", did names show up?" << std::endl;
-
 }
 
 void SetBCsWidget::slotDeleteBC()

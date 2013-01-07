@@ -164,10 +164,10 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     vtkIdType numEdges = edges->GetNumberOfItems();
     vtkIdType numPatches = patches->GetNumberOfItems();
 
-    vtkSmartPointer<hexPatch> p =
+    hexPatch * p =
             hexPatch::SafeDownCast(
                 patches->GetItemAsObject(selectedPatches->GetId(0)));
-    vtkSmartPointer<HexBlock> hex = p->getPrimaryHexBlock();
+    HexBlock * hex = p->getPrimaryHexBlock();
 
     /*
     std::cout << "I'am block " << hexBlocks->IsItemPresent(hex) -1 << " patch: "
@@ -214,7 +214,7 @@ void HexBlocker::resetBounds()
     double minDiag=1e6;
     for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
     {
-        vtkSmartPointer<HexBlock> hex =
+        HexBlock * hex =
                 HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
         double c1[3], c2[3];
         vertices->GetPoint(hex->vertIds->GetId(0),c1);
@@ -270,7 +270,7 @@ void HexBlocker::PrintHexBlocks()
     {
         std::cout << "Hexblock " << i << ":"
                   <<"\t"<< "Vertices Id and posin global list: " <<std::endl;
-        vtkSmartPointer<HexBlock> hex= HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        HexBlock * hex= HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
         double pos[3];
         for(vtkIdType j=0;j<hex->vertIds->GetNumberOfIds();j++)
         {
@@ -287,7 +287,7 @@ void HexBlocker::PrintHexBlocks()
 
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
-        vtkSmartPointer<hexPatch> patch = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        hexPatch * patch = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
         std::cout << "Patch" << i <<" ids: ";
         for(vtkIdType j=0;j<4;j++)
             std::cout << patch->vertIds->GetId(j) << " ";
@@ -299,7 +299,7 @@ void HexBlocker::PrintHexBlocks()
     for(vtkIdType i = 0;i<hexBCs->GetNumberOfItems();i++)
     {
 
-        vtkSmartPointer<HexBC> bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
+        HexBC * bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
         std::cout << "\t BC " << i << ": " << bc->name << ", "
                   << bc->type << ", ";
         for(vtkIdType j = 0;j<bc->patchIds->GetNumberOfIds();j++)

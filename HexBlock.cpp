@@ -125,7 +125,7 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
                     vtkSmartPointer<vtkCollection> edges,
                     vtkSmartPointer<vtkCollection> patches)
 {
-    vtkSmartPointer<HexBlock> fromHex = p->getPrimaryHexBlock();
+    HexBlock * fromHex = p->getPrimaryHexBlock();
     globalVertices=verts;
     globalEdges = edges;
     globalPatches = patches;
@@ -133,8 +133,7 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
     // number of vertices before extrude
     vtkIdType nGv=globalVertices->GetNumberOfPoints();
 
-    vtkSmartPointer<vtkIdList> oldIds =
-            p->vertIds;
+    vtkIdList * oldIds =  p->vertIds;
 
     //We want to keep extruded blocks aligned
     //so the extrude operation is diffierent depending
@@ -235,7 +234,7 @@ vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<hexPatch> otherP)
     }
 //    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
 //    {
-//        vtkSmartPointer<hexPatch> p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
+//        hexPatch * p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
 //        if(p->equals(otherP))
 //            patchId=i;
 //    }
@@ -403,7 +402,7 @@ void HexBlock::initPatch(int ids[])
         //patch already exist, only add reference to this
         //in the existing one, needed by extrude.
         //std::cout << "item is present" << std::endl;
-        vtkSmartPointer<hexPatch> existingPatch =
+        hexPatch * existingPatch =
                 hexPatch::SafeDownCast(globalPatches->GetItemAsObject(pId));
         existingPatch->setHex(this);
         patchIds->InsertNextId(pId);
@@ -481,7 +480,7 @@ vtkIdType HexBlock::patchIdInGlobalList(vtkSmartPointer<hexPatch> p)
     for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
     {
 //        std::cout << "checking with patch: " << i << std::endl;
-        vtkSmartPointer<hexPatch> op =
+        hexPatch * op =
                 hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i) );
         if(op->equals(p))
         {
