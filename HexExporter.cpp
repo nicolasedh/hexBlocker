@@ -52,7 +52,6 @@ void HexExporter::exporBlockMeshDict(QTextStream &out)
         << "}" << endl;
 
     QString cnv2m;
-    std::cout << "conv:" << conv2meter << std::endl;
     cnv2m.sprintf("%g",conv2meter);
     out << "convertToMeters " << cnv2m <<";" << endl;
 
