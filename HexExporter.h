@@ -28,6 +28,7 @@ This file is part of hexBlocker.
 #include <QObject>
 
 class HexBlocker;
+class QTextStream;
 
 
 class HexExporter : public QObject
@@ -37,8 +38,9 @@ public:
     HexExporter();
     HexExporter(HexBlocker *);
 
-    void exporBlockMeshDict(QString filename);
+    void exporBlockMeshDict(QTextStream &out);
     HexBlocker *hexB;
+    double conv2meter;
 
 };
 
