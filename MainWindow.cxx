@@ -306,9 +306,38 @@ void MainWindow::slotExportBlockMeshDict()
                 &selectedFilter,
                 options
                 );
+    if(filename.isNull())
+    {
+        this->ui->statusbar->showMessage("Cancelled",3000);
+        return;
+    }
+
+    QFile file(filename);
+
+    QString title = tr("convertToMeters");
+    QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
+    bool ok1;
+    double conv2meters = QInputDialog::getDouble(this,title,label,0.001,1e-255,1e255,6,&ok1);
+
+    if(!ok1)
+    {
+        this->ui->statusbar->showMessage("Cancelled",3000);
+        return;
+    }
+
+    bool ok2 = file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    if(!ok2)
+    {
+        this->ui->statusbar->showMessage("Error opening file",5000);
+        return;
+    }
+
+    QTextStream out(&file);
 
     HexExporter * exporter = new HexExporter(hexBlocker);
-    exporter->exporBlockMeshDict(filename);
+    exporter->conv2meter=conv2meters;
+    exporter->exporBlockMeshDict(out);
 }
 
 
