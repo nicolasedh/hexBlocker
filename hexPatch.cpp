@@ -159,6 +159,26 @@ void hexPatch::getNormal(double n[3])
     vtkMath::Subtract(v3,v0,y);
 
     vtkMath::Cross(x,y,n);
+
+    if(hasPrimaryHex)
+    {
+        //The normal is returned as pointing away from primary block center
+        double boxc[3],patchc[3],boxcTopatchc[3];
+        primaryHex->getCenter(boxc);
+        hexPatch::getCenter(patchc);
+
+//        vtkMath::Subtract(patchc,boxc,boxcTopatchc);
+//        std::cout << "boxcenter: " << boxc[0] << " "<<  boxc[1] << " " << boxc[2] << "\n"
+//                  << ", normal1: " << n[0] << " " << n[1] << " " << n[2]
+//                  << ", dot: " << vtkMath::Dot(n,boxcTopatchc) << std::endl;
+
+        if(vtkMath::Dot(n,boxcTopatchc)<0)
+            vtkMath::MultiplyScalar(n,-1);
+
+//        std::cout << ", normal2: " << n[0] << " " << n[1] << " " << n[2] << std::endl
+//                  << ", ctoc: " << boxcTopatchc[0] <<" "<< boxcTopatchc[1] << " "<< boxcTopatchc[2];
+
+    }
     vtkMath::Normalize(n);
 /*
     std::cout << "n =(" << n[0]  <<" " << n[1]  << " " << n[2]  << "), " << std::endl
@@ -168,6 +188,21 @@ void hexPatch::getNormal(double n[3])
               << "x =(" << x[0]  <<" " << x[1] << " "  << x[2] << "), "  << std::endl
               << "y =(" << y[0]  <<" " << y[1] << " "  << y[2] << "), "  << std::endl;
 */
+}
+void hexPatch::getCenter(double c[3])
+{
+    double pos[3];
+    for(vtkIdType i=0;i<4;i++)
+    {
+        globalVertices->GetPoint(vertIds->GetId(i),pos);
+        vtkMath::Add(c,pos,c);
+
+//        center[0]+=pos[0];
+//        center[1]+=pos[1];
+//        center[2]+=pos[2];
+//        std::cout << "boxcenter0: " << center[0] << " "<<  center[1] << " " << center[2] << std::endl;
+    }
+    vtkMath::MultiplyScalar(c,0.25);
 }
 
 void hexPatch::setHex(vtkSmartPointer<HexBlock> hex)
@@ -197,21 +232,6 @@ vtkSmartPointer<HexBlock> hexPatch::getSecondaryHexBlock()
     return secondaryHex;
 }
 
-void hexPatch::getCenter(double cog[3])
-{
-    //Calculate center of gravity
-    //cog = sum(vpos)/4
-    double vpos[3];
-    cog[0]=0.0;cog[1]=0.0;cog[2]=0.0;
-    for(vtkIdType i=0;i<4;i++)
-    {
-        globalVertices->GetPoint(vertIds->GetId(i),vpos);
-        cog[0]+=vpos[0];
-        cog[1]+=vpos[1];
-        cog[2]+=vpos[2];
-    }
-    vtkMath::MultiplyScalar(cog,0.25);
-}
 
 void hexPatch::rescaleActor()
 {

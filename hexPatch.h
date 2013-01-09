@@ -65,6 +65,8 @@ public:
     void setColor(double,double,double);
     void resetColor();
     void exportVertIds(QTextStream &os);
+
+    //returns the normal outward from primary hexblock
     void getNormal(double n[3]);
     void setHex(vtkSmartPointer<HexBlock> hex);
     vtkSmartPointer<HexBlock> getPrimaryHexBlock();

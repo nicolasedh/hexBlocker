@@ -86,6 +86,7 @@ public:
     void getNumberOfCells(int nCells[3]);
     void setAxesRadius(double rad);
     void rescaleActor();
+    void getCenter(double center[3]);
 
     //DATA
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices

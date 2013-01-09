@@ -499,3 +499,20 @@ void HexBlock::rescaleActor()
     hexActor->SetOrigin(x);
     hexActor->SetScale(0.4);
 }
+
+void HexBlock::getCenter(double center[])
+{
+    center[0] = 0.0;
+    center[1] = 0.0;
+    center[2] = 0.0;
+
+    double pos[3];
+    for(vtkIdType i=0;i<8;i++)
+    {
+        globalVertices->GetPoint(vertIds->GetId(i),pos);
+        vtkMath::Add(center,pos,center);
+//        std::cout << "boxcenter0: " << center[0] << " "<<  center[1] << " " << center[2] << std::endl;
+    }
+    vtkMath::MultiplyScalar(center,1.0/8.0);
+//    std::cout << "boxcenter1: " << center[0] << " "<<  center[1] << " " << center[2] << std::endl;
+}
