@@ -41,6 +41,7 @@ This file is part of hexBlocker.
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 
 #include <vtkPlaneSource.h>
 
@@ -582,23 +583,104 @@ void HexBlocker::rescaleActors()
     renderer->Render();
 }
 
+bool HexBlocker::findEdge(const vtkIdType a, const vtkIdType b, HexEdge * edge)
+{
+    bool foundIt=false;
+    vtkIdList * list = vtkIdList::New();
+    for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        if(e->equals(list))
+        {
+            edge = e;
+            foundIt = true;
+            break;
+        }
+    }
+    list->Delete();
+    return foundIt;
+}
+
+void HexBlocker::mergePatch(vtkIdType masterPatch, vtkIdType slavePatch)
+{
+    hexPatch * master = hexPatch::SafeDownCast(patches->GetItemAsObject(masterPatch));
+    hexPatch * slave = hexPatch::SafeDownCast(patches->GetItemAsObject(slavePatch));
+
+    //check so that both don't have sec.hex
+//    renderer->RemoveActor(slave->actor);
+//    HexEdge * e0,e1,e2,e3;
+//    vtkIdType a = slave->vertIds->GetId(0);
+//    vtkIdType b = slave->vertIds->GetId(1);
+
+
+}
+
 void HexBlocker::arbitraryTest()
 {
+    //merge patch 2 och 8
 
     this->createHexBlock();
+    double c1[3], c2[3];
+    c1[0]=1.1;c1[1]=0.0;c1[2]=0.0;
+    c2[0]=2.1;c2[1]=1.0;c2[2]=1.0;
+    this->createHexBlock(c1,c2);
 
-    std::cout << " numP" << patches->GetNumberOfItems() << std::endl;
-    hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(0));
-    vtkSmartPointer<vtkIdList> testList =
-            vtkSmartPointer<vtkIdList>::New();
-    testList->InsertNextId(p->vertIds->GetId(3));
-    testList->InsertNextId(p->vertIds->GetId(1));
-    testList->InsertNextId(p->vertIds->GetId(2));
-    testList->InsertNextId(p->vertIds->GetId(0));
+    mergePatch(2,8);
+    //      vertices->SetNumberOfPoints(2);
+//      vertices->InsertPoint(0,0.0,0.0,0.0);
+//      vertices->InsertPoint(0,1.0,1.0,1.0);
+//      vertData->SetPoints(vertices);
+//      int numE=100;
+//      std::cout << " creating" << std::endl;
+//      for(vtkIdType i=0;i<numE;i++)
+//      {
+//          vtkSmartPointer<HexEdge> e =
+//                  vtkSmartPointer<HexEdge>::New();
+//          e->init(0,1,vertices);
+//          edges->AddItem(e);
+//          renderer->AddActor(e->actor);
+////          renderer->Modified();
+//          renderer->Render();
+//          renderer->GetRenderWindow()->Render();
+//          e.~vtkSmartPointerBase();
+//      }
 
-    p->equals(testList);
+//      sleep(2);
+//      std::cout << "deleting" << std::endl;
+//      for(vtkIdType i=0;i<numE;i++)
+//      {
+//          HexEdge * de = HexEdge::SafeDownCast(edges->GetItemAsObject(0));
+//          renderer->RemoveActor(de->actor);
+//          edges->RemoveItem(0);
+//      }
+//      std::cout << "deleted all ok" <<  std::endl;
 
-    long int a = 6; //Max value 9223372036854775807
+
+
+
+//    renderer->RemoveActor(p->actor);
+
+//    patches->RemoveItem(p);
+//    p->Delete();
+
+//    std::cout << "creating blocks" << std::endl;
+//    int maxbs=10;
+//    for(vtkIdType i=0;i<maxbs;i++)
+//    {
+//        createHexBlock();
+//        renderer->Render();
+
+//    }
+//    std::cout << "blocks created" << std::endl;
+//    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+//    {
+//        HexBlock *bl = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+//        renderer->RemoveActor(bl->hexActor);
+//        hexBlocks->RemoveItem(i);
+//    }
+//    std::cout << "removedblocks?" << std::endl;
+
+//    long int a = 6; //Max value 9223372036854775807
 }
 
 

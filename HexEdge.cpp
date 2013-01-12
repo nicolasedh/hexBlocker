@@ -82,6 +82,19 @@ bool HexEdge::equals(const HexEdge  *other)
 
 }
 
+bool HexEdge::equals(const vtkSmartPointer<vtkIdList> otherIds)
+{
+    return (
+                otherIds->GetId(0) == this->vertIds->GetId(0) &&
+                otherIds->GetId(1) == this->vertIds->GetId(1)
+            ) ||
+            (
+                otherIds->GetId(0) == this->vertIds->GetId(1) &&
+                otherIds->GetId(1) == this->vertIds->GetId(0)
+            );
+
+}
+
 void HexEdge::init(vtkIdType p0,
                    vtkIdType p1,
                     vtkSmartPointer<vtkPoints> verts)

@@ -137,8 +137,10 @@
    <addaction name="actionOpenMoveVerticesDialog"/>
    <addaction name="actionSetBCs"/>
    <addaction name="actionSetNumber"/>
+   <addaction name="actionMergePatch"/>
    <addaction name="separator"/>
    <addaction name="actionDumpData"/>
+   <addaction name="actionArbitraryTest"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="autoFillBackground">
@@ -290,6 +292,22 @@
    </property>
    <property name="text">
     <string>View tool box</string>
+   </property>
+  </action>
+  <action name="actionArbitraryTest">
+   <property name="text">
+    <string>ArbitraryTest</string>
+   </property>
+   <property name="toolTip">
+    <string>Test button for testing stuff</string>
+   </property>
+  </action>
+  <action name="actionMergePatch">
+   <property name="text">
+    <string>mergePatch</string>
+   </property>
+   <property name="toolTip">
+    <string>Merge two patches</string>
    </property>
   </action>
  </widget>

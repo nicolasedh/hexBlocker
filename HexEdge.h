@@ -60,7 +60,7 @@ public:
     void init(vtkIdType p0,vtkIdType p1, vtkSmartPointer<vtkPoints> verts);
 
     bool equals(const HexEdge * other);
-
+    bool equals(const vtkSmartPointer<vtkIdList> otherIds);
 
     void setColor(double,double,double);
     void resetColor();

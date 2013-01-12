@@ -73,11 +73,12 @@ public:
     void exportBCs(QTextStream &os);
     int showParallelEdges(vtkIdType edgeId); // shows all parallel edges
     void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
-
-    void arbitraryTest();
-
     int calculateTotalNumberOfCells();
     void readBlockMeshDict(HexReader * reader);
+    void mergePatch(vtkIdType masterPatch, vtkIdType slavePatch);
+    void arbitraryTest();
+
+
 
     //DATA
     vtkSmartPointer<vtkPoints> vertices;
@@ -102,6 +103,7 @@ private:
     //Functions
     void addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,vtkIdType edgeId);
     void rescaleActors();
+    bool findEdge(const vtkIdType a, const vtkIdType b, HexEdge * edge);
 };
 
 

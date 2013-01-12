@@ -134,6 +134,8 @@ MainWindow::MainWindow()
             qApp,SLOT(aboutQt()));
     connect(this->ui->actionAbout_hexBlocker,SIGNAL(triggered()),
             this,SLOT(slotAboutDialog()));
+    connect(this->ui->actionArbitraryTest,SIGNAL(triggered()),this,SLOT(slotArbitraryTest()));
+    connect(this->ui->actionMergePatch,SIGNAL(triggered()),this,SLOT(slotMergePatch()));
 }
 
 MainWindow::~MainWindow()
@@ -510,6 +512,17 @@ void MainWindow::slotViewToolBox()
     {
         toolbox->show();
     }
+}
+
+void MainWindow::slotMergePatch()
+{
+
+}
+
+void MainWindow::slotArbitraryTest()
+{
+    hexBlocker->arbitraryTest();
+    renwin->Render();
 }
 
 void MainWindow::slotExit()

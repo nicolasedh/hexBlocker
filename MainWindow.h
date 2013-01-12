@@ -87,6 +87,8 @@ public slots:
   void slotStartSelectEdges();
   void slotEdgeSelectionDone(vtkIdType edgeId);
   void slotAboutDialog();
+  void slotArbitraryTest();
+  void slotMergePatch();
 
   void slotReadBlockMeshDict();
   // void slotSetBCs();
