@@ -84,6 +84,14 @@ bool HexEdge::equals(const HexEdge  *other)
 
 bool HexEdge::equals(const vtkSmartPointer<vtkIdList> otherIds)
 {
+    if(otherIds->GetNumberOfIds() < 2)
+        return false;
+
+//    std::cout << "comparing other ("
+//              << otherIds->GetId(0) << ","
+//              << otherIds->GetId(1) << ") my ("
+//              << vertIds->GetId(0) << ","
+//              << vertIds->GetId(1) << ")" << std::endl;
     return (
                 otherIds->GetId(0) == this->vertIds->GetId(0) &&
                 otherIds->GetId(1) == this->vertIds->GetId(1)
@@ -139,4 +147,41 @@ void HexEdge::exportVertIds(QTextStream &os)
          << vertIds->GetId(1) << ")" << endl;
 }
 
+void HexEdge::changeVertId(vtkIdType from, vtkIdType to)
+{
+    vtkIdType pos = vertIds->IsId(from);
+    if(pos >= 0)
+    {
+        vertIds->SetId(pos,to);
+        line->GetPointIds()->SetId(pos,to);
+        vtkIdType pts[2];
+        pts[0]=vertIds->GetId(0);
+        pts[1]=vertIds->GetId(1);
+        lines->ReplaceCell(0,2,pts);
 
+//        line->GetPoints()
+//        line->Modified();
+//        lines->Modified();
+//        data->Modified(); //funkar
+//        tube->Modified(); //funkar
+//        actor->Modified();
+//        std::cout << "found i" << std::endl;
+    }
+
+}
+
+void HexEdge::reduceVertId(vtkIdType vId)
+{
+    for(vtkIdType i=0;i<vertIds->GetNumberOfIds();i++)
+    {
+        vtkIdType oldId = vertIds->GetId(i);
+        if(oldId > vId)
+        {
+            vertIds->SetId(i,oldId-1);
+        }
+    }
+    vtkIdType pts[2];
+    pts[0]=vertIds->GetId(0);
+    pts[1]=vertIds->GetId(1);
+    lines->ReplaceCell(0,2,pts);
+}

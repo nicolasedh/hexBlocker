@@ -516,7 +516,7 @@ void MainWindow::slotViewToolBox()
 
 void MainWindow::slotMergePatch()
 {
-
+    hexBlocker->mergePatch(2,8);
 }
 
 void MainWindow::slotArbitraryTest()
@@ -527,7 +527,7 @@ void MainWindow::slotArbitraryTest()
 
 void MainWindow::slotExit()
 {
-    qApp->exit();
+    qApp->exit(0);
 
 }
 

@@ -241,3 +241,43 @@ void hexPatch::rescaleActor()
     actor->SetOrigin(cog);
     actor->SetScale(0.6);
 }
+
+void hexPatch::changeVertId(vtkIdType from, vtkIdType to)
+{
+    vtkIdType pos = vertIds->IsId(from);
+    if(pos >= 0)
+    {
+//        std::cout<<" before("
+//                 << vertIds->GetId(0) << "," << vertIds->GetId(1) << ","
+//                 << vertIds->GetId(2) << "," << vertIds->GetId(3) << ") after (";
+        vertIds->SetId(pos,to);
+        quad->GetPointIds()->SetId(pos,to);
+        vtkIdType pts[4];
+        pts[0]=vertIds->GetId(0);
+        pts[1]=vertIds->GetId(1);
+        pts[2]=vertIds->GetId(2);
+        pts[3]=vertIds->GetId(3);
+        quads->ReplaceCell(0,4,pts);
+//        std::cout << vertIds->GetId(0) << "," << vertIds->GetId(1) << ","
+//        << vertIds->GetId(2) << "," << vertIds->GetId(3) << ")" << std::endl;
+//        data->Modified();
+//        rescaleActor();
+
+    }
+}
+
+void hexPatch::reduceVertId(vtkIdType vId)
+{
+    for(vtkIdType i=0;i<vertIds->GetNumberOfIds();i++)
+    {
+        vtkIdType oldId = vertIds->GetId(i);
+        if(oldId > vId)
+            vertIds->SetId(i,oldId-1);
+    }
+    vtkIdType pts[4];
+    pts[0]=vertIds->GetId(0);
+    pts[1]=vertIds->GetId(1);
+    pts[2]=vertIds->GetId(2);
+    pts[3]=vertIds->GetId(3);
+    quads->ReplaceCell(0,4,pts);
+}

@@ -73,6 +73,8 @@ public:
     vtkSmartPointer<HexBlock> getSecondaryHexBlock();
     void getCenter(double cog[3]);
     void rescaleActor();
+    void changeVertId(vtkIdType from, vtkIdType to);
+    void reduceVertId(vtkIdType vId);
 
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;

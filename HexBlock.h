@@ -41,6 +41,7 @@ class vtkLine;
 class vtkMapper;
 class vtkActor;
 class vtkTubeFilter;
+class vtkCellArray;
 
 
 
@@ -87,6 +88,9 @@ public:
     void setAxesRadius(double rad);
     void rescaleActor();
     void getCenter(double center[3]);
+    void changeVertId(vtkIdType from, vtkIdType to);
+    void reduceVertId(vtkIdType vId);
+    void initEdges();
 
     //DATA
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices
@@ -103,15 +107,16 @@ private:
     //
     void initAll();
     void drawLocalaxes();
-    void initEdges();
+
     void initEdge(vtkIdType p0,vtkIdType p1);
     void initPatches();
     void initPatch(int ids[4]);
     vtkIdType patchIdInGlobalList(vtkSmartPointer<hexPatch> p);
 
     //DATA
-    vtkSmartPointer<vtkMapper> hexMapper;
-    vtkSmartPointer<vtkPoints> hexVertices;
+    vtkSmartPointer<vtkPolyData> axesData;
+
+
     vtkSmartPointer<vtkTubeFilter> axesTubes;
 
 };

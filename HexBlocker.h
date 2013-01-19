@@ -75,7 +75,8 @@ public:
     void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
     int calculateTotalNumberOfCells();
     void readBlockMeshDict(HexReader * reader);
-    void mergePatch(vtkIdType masterPatch, vtkIdType slavePatch);
+    void mergePatch(vtkIdType masterId, vtkIdType slaveId);
+
     void arbitraryTest();
 
 
@@ -103,7 +104,14 @@ private:
     //Functions
     void addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,vtkIdType edgeId);
     void rescaleActors();
-    bool findEdge(const vtkIdType a, const vtkIdType b, HexEdge * edge);
+    // returns id if found else returns -1
+    vtkIdType findEdge(const vtkIdType a, const vtkIdType b);
+    void removeVertice(vtkIdType toRem);
+    void removeVertices(vtkIdList * toRemove);
+
+    // decreases Ids in list above toRem (not equal to toRem)
+    void decreaseList(vtkIdList * list, vtkIdList * toRemove);
+    void decreaseList(vtkIdList * list, vtkIdType toRem);
 };
 
 

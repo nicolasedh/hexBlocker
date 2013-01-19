@@ -66,6 +66,8 @@ public:
     void resetColor();
     void setRadius(double rad);
     void exportVertIds(QTextStream &os);
+    void changeVertId(vtkIdType from, vtkIdType to);
+    void reduceVertId(vtkIdType vId);
 
 
     //DATA

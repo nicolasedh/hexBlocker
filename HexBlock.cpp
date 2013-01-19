@@ -51,7 +51,7 @@ HexBlock::HexBlock()
     vertIds = vtkSmartPointer<vtkIdList>::New();
     edgeIds  = vtkSmartPointer<vtkIdList>::New();
     patchIds = vtkSmartPointer<vtkIdList>::New();
-    hexVertices = vtkSmartPointer<vtkPoints>::New();
+
     hexData = vtkSmartPointer<vtkPolyData>::New();
     axesTubes = vtkSmartPointer<vtkTubeFilter>::New();
     globalEdges = vtkSmartPointer<vtkCollection>::New();
@@ -243,7 +243,7 @@ vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<hexPatch> otherP)
 
 void HexBlock::PrintSelf(ostream &os, vtkIndent indent)
 {
-    os << "This is the hexblock! " << hexVertices->GetPoint(0)[0] << std::endl;
+
 }
 
 void HexBlock::drawLocalaxes()
@@ -260,25 +260,30 @@ void HexBlock::drawLocalaxes()
     colors->InsertNextTupleValue(blue);
 
     vtkSmartPointer<vtkCellArray> axes =
-        vtkSmartPointer<vtkCellArray>::New();
+            vtkSmartPointer<vtkCellArray>::New();
+//    axes->SetNumberOfCells(3); //don't do this, this doubles the number of lines why?
+//    axes->InitTraversal();
+
+
     vtkSmartPointer<vtkLine> xaxes =
-           vtkSmartPointer<vtkLine>::New();
+            vtkSmartPointer<vtkLine>::New();
     xaxes->GetPointIds()->SetId(0,vertIds->GetId(0));
     xaxes->GetPointIds()->SetId(1,vertIds->GetId(1));
     axes->InsertNextCell(xaxes);
+
     vtkSmartPointer<vtkLine> yaxes =
             vtkSmartPointer<vtkLine>::New();
     yaxes->GetPointIds()->SetId(0,vertIds->GetId(0));
     yaxes->GetPointIds()->SetId(1,vertIds->GetId(3));
     axes->InsertNextCell(yaxes);
+
     vtkSmartPointer<vtkLine> zaxes =
-           vtkSmartPointer<vtkLine>::New();
+            vtkSmartPointer<vtkLine>::New();
     zaxes->GetPointIds()->SetId(0,vertIds->GetId(0));
     zaxes->GetPointIds()->SetId(1,vertIds->GetId(4));
     axes->InsertNextCell(zaxes);
 
-    vtkSmartPointer<vtkPolyData> axesData =
-        vtkSmartPointer<vtkPolyData>::New();
+    axesData = vtkSmartPointer<vtkPolyData>::New();
     axesData->SetPoints(globalVertices);
     axesData->SetLines(axes);
 
@@ -314,6 +319,7 @@ void HexBlock::initEdges()
 {
     //Keep the same order of edges as on
     //docs on blockMesh
+    edgeIds->Initialize();
     initEdge(vertIds->GetId(1),vertIds->GetId(0)); //0
     initEdge(vertIds->GetId(2),vertIds->GetId(3)); //1
     initEdge(vertIds->GetId(6),vertIds->GetId(7)); //2
@@ -338,7 +344,8 @@ void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
     bool existsInGlobal = false;
     vtkIdType posInGlobal=-1;
 
-    for(vtkIdType i=0;i<globalEdges->GetNumberOfItems();i++){
+    for(vtkIdType i=0;i<globalEdges->GetNumberOfItems();i++)
+    {
         HexEdge *e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(i));
         if(newEdge->equals(e))
         {
@@ -350,6 +357,10 @@ void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
 
     if(!existsInGlobal)
     {
+//        std::cout << "adding edge ("
+//                  << newEdge->vertIds->GetId(0) << ","
+//                  << newEdge->vertIds->GetId(1) << ")"
+//                  << std::endl;
         globalEdges->AddItem(newEdge);
         edgeIds->InsertNextId(globalEdges->GetNumberOfItems()-1);
     }
@@ -516,3 +527,25 @@ void HexBlock::getCenter(double center[])
     vtkMath::MultiplyScalar(center,1.0/8.0);
 //    std::cout << "boxcenter1: " << center[0] << " "<<  center[1] << " " << center[2] << std::endl;
 }
+
+void HexBlock::changeVertId(vtkIdType from, vtkIdType to)
+{
+    vtkIdType pos = vertIds->IsId(from);
+    if(pos >= 0)
+    {
+        vertIds->SetId(pos,to);
+    }
+    drawLocalaxes();
+}
+
+void HexBlock::reduceVertId(vtkIdType vId)
+{
+    for(vtkIdType i=0;i<vertIds->GetNumberOfIds();i++)
+    {
+        vtkIdType oldId = vertIds->GetId(i);
+        if(oldId > vId)
+            vertIds->SetId(i,oldId-1);
+    }
+    drawLocalaxes();
+}
+
