@@ -167,7 +167,7 @@ void hexPatch::getNormal(double n[3])
         primaryHex->getCenter(boxc);
         hexPatch::getCenter(patchc);
 
-//        vtkMath::Subtract(patchc,boxc,boxcTopatchc);
+        vtkMath::Subtract(patchc,boxc,boxcTopatchc);
 //        std::cout << "boxcenter: " << boxc[0] << " "<<  boxc[1] << " " << boxc[2] << "\n"
 //                  << ", normal1: " << n[0] << " " << n[1] << " " << n[2]
 //                  << ", dot: " << vtkMath::Dot(n,boxcTopatchc) << std::endl;
