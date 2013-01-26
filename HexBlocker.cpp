@@ -832,7 +832,7 @@ void HexBlocker::arbitraryTest()
     this->createHexBlock(c1,c2);
 
     std::cout << "created blocks, merging" <<std::endl;
-    mergePatch(4,7);
+//    mergePatch(4,7);
 
     //    // CHANGING IDS of slave patch
     //    std::cout << "Changing ids" << std::endl;

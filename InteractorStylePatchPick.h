@@ -64,6 +64,9 @@ public:
 
     vtkIdList *selectedPatches;
 
+//    enum selectionModes{single=1,pair=2,multi=3};//select single patch, multiple patches or a pair.
+//    selectionModes  selectionMode;
+    enum selectionModes{single=1,pair=2,multi=3}selectionMode   ;
 signals:
     void selectionDone(vtkIdList *selectedPatches);
 

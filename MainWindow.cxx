@@ -134,8 +134,9 @@ MainWindow::MainWindow()
             qApp,SLOT(aboutQt()));
     connect(this->ui->actionAbout_hexBlocker,SIGNAL(triggered()),
             this,SLOT(slotAboutDialog()));
+    connect(this->ui->actionMergePatch,SIGNAL(triggered()),this,SLOT(slotStartMergePatch()));
     connect(this->ui->actionArbitraryTest,SIGNAL(triggered()),this,SLOT(slotArbitraryTest()));
-    connect(this->ui->actionMergePatch,SIGNAL(triggered()),this,SLOT(slotMergePatch()));
+
 }
 
 MainWindow::~MainWindow()
@@ -147,12 +148,8 @@ MainWindow::~MainWindow()
 // Action to be taken upon file open 
 void MainWindow::slotZoomOut()
 {
-
     hexBlocker->resetBounds();
     renwin->Render();
-
-
-    //renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
 }
 
 void MainWindow::slotOpenCreateHexBlockDialog()
@@ -514,9 +511,31 @@ void MainWindow::slotViewToolBox()
     }
 }
 
-void MainWindow::slotMergePatch()
+void MainWindow::slotStartMergePatch()
 {
-    hexBlocker->mergePatch(2,8);
+    stylePatchPick->selectedPatches->Initialize();
+    stylePatchPick->selectionMode=InteractorStylePatchPick::pair;
+    renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
+    connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList*)),
+            this,SLOT(slotMergePatch(vtkIdList*)));
+}
+
+void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
+{
+    disconnect(stylePatchPick,SIGNAL(selectionDone(vtkIdList*)),
+               this,SLOT(slotMergePatch(vtkIdList*)));
+    if(selectedPatches->GetNumberOfIds()<2)
+    {
+        this->ui->statusbar->showMessage("Cancelled",3000);
+        return;
+    }
+    else
+    {
+        hexBlocker->mergePatch(selectedPatches->GetId(0),selectedPatches->GetId(1));
+        stylePatchPick->selectedPatches->Initialize();
+    }
+    renwin->GetInteractor()->SetInteractorStyle(defStyle);
+    renwin->Render();
 }
 
 void MainWindow::slotArbitraryTest()

@@ -41,6 +41,7 @@ vtkStandardNewMacro(InteractorStylePatchPick);
 InteractorStylePatchPick::InteractorStylePatchPick() : QObject()
 {
     selectedPatches = vtkIdList::New();
+    selectionMode = multi;
 }
 
 InteractorStylePatchPick::~InteractorStylePatchPick()
@@ -104,11 +105,22 @@ void InteractorStylePatchPick::OnLeftButtonDown()
     //only insert if not already in list and only if we clicked a patch
     if(selectedPatches->IsId(clickedPatch) == -1 && clickedPatch > -1)
     {
-        selectedPatches->InsertNextId(clickedPatch);
 
+        selectedPatches->InsertNextId(clickedPatch);
         hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
-        patch->setColor(1.0,0,0);
-        this->GetInteractor()->GetRenderWindow()->Render();
+        if(selectionMode == pair && selectedPatches->GetNumberOfIds()>1)
+        {
+//            std::cout << "blue selection" << std::endl;
+            patch->setColor(0.0,1.0,0);
+            this->GetInteractor()->GetRenderWindow()->Render();
+            emit selectionDone(selectedPatches);
+        }
+        else
+        {
+//            std::cout << "red selection" << std::endl;
+            patch->setColor(1.0,0,0);
+            this->GetInteractor()->GetRenderWindow()->Render();
+        }
 //    std::cout <<"Selected Patches: ";
 //    for(vtkIdType i =0; i<selectedPatches->GetNumberOfIds();i++)
 //        std::cout << selectedPatches->GetId(i) <<", ";
