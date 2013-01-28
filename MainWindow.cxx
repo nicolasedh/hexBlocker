@@ -176,6 +176,7 @@ void MainWindow::slotStartExtrudePatch()
     toolbox->setCurrentIndex(0); // show empty page
     ui->statusbar->showMessage(
                 tr("Left button to select a patch, middle button to confirm, rightbutton to deselect"));
+    stylePatchPick->selectionMode=InteractorStylePatchPick::single;
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             this,SLOT(slotExtrudePatch(vtkIdList *)));
@@ -276,6 +277,7 @@ void MainWindow::slotOpenSetBCsDialog()
 
 void MainWindow::slotStartSelectPatches(vtkIdType bcID)
 {
+    stylePatchPick->selectionMode=InteractorStylePatchPick::multi;
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             toolbox->setBCsW,SLOT(slotSelectionDone(vtkIdList*)));
@@ -522,6 +524,7 @@ void MainWindow::slotStartMergePatch()
 
 void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
 {
+    this->ui->statusbar->showMessage(tr("Select first master and then slave "),3000);
     disconnect(stylePatchPick,SIGNAL(selectionDone(vtkIdList*)),
                this,SLOT(slotMergePatch(vtkIdList*)));
     if(selectedPatches->GetNumberOfIds()<2)

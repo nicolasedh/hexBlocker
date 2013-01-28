@@ -714,7 +714,8 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
 
 
 
-    removeVertices(slaveIds);
+//    removeVertices(slaveIds);
+    removeVerticesSafely(slaveIds);
     vertices->Modified();
     renderer->Render();
     renderer->GetRenderWindow()->Render();
@@ -738,6 +739,34 @@ void HexBlocker::decreaseList(vtkIdList *list, vtkIdType toRem)
         vtkIdType listId = list->GetId(i);
         if(listId>toRem)
             list->SetId(i,listId-1);
+    }
+}
+
+
+bool HexBlocker::removeVerticeSafely(vtkIdType toRem )
+{
+    bool isItsafe = true;
+    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++ )
+    {
+        HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        vtkIdType hasId = hb->vertIds->IsId(toRem);
+        //toRem is not in list if hasId == -1
+        isItsafe = (isItsafe && hasId==-1);
+
+    }
+    if(isItsafe)
+        removeVertice(toRem);
+
+    return isItsafe;
+}
+
+void HexBlocker::removeVerticesSafely(vtkIdList *toRemove)
+{
+    for(vtkIdType i=0;i< toRemove->GetNumberOfIds();i++)
+    {
+        bool removed = removeVerticeSafely(toRemove->GetId(i));
+        if(removed)
+            decreaseList(toRemove,toRemove->GetId(i));
     }
 }
 
@@ -832,7 +861,17 @@ void HexBlocker::arbitraryTest()
     this->createHexBlock(c1,c2);
 
     std::cout << "created blocks, merging" <<std::endl;
+
+    vtkIdList * extrPs = vtkIdList::New();
+    extrPs->InsertId(0,9);
+    extrudePatch(extrPs,1.0);
+    extrPs->InsertId(0,3);
+    extrudePatch(extrPs,1.0);
+
+    mergePatch(20,13);
 //    mergePatch(4,7);
+
+
 
     //    // CHANGING IDS of slave patch
     //    std::cout << "Changing ids" << std::endl;

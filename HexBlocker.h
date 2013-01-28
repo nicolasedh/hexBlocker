@@ -77,6 +77,10 @@ public:
     void readBlockMeshDict(HexReader * reader);
     void mergePatch(vtkIdType masterId, vtkIdType slaveId);
 
+    // Return true if vertice was removed. Only remove of no block
+    // has vertices id toRem
+    bool removeVerticeSafely(vtkIdType toRem);
+    void removeVerticesSafely(vtkIdList * toRemove);
     void arbitraryTest();
 
 
