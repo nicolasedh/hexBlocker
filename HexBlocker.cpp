@@ -711,10 +711,6 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
                 hb->patchIds->SetId(k,pId-1);
         }
     }
-
-
-
-//    removeVertices(slaveIds);
     removeVerticesSafely(slaveIds);
     vertices->Modified();
     renderer->Render();

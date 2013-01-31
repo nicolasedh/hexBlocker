@@ -64,7 +64,6 @@ MainWindow::MainWindow()
     this->ui = new Ui_MainWindow;
     this->ui->setupUi(this);
 
-
     hexBlocker = new HexBlocker();
     hexBlocker->renderer->SetBackground(.2, .3, .4);
 
@@ -122,12 +121,15 @@ MainWindow::MainWindow()
     connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdType)),this,SLOT(slotStartSelectPatches(vtkIdType)));
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
     connect(toolbox->setBCsW,SIGNAL(render()),this,SLOT(slotRender()));
-    connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotExportBlockMeshDict()));
+
 
     connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotStartSelectEdges()));
     connect(toolbox,SIGNAL(setStatusText(QString)),this,SLOT(slotShowStatusText(QString)));
 
-    connect(this->ui->actionReadBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotReadBlockMeshDict()));
+    connect(this->ui->actionOpenBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotOpenBlockMeshDict()));
+    connect(this->ui->actionReOpenBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotReOpenBlockMeshDict()));
+    connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotSaveBlockMeshDict()));
+    connect(this->ui->actionSaveAs,SIGNAL(triggered()),this, SLOT(slotSaveAsBlockMeshDict()));
 
 
     connect(this->ui->actionAbout_Qt,SIGNAL(triggered()),
@@ -295,7 +297,7 @@ void MainWindow::slotPatchSelectionDone()
 //    std::cout << "disconnecting" << std::endl;
 }
 
-void MainWindow::slotExportBlockMeshDict()
+void MainWindow::slotSaveAsBlockMeshDict()
 {
     QFileDialog::Options options;
 
@@ -312,8 +314,19 @@ void MainWindow::slotExportBlockMeshDict()
         this->ui->statusbar->showMessage("Cancelled",3000);
         return;
     }
+    saveFileName = filename;
+    slotSaveBlockMeshDict();
+}
 
-    QFile file(filename);
+void MainWindow::slotSaveBlockMeshDict()
+{
+    if(saveFileName.isNull())
+    {
+        slotSaveAsBlockMeshDict();
+        return;
+    }
+
+    QFile file(saveFileName);
 
     QString title = tr("convertToMeters");
     QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
@@ -339,9 +352,79 @@ void MainWindow::slotExportBlockMeshDict()
     HexExporter * exporter = new HexExporter(hexBlocker);
     exporter->conv2meter=conv2meters;
     exporter->exporBlockMeshDict(out);
+
+    openFileName = saveFileName;
+    file.close();
 }
 
 
+void MainWindow::slotOpenBlockMeshDict()
+{
+
+    QFileDialog::Options options;
+
+    QString selectedFilter,filter;
+    QString dir = "blockMeshDict";
+
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                "Select a blockMeshDict file to read",
+                dir,
+                filter,
+                &selectedFilter,
+                options);
+
+    if(filename.isNull())
+    {
+        this->ui->statusbar->showMessage("Reading Aborted",10000);
+        return;
+    }
+    openFileName=filename;
+    slotReOpenBlockMeshDict();
+
+}
+void MainWindow::slotReOpenBlockMeshDict()
+{
+    if(openFileName.isNull())
+    {
+        slotOpenBlockMeshDict();
+        return;
+    }
+    HexReader * reader = new HexReader();
+
+    QFile file(openFileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        ui->statusbar->showMessage("Error opening file",3000);
+        return ;
+    }
+    QTextStream * in = new QTextStream(&file);
+
+    reader->readBlockMeshDict(in);
+
+    file.close();
+    renwin->RemoveRenderer(hexBlocker->renderer);
+
+    hexBlocker = new HexBlocker();
+    hexBlocker->renderer->SetBackground(.2, .3, .4);
+
+    renwin->AddRenderer(hexBlocker->renderer);
+
+    hexBlocker->readBlockMeshDict(reader);
+    // repoint Axes interactor and widget
+    widget->SetInteractor( renwin->GetInteractor() );
+
+    //Repoint interactors.
+    styleVertPick->SetPoints(hexBlocker->vertData);
+    styleVertPick->SelectedSphere=hexBlocker->vertSphere;
+    stylePatchPick->SetPatches(hexBlocker->patches);
+    styleEdgePick->SetEdges(hexBlocker->edges);
+
+    //Repoint widgets
+    toolbox->setBCsW->changeBCs(reader);
+
+    renwin->Render();
+}
 
 void MainWindow::slotShowStatusText(QString text)
 {
@@ -397,53 +480,7 @@ void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
 
 }
 
-void MainWindow::slotReadBlockMeshDict()
-{
 
-    QFileDialog::Options options;
-
-    QString selectedFilter,filter;
-    QString dir = "blockMeshDict";
-
-    QString filename = QFileDialog::getOpenFileName(
-                this,
-                "Select a blockMeshDict file to read",
-                dir,
-                filter,
-                &selectedFilter,
-                options);
-
-    if(filename.isNull())
-    {
-        this->ui->statusbar->showMessage("Reading Aborted",10000);
-        return;
-    }
-
-    HexReader * reader = new HexReader();
-    reader->readBlockMeshDict(filename);
-
-    renwin->RemoveRenderer(hexBlocker->renderer);
-
-    hexBlocker = new HexBlocker();
-    hexBlocker->renderer->SetBackground(.2, .3, .4);
-
-    renwin->AddRenderer(hexBlocker->renderer);
-
-    hexBlocker->readBlockMeshDict(reader);
-    // repoint Axes interactor and widget
-    widget->SetInteractor( renwin->GetInteractor() );
-
-    //Repoint interactors.
-    styleVertPick->SetPoints(hexBlocker->vertData);
-    styleVertPick->SelectedSphere=hexBlocker->vertSphere;
-    stylePatchPick->SetPatches(hexBlocker->patches);
-    styleEdgePick->SetEdges(hexBlocker->edges);
-
-    //Repoint widgets
-    toolbox->setBCsW->changeBCs(reader);
-
-    renwin->Render();
-}
 
 void MainWindow::slotAboutDialog()
 {
@@ -530,6 +567,7 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
     if(selectedPatches->GetNumberOfIds()<2)
     {
         this->ui->statusbar->showMessage("Cancelled",3000);
+        slotResetInteractor();
         return;
     }
     else
@@ -538,6 +576,7 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
         stylePatchPick->selectedPatches->Initialize();
     }
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
+    slotResetInteractor();
     renwin->Render();
 }
 

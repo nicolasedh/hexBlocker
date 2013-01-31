@@ -236,8 +236,6 @@ vtkSmartPointer<HexBlock> hexPatch::getSecondaryHexBlock()
 void hexPatch::rescaleActor()
 {
     double cog[3];
-    getCenter(cog);
-    std::cout << "centers is1 (" << cog[0]<<"," << cog[1] <<"," << cog[2] << ")" << std::endl;
     cog[0]=0.0;cog[1]=0.0;cog[2]=0.0;
     for(vtkIdType i=0;i<vertIds->GetNumberOfIds();i++)
     {
@@ -246,7 +244,7 @@ void hexPatch::rescaleActor()
         vtkMath::Add(cog,pos,cog);
     }
     vtkMath::MultiplyScalar(cog,0.25);
-    std::cout << "centers is2 (" << cog[0] <<"," << cog[1] <<"," << cog[2] << ")" << std::endl;
+//    std::cout << "centers is (" << cog[0] <<"," << cog[1] <<"," << cog[2] << ")" << std::endl;
     actor->SetOrigin(cog);
     actor->SetScale(0.6);
 }

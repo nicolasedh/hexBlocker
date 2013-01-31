@@ -81,7 +81,8 @@ public slots:
   void slotOpenSetBCsDialog();
   void slotPatchSelectionDone();
   void slotStartSelectPatches(vtkIdType bcID);
-  void slotExportBlockMeshDict();
+  void slotSaveAsBlockMeshDict();
+  void slotSaveBlockMeshDict();
   void slotRender();
   void slotShowStatusText(QString text);
   void slotStartSelectEdges();
@@ -91,7 +92,8 @@ public slots:
   void slotStartMergePatch();
   void slotMergePatch(vtkIdList * selectedPatch);
 
-  void slotReadBlockMeshDict();
+  void slotOpenBlockMeshDict();
+  void slotReOpenBlockMeshDict();
   // void slotSetBCs();
 
 
@@ -110,6 +112,8 @@ private:
   ToolBoxWidget *toolbox;
   // Designer form
   Ui_MainWindow *ui;
+  QString saveFileName;
+  QString openFileName;
 };
 
 #endif // MainWindow_H

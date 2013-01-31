@@ -76,8 +76,11 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionReadBlockMeshDict"/>
+    <addaction name="actionOpenBlockMeshDict"/>
+    <addaction name="actionReOpenBlockMeshDict"/>
+    <addaction name="separator"/>
     <addaction name="actionSave"/>
+    <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -128,7 +131,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionReadBlockMeshDict"/>
+   <addaction name="actionOpenBlockMeshDict"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionZoomOut"/>
@@ -186,6 +189,9 @@
    </property>
    <property name="text">
     <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionCreateHexBlock">
@@ -250,16 +256,19 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;set number of cells on edges&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
-  <action name="actionReadBlockMeshDict">
+  <action name="actionOpenBlockMeshDict">
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
    </property>
    <property name="text">
-    <string>Read BlockMeshDict</string>
+    <string>Open BlockMeshDict</string>
    </property>
    <property name="toolTip">
-    <string>Read a blockMeshDict</string>
+    <string>Open a blockMeshDict</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
    </property>
   </action>
   <action name="actionAbout_Qt">
@@ -308,6 +317,25 @@
    </property>
    <property name="toolTip">
     <string>Merge two patches</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="text">
+    <string>Save as ...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionReOpenBlockMeshDict">
+   <property name="text">
+    <string>Revert</string>
+   </property>
+   <property name="toolTip">
+    <string>Reopen blockMeshDict</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

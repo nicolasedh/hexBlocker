@@ -45,16 +45,13 @@ HexReader::HexReader()
     readBlocks  = vtkSmartPointer<vtkCollection>::New();
     readEdges   = vtkSmartPointer<vtkCollection>::New();
     readBCs     = vtkSmartPointer<vtkCollection>::New();
-
 }
 
-int HexReader::readBlockMeshDict(QString filename)
+int HexReader::readBlockMeshDict(QTextStream *in)
 {
 
 
-    QString fileContents = readFileContents(filename);
-
-//    std::cout << "file contents are \n" << fileContents.toAscii().data() << std::endl;
+    fileContents = readFileContents(in);
 
     //Read vertices
     getVertices();
@@ -68,14 +65,9 @@ int HexReader::readBlockMeshDict(QString filename)
 }
 
 
-QString HexReader::readFileContents(QString filename)
+QString HexReader::readFileContents(QTextStream *in)
 {
-    QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return QString();
-
-    QTextStream in(&file);
-    QString line = in.readLine();
+    QString line = in->readLine();
 
     int rownr;
     while(!line.isNull())
@@ -87,11 +79,11 @@ QString HexReader::readFileContents(QString filename)
         if(slashstar>-1)
         {
             line = line.left(slashstar);
-            QString newline = in.readLine();
+            QString newline = in->readLine();
             int starslash = newline.indexOf("*/");
             while(!newline.isNull() && starslash == -1)
             {
-                newline = in.readLine();
+                newline = in->readLine();
                 starslash = newline.indexOf("*/");
             }
             if(newline.isNull())
@@ -104,12 +96,10 @@ QString HexReader::readFileContents(QString filename)
         }
 
         fileContents.append(line);
-        line=in.readLine();
+        line=in->readLine();
         rownr++;
     }
 
-
-    file.close();
     return fileContents.simplified();
 }
 

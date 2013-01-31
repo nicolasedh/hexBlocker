@@ -47,7 +47,7 @@ public:
     HexReader();
 
     //FUNCTIONS
-    int readBlockMeshDict(QString filename);
+    int readBlockMeshDict(QTextStream *in);
     //DATA
     vtkSmartPointer<vtkPoints>     readVertices;
     vtkSmartPointer<vtkCollection> readPatches; //global patch list
@@ -59,7 +59,7 @@ private:
 
     // reads from whereever "in" is until the next ;
     // remove comments // and /*...*/
-    QString readFileContents(QString filename);
+    QString readFileContents(QTextStream *in);
     // removes // and everyting after from a QString
     QString removeDoubleSlashes(QString line);
 
@@ -73,8 +73,6 @@ private:
 
     //Reads BCs
     bool getBCs();
-
-
 
     //returns an entry as a QString e.g. vertices or blocks from fileContents
     QString getEntry(QString entry,QString container);
