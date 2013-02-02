@@ -69,7 +69,7 @@ void SetBCsWidget::slotCreateBC()
     bc->setFlags(bc->flags() | Qt::ItemIsEditable);
     bc->setText(0,tr("name"));
     bc->setText(1,tr("patch"));
-    bc->hexBC->allPatches = allPatches;
+    bc->hexBC->globalPatches = allPatches;
     hexBCs->AddItem(bc->hexBC);
 }
 
@@ -138,7 +138,7 @@ void SetBCsWidget::changeBCs(HexReader * reader)
         bcitem->setFlags(bcitem->flags() | Qt::ItemIsEditable);
         bcitem->setText(0,name.simplified());
         bcitem->setText(1,type.simplified());
-        bcitem->hexBC->allPatches = allPatches;
+        bcitem->hexBC->globalPatches = allPatches;
         ui->treeWidget->addTopLevelItem(bcitem);
 
     }

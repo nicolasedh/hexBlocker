@@ -695,10 +695,21 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
     //Set hex in master patch
     master->setHex(slave->getPrimaryHexBlock());
 
+    std::cout << "masterId " << patches->IsItemPresent(master)
+              << " slaveId " << patches->IsItemPresent(slave) << std::endl;
+
     // Unregister slave patch
     //SLAVE PATCH
     renderer->RemoveActor(slave->actor);
+    for(vtkIdType i=0;i<hexBCs->GetNumberOfItems();i++)
+    {
+        HexBC *bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
+        bc->removePatchFromList(master);
+        bc->notifyRemovedPatch(slave);
+
+    }
     patches->RemoveItem(slave);
+
 
     //re point patch ids in blocks
     for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)

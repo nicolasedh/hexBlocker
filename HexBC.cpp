@@ -37,7 +37,7 @@ HexBC::HexBC()
     name = std::string("DefaultPatches");
     type = std::string("patch");
     patchIds = vtkSmartPointer<vtkIdList>::New();
-    allPatches = vtkSmartPointer<vtkCollection>::New();
+    globalPatches = vtkSmartPointer<vtkCollection>::New();
     //delete name;
     //name = new QString("foo");
 }
@@ -52,7 +52,7 @@ void HexBC::setPatchColors(double r, double g, double b)
     for(vtkIdType i=0; i<patchIds->GetNumberOfIds();i++)
     {
         hexPatch *p =
-                hexPatch::SafeDownCast(allPatches->GetItemAsObject(patchIds->GetId(i)));
+                hexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
         p->setColor(r,g,b);
     }
 }
@@ -62,7 +62,7 @@ void HexBC::resetPatchColors()
     for(vtkIdType i=0; i<patchIds->GetNumberOfIds();i++)
     {
         hexPatch *p = hexPatch::SafeDownCast(
-                    allPatches->GetItemAsObject(patchIds->GetId(i)));
+                    globalPatches->GetItemAsObject(patchIds->GetId(i)));
         p->resetColor();
 
     }
@@ -77,9 +77,9 @@ bool HexBC::insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids)
 {
 
     bool foundIt=false;
-    for(vtkIdType i=0;i<allPatches->GetNumberOfItems();i++)
+    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
     {
-        hexPatch * p = hexPatch::SafeDownCast(allPatches->GetItemAsObject(i));
+        hexPatch * p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
         if(p->equals(ids))
         {
 //            std::cout << "patch exists " << i <<std::endl;
@@ -114,4 +114,30 @@ bool HexBC::insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids)
 //        }
 //    }
     return foundIt;
+}
+
+void HexBC::notifyRemovedPatch(hexPatch *p)
+{
+    vtkIdType pId = globalPatches->IsItemPresent(p)-1;
+    std::cout << "notify name: " << this->name << " id: " << pId ;
+    patchIds->DeleteId(pId);
+
+    //reduce pointers since pId will be removed in global
+    for(vtkIdType i=0;i<patchIds->GetNumberOfIds();i++)
+    {
+        vtkIdType k = patchIds->GetId(i);
+        if(k>pId)
+        {
+            std::cout << " red. k=" << k;
+            patchIds->SetId(i,k-1);
+        }
+    }
+    std::cout << std::endl;
+}
+
+void HexBC::removePatchFromList(hexPatch *p)
+{
+    vtkIdType pId = globalPatches->IsItemPresent(p)-1;
+    std::cout << "remove name: " << this->name << " id: " << pId << std::endl;
+    patchIds->DeleteId(pId);
 }

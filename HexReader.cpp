@@ -273,7 +273,7 @@ bool HexReader::getBCs()
     {
         vtkSmartPointer<HexBC> newBC =
                 vtkSmartPointer<HexBC>::New();
-        newBC->allPatches = readPatches;
+        newBC->globalPatches = readPatches;
         //get bc name
         QString name = listBCs.at(i).simplified().split("{").at(0).simplified();
         if(name.isEmpty())

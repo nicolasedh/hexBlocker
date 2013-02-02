@@ -54,10 +54,15 @@ public:
     void PrintSelf(ostream &os, vtkIndent indent);
 
     vtkSmartPointer<vtkIdList> patchIds;
-    vtkSmartPointer<vtkCollection> allPatches;
+    vtkSmartPointer<vtkCollection> globalPatches;
     void setPatchColors(double r,double g, double b);
     void resetPatchColors();
 
+    //Removes patch and reduces ids a
+    void notifyRemovedPatch(hexPatch *p);
+
+    //Removes patch from list
+    void removePatchFromList(hexPatch *p);
     // finds id of patch in global list returns true if it was found
     bool insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids);
     std::string name;
