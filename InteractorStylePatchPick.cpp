@@ -108,12 +108,20 @@ void InteractorStylePatchPick::OnLeftButtonDown()
 
         selectedPatches->InsertNextId(clickedPatch);
         hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
-        if(selectionMode == pair && selectedPatches->GetNumberOfIds()>1)
+        if (selectionMode == single)
+        {
+            patch->setColor(1.0,0.0,0.0);
+            this->GetInteractor()->GetRenderWindow()->Render();
+            emit selectionDone(selectedPatches);
+            return;
+        }
+        else if(selectionMode == pair && selectedPatches->GetNumberOfIds()>1)
         {
 //            std::cout << "blue selection" << std::endl;
             patch->setColor(0.0,1.0,0);
             this->GetInteractor()->GetRenderWindow()->Render();
             emit selectionDone(selectedPatches);
+            return;
         }
         else
         {
