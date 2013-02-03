@@ -30,7 +30,7 @@ INCLUDE_DIRECTORIES(
 # Set your files and resources here  
 SET(HexBlockerSrcs
     main.cxx MainWindow.cxx HexBlock.cpp HexBlocker.cpp
-    hexPatch.cpp InteractorStyleVertPick.cpp
+    HexPatch.cpp InteractorStyleVertPick.cpp
     MoveVerticesWidget.cpp CreateBlockWidget.cpp
     InteractorStylePatchPick.cpp HexBC.cpp ToolBoxWidget.cpp
     SetBCsWidget.cpp SetBCsItem.cpp HexExporter.cpp HexEdge.cpp
@@ -42,7 +42,7 @@ SET(HexBlockerUI
     SetBCsWidget.ui
     )
 SET(HexBlockerHeaders
-    MainWindow.h HexBlock.h HexBlocker.h hexPatch.h
+    MainWindow.h HexBlock.h HexBlocker.h HexPatch.h
     InteractorStyleVertPick.h MoveVerticesWidget.h
     CreateBlockWidget.h InteractorStylePatchPick.h
     HexBC.h ToolBoxWidget.h SetBCsWidget.h SetBCsItem.h

@@ -25,7 +25,7 @@ This file is part of hexBlocker.
 #include "HexBlock.h"
 #include <vtkObjectFactory.h>
 
-#include "hexPatch.h"
+#include "HexPatch.h"
 #include "HexEdge.h"
 
 
@@ -119,7 +119,7 @@ void HexBlock::init(vtkSmartPointer<vtkIdList> myVertIds,
 }
 
 //Extrude from patch and distance
-void HexBlock::init(vtkSmartPointer<hexPatch> p,
+void HexBlock::init(vtkSmartPointer<HexPatch> p,
                     double dist,
                     vtkSmartPointer<vtkPoints> verts,
                     vtkSmartPointer<vtkCollection> edges,
@@ -223,18 +223,18 @@ void HexBlock::init(vtkSmartPointer<hexPatch> p,
 
 }
 
-vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<hexPatch> otherP)
+vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<HexPatch> otherP)
 {
     vtkIdType pId=-1;
     for(vtkIdType i=0;i<patchIds->GetNumberOfIds();i++)
     {
-        hexPatch * p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
+        HexPatch * p = HexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
         if(p->equals(otherP))
             pId=i;
     }
 //    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
 //    {
-//        hexPatch * p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
+//        HexPatch * p = HexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
 //        if(p->equals(otherP))
 //            patchId=i;
 //    }
@@ -395,7 +395,7 @@ void HexBlock::initPatches()
 
 void HexBlock::initPatch(int ids[])
 {
-    vtkSmartPointer<hexPatch> patch = vtkSmartPointer<hexPatch>::New();
+    vtkSmartPointer<HexPatch> patch = vtkSmartPointer<HexPatch>::New();
 
     vtkSmartPointer<vtkIdList> vlist = //patch list of vertIds
             vtkSmartPointer<vtkIdList>::New();
@@ -413,8 +413,8 @@ void HexBlock::initPatch(int ids[])
         //patch already exist, only add reference to this
         //in the existing one, needed by extrude.
         //std::cout << "item is present" << std::endl;
-        hexPatch * existingPatch =
-                hexPatch::SafeDownCast(globalPatches->GetItemAsObject(pId));
+        HexPatch * existingPatch =
+                HexPatch::SafeDownCast(globalPatches->GetItemAsObject(pId));
         existingPatch->setHex(this);
         patchIds->InsertNextId(pId);
     }
@@ -486,13 +486,13 @@ void HexBlock::setAxesRadius(double rad)
 
 
 
-vtkIdType HexBlock::patchIdInGlobalList(vtkSmartPointer<hexPatch> p)
+vtkIdType HexBlock::patchIdInGlobalList(vtkSmartPointer<HexPatch> p)
 {
     for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
     {
 //        std::cout << "checking with patch: " << i << std::endl;
-        hexPatch * op =
-                hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i) );
+        HexPatch * op =
+                HexPatch::SafeDownCast(globalPatches->GetItemAsObject(i) );
         if(op->equals(p))
         {
 //            std::cout << "Patch" << i <<" already exist" << std::endl;

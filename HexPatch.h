@@ -38,27 +38,27 @@ class vtkCellArray;
 class vtkPolyData;
 class HexBlock;
 
-class hexPatch : public vtkObject
+class HexPatch : public vtkObject
 {
-    vtkTypeMacro(hexPatch,vtkObject)
+    vtkTypeMacro(HexPatch,vtkObject)
 
 protected:
-    hexPatch();
+    HexPatch();
     // Remember to implement
-    ~hexPatch();
-    hexPatch(const hexPatch&);  // Not implemented in order to comply with vtkObject.
-    void operator=(const hexPatch&);  // Not implemented in order to comply with vtkObject.
+    ~HexPatch();
+    HexPatch(const HexPatch&);  // Not implemented in order to comply with vtkObject.
+    void operator=(const HexPatch&);  // Not implemented in order to comply with vtkObject.
 
 public:
     //FUNCTIONS
-    static hexPatch *New();
+    static HexPatch *New();
     // inorder to comply with vtkObect
     void PrintSelf(ostream &os, vtkIndent indent);
 
     // initializes the ids and points
     void init(vtkSmartPointer<vtkIdList> vIds,vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<HexBlock> hex);
 
-    bool equals(vtkSmartPointer<hexPatch> other);
+    bool equals(vtkSmartPointer<HexPatch> other);
     bool equals(vtkSmartPointer<vtkIdList> otherIds);
     void orderVertices(); //not yet implemented,
 

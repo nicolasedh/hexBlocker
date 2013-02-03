@@ -22,7 +22,7 @@ This file is part of hexBlocker.
     The license is included in the file COPYING.
 */
 
-#include "hexPatch.h"
+#include "HexPatch.h"
 #include <vtkObjectFactory.h>
 
 #include <HexBlock.h>
@@ -37,9 +37,9 @@ This file is part of hexBlocker.
 #include <vtkMath.h>
 
 
-vtkStandardNewMacro(hexPatch);
+vtkStandardNewMacro(HexPatch);
 
-hexPatch::hexPatch()
+HexPatch::HexPatch()
 {
 
     vertIds = vtkSmartPointer<vtkIdList>::New();
@@ -55,12 +55,12 @@ hexPatch::hexPatch()
     hasSecondaryHex = false;
 }
 
-hexPatch::~hexPatch()
+HexPatch::~HexPatch()
 {
 
 }
 
-void hexPatch::PrintSelf(ostream &os, vtkIndent indent)
+void HexPatch::PrintSelf(ostream &os, vtkIndent indent)
 {
     os << "verts:" ;
     for(vtkIdType i=0;i<4;i++)
@@ -68,18 +68,18 @@ void hexPatch::PrintSelf(ostream &os, vtkIndent indent)
     os << "." << std::endl;
 }
 
-void hexPatch::orderVertices(){
+void HexPatch::orderVertices(){
     //use vtkMath to calc normal and crossproducts
 }
 
-bool hexPatch::equals(vtkSmartPointer<hexPatch> other)
+bool HexPatch::equals(vtkSmartPointer<HexPatch> other)
 {
 
     return equals(other->vertIds);
 
 }
 
-bool hexPatch::equals(vtkSmartPointer<vtkIdList> otherIds)
+bool HexPatch::equals(vtkSmartPointer<vtkIdList> otherIds)
 {
     bool IHaveOtherVert[4];
 
@@ -100,7 +100,7 @@ bool hexPatch::equals(vtkSmartPointer<vtkIdList> otherIds)
     return bool(IHaveOtherVert[0] && IHaveOtherVert[1] && IHaveOtherVert[2] && IHaveOtherVert[3]);
 }
 
-void hexPatch::init(vtkSmartPointer<vtkIdList> vIds,
+void HexPatch::init(vtkSmartPointer<vtkIdList> vIds,
                     vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<HexBlock> hex)
 {
     hasPrimaryHex=true;
@@ -123,13 +123,13 @@ void hexPatch::init(vtkSmartPointer<vtkIdList> vIds,
     resetColor();
 }
 
-void hexPatch::setColor(double r, double g, double b)
+void HexPatch::setColor(double r, double g, double b)
 {
     actor->GetProperty()->SetColor(r,b,g);
 
 }
 
-void hexPatch::resetColor()
+void HexPatch::resetColor()
 {
     if(!hasSecondaryHex)
         actor->GetProperty()->SetColor(0.2,0.9,0.2);
@@ -140,7 +140,7 @@ void hexPatch::resetColor()
     }
 }
 
-void hexPatch::exportVertIds(QTextStream &os)
+void HexPatch::exportVertIds(QTextStream &os)
 {
     os << "(" << vertIds->GetId(0) << " "
        << vertIds->GetId(1) << " "
@@ -148,7 +148,7 @@ void hexPatch::exportVertIds(QTextStream &os)
        << vertIds->GetId(3) << ")" << endl;
 }
 
-void hexPatch::getNormal(double n[3])
+void HexPatch::getNormal(double n[3])
 {
     double v0[3],v1[3],v3[3],x[3],y[3];
     globalVertices->GetPoint(vertIds->GetId(0),v0);
@@ -165,7 +165,7 @@ void hexPatch::getNormal(double n[3])
         //The normal is returned as pointing away from primary block center
         double boxc[3],patchc[3],boxcTopatchc[3];
         primaryHex->getCenter(boxc);
-        hexPatch::getCenter(patchc);
+        HexPatch::getCenter(patchc);
 
         vtkMath::Subtract(patchc,boxc,boxcTopatchc);
 //        std::cout << "boxcenter: " << boxc[0] << " "<<  boxc[1] << " " << boxc[2] << "\n"
@@ -189,7 +189,7 @@ void hexPatch::getNormal(double n[3])
               << "y =(" << y[0]  <<" " << y[1] << " "  << y[2] << "), "  << std::endl;
 */
 }
-void hexPatch::getCenter(double c[3])
+void HexPatch::getCenter(double c[3])
 {
     double pos[3];
     for(vtkIdType i=0;i<4;i++)
@@ -205,7 +205,7 @@ void hexPatch::getCenter(double c[3])
     vtkMath::MultiplyScalar(c,0.25);
 }
 
-void hexPatch::setHex(vtkSmartPointer<HexBlock> hex)
+void HexPatch::setHex(vtkSmartPointer<HexBlock> hex)
 {
     //error check?
     if (!hasPrimaryHex)
@@ -222,18 +222,18 @@ void hexPatch::setHex(vtkSmartPointer<HexBlock> hex)
 
 }
 
-vtkSmartPointer<HexBlock> hexPatch::getPrimaryHexBlock()
+vtkSmartPointer<HexBlock> HexPatch::getPrimaryHexBlock()
 {
     return primaryHex;
 }
 
-vtkSmartPointer<HexBlock> hexPatch::getSecondaryHexBlock()
+vtkSmartPointer<HexBlock> HexPatch::getSecondaryHexBlock()
 {
     return secondaryHex;
 }
 
 
-void hexPatch::rescaleActor()
+void HexPatch::rescaleActor()
 {
     double cog[3];
     cog[0]=0.0;cog[1]=0.0;cog[2]=0.0;
@@ -249,7 +249,7 @@ void hexPatch::rescaleActor()
     actor->SetScale(0.6);
 }
 
-void hexPatch::changeVertId(vtkIdType from, vtkIdType to)
+void HexPatch::changeVertId(vtkIdType from, vtkIdType to)
 {
     vtkIdType pos = vertIds->IsId(from);
     if(pos >= 0)
@@ -273,7 +273,7 @@ void hexPatch::changeVertId(vtkIdType from, vtkIdType to)
     }
 }
 
-void hexPatch::reduceVertId(vtkIdType vId)
+void HexPatch::reduceVertId(vtkIdType vId)
 {
     for(vtkIdType i=0;i<vertIds->GetNumberOfIds();i++)
     {

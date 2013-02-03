@@ -30,7 +30,7 @@ This file is part of hexBlocker.
 #include <iostream>
 
 //Pre declarations
-class hexPatch;
+class HexPatch;
 class HexEdge;
 class vtkIdList;
 class vtkPoints;
@@ -70,7 +70,7 @@ public:
               vtkSmartPointer<vtkCollection> patches);
 
     // Extrude from a patch, distance and global list of vertices, edges and patches
-    void init(vtkSmartPointer<hexPatch> p, double dist,
+    void init(vtkSmartPointer<HexPatch> p, double dist,
               vtkSmartPointer<vtkPoints> verts,
               vtkSmartPointer<vtkCollection> edges,
               vtkSmartPointer<vtkCollection> patches);
@@ -82,7 +82,7 @@ public:
               vtkSmartPointer<vtkCollection> edges,
               vtkSmartPointer<vtkCollection> patches);
 
-    vtkIdType getPatchInternalId(vtkSmartPointer<hexPatch> otherP);
+    vtkIdType getPatchInternalId(vtkSmartPointer<HexPatch> otherP);
     vtkSmartPointer<vtkIdList> getParallelEdges(vtkIdType edgeId);
     void getNumberOfCells(int nCells[3]);
     void setAxesRadius(double rad);
@@ -111,7 +111,7 @@ private:
     void initEdge(vtkIdType p0,vtkIdType p1);
     void initPatches();
     void initPatch(int ids[4]);
-    vtkIdType patchIdInGlobalList(vtkSmartPointer<hexPatch> p);
+    vtkIdType patchIdInGlobalList(vtkSmartPointer<HexPatch> p);
 
     //DATA
     vtkSmartPointer<vtkPolyData> axesData;

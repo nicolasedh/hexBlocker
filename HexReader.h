@@ -31,7 +31,7 @@ This file is part of hexBlocker.
 
 class vtkCollection;
 class HexEdge;
-class hexPatch;
+class HexPatch;
 class HexBC;
 class HexBlock;
 class QTextStream;

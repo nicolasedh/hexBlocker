@@ -23,7 +23,7 @@ This file is part of hexBlocker.
 */
 
 #include "InteractorStylePatchPick.h"
-#include "hexPatch.h"
+#include "HexPatch.h"
 #include "HexBC.h"
 #include <vtkCollection.h>
 #include <vtkObjectFactory.h>
@@ -77,7 +77,7 @@ vtkIdType InteractorStylePatchPick::findClickedPatch(int x,int y)
 
     for(vtkIdType i = 0; i< patches->GetNumberOfItems();i++)
     {
-        hexPatch *patch = static_cast<hexPatch *>(patches->GetItemAsObject(i));
+        HexPatch *patch = static_cast<HexPatch *>(patches->GetItemAsObject(i));
         if(this->InteractionProp == patch->actor)
         {
             clickedPatch = i;
@@ -107,7 +107,7 @@ void InteractorStylePatchPick::OnLeftButtonDown()
     {
 
         selectedPatches->InsertNextId(clickedPatch);
-        hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
+        HexPatch *patch = HexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
         if (selectionMode == single)
         {
             patch->setColor(1.0,0.0,0.0);
@@ -150,7 +150,7 @@ void InteractorStylePatchPick::OnRightButtonUp()
     if(clickedPatch > -1 )
     {
         selectedPatches->DeleteId(clickedPatch);
-        hexPatch *patch = hexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
+        HexPatch *patch = HexPatch::SafeDownCast(patches->GetItemAsObject(clickedPatch));
         patch->resetColor();
     }
     this->GetInteractor()->GetRenderWindow()->Render();
@@ -169,7 +169,7 @@ void InteractorStylePatchPick::OnMiddleButtonUp()
 //        std::cout<< "emit signal here" << std::endl;
         for(vtkIdType i = 0; i<selectedPatches->GetNumberOfIds();i++)
         {
-            hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(selectedPatches->GetId(i)));
+            HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(selectedPatches->GetId(i)));
             p->resetColor();
         }
         this->GetInteractor()->GetRenderWindow()->Render();

@@ -34,7 +34,7 @@ This file is part of hexBlocker.
 
 //Predeclarations
 class HexBlock;
-class hexPatch;
+class HexPatch;
 class HexEdge;
 class HexReader;
 class vtkPoints;

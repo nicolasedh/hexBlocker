@@ -34,7 +34,7 @@ This file is part of hexBlocker.
 //Pre declarations
 class vtkIdList;
 class vtkCollection;
-class hexPatch;
+class HexPatch;
 
 
 
@@ -59,10 +59,10 @@ public:
     void resetPatchColors();
 
     //Removes patch and reduces ids a
-    void notifyRemovedPatch(hexPatch *p);
+    void notifyRemovedPatch(HexPatch *p);
 
     //Removes patch from list
-    void removePatchFromList(hexPatch *p);
+    void removePatchFromList(HexPatch *p);
     // finds id of patch in global list returns true if it was found
     bool insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids);
     std::string name;

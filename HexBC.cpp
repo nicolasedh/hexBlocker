@@ -26,7 +26,7 @@ This file is part of hexBlocker.
 #include <vtkObjectFactory.h>
 #include <vtkIdList.h>
 #include <vtkCollection.h>
-#include <hexPatch.h>
+#include <HexPatch.h>
 
 
 vtkStandardNewMacro(HexBC);
@@ -51,8 +51,8 @@ void HexBC::setPatchColors(double r, double g, double b)
 {
     for(vtkIdType i=0; i<patchIds->GetNumberOfIds();i++)
     {
-        hexPatch *p =
-                hexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
+        HexPatch *p =
+                HexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
         p->setColor(r,g,b);
     }
 }
@@ -61,7 +61,7 @@ void HexBC::resetPatchColors()
 {
     for(vtkIdType i=0; i<patchIds->GetNumberOfIds();i++)
     {
-        hexPatch *p = hexPatch::SafeDownCast(
+        HexPatch *p = HexPatch::SafeDownCast(
                     globalPatches->GetItemAsObject(patchIds->GetId(i)));
         p->resetColor();
 
@@ -79,7 +79,7 @@ bool HexBC::insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids)
     bool foundIt=false;
     for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
     {
-        hexPatch * p = hexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
+        HexPatch * p = HexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
         if(p->equals(ids))
         {
 //            std::cout << "patch exists " << i <<std::endl;
@@ -91,7 +91,7 @@ bool HexBC::insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids)
 //    for(vtkIdType i=0;i<allPatches->GetNumberOfItems();i++)
 //    {
 
-//        hexPatch * p = hexPatch::SafeDownCast(allPatches->GetItemAsObject(i));
+//        HexPatch * p = HexPatch::SafeDownCast(allPatches->GetItemAsObject(i));
 //        bool idsInP[4];
 //        //return true if all ids in ids exist in patch
 //        for(vtkIdType j=0;j<ids->GetNumberOfIds();j++)
@@ -116,10 +116,9 @@ bool HexBC::insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids)
     return foundIt;
 }
 
-void HexBC::notifyRemovedPatch(hexPatch *p)
+void HexBC::notifyRemovedPatch(HexPatch *p)
 {
     vtkIdType pId = globalPatches->IsItemPresent(p)-1;
-    std::cout << "notify name: " << this->name << " id: " << pId ;
     patchIds->DeleteId(pId);
 
     //reduce pointers since pId will be removed in global
@@ -128,16 +127,13 @@ void HexBC::notifyRemovedPatch(hexPatch *p)
         vtkIdType k = patchIds->GetId(i);
         if(k>pId)
         {
-            std::cout << " red. k=" << k;
             patchIds->SetId(i,k-1);
         }
     }
-    std::cout << std::endl;
 }
 
-void HexBC::removePatchFromList(hexPatch *p)
+void HexBC::removePatchFromList(HexPatch *p)
 {
     vtkIdType pId = globalPatches->IsItemPresent(p)-1;
-    std::cout << "remove name: " << this->name << " id: " << pId << std::endl;
     patchIds->DeleteId(pId);
 }

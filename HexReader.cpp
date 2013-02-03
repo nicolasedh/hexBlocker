@@ -25,7 +25,7 @@ This file is part of hexBlocker.
 #include "HexReader.h"
 #include "HexBlocker.h"
 #include "HexEdge.h"
-#include "hexPatch.h"
+#include "HexPatch.h"
 #include "HexBlock.h"
 #include "HexBC.h"
 

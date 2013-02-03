@@ -26,7 +26,7 @@ This file is part of hexBlocker.
 #include <limits>
 #include "HexBlocker.h"
 #include "HexBlock.h"
-#include "hexPatch.h"
+#include "HexPatch.h"
 #include "HexEdge.h"
 #include "HexBC.h"
 #include "HexReader.h"
@@ -143,7 +143,7 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
     //add patch actors to renderer, but not already added ones.
     for(vtkIdType i=numPatches;i<patches->GetNumberOfItems();i++)
     {
-        hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         renderer->AddActor(p->actor);
     }
 
@@ -165,8 +165,8 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     vtkIdType numEdges = edges->GetNumberOfItems();
     vtkIdType numPatches = patches->GetNumberOfItems();
 
-    hexPatch * p =
-            hexPatch::SafeDownCast(
+    HexPatch * p =
+            HexPatch::SafeDownCast(
                 patches->GetItemAsObject(selectedPatches->GetId(0)));
     HexBlock * hex = p->getPrimaryHexBlock();
 
@@ -197,7 +197,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     //add patch actors to renderer, but not already added ones.
     for(vtkIdType i=numPatches;i<patches->GetNumberOfItems();i++)
     {
-        hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         renderer->AddActor(p->actor);
     }
 
@@ -258,7 +258,7 @@ void HexBlocker::resetColors()
 {
     //patches
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
-        hexPatch::SafeDownCast(patches->GetItemAsObject(i))->resetColor();
+        HexPatch::SafeDownCast(patches->GetItemAsObject(i))->resetColor();
     //edges
     for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
         HexEdge::SafeDownCast(edges->GetItemAsObject(i))->resetColor();
@@ -288,7 +288,7 @@ void HexBlocker::PrintHexBlocks()
 
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
-        hexPatch * patch = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        HexPatch * patch = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         std::cout << "Patch" << i <<" ids: ";
         for(vtkIdType j=0;j<4;j++)
             std::cout << patch->vertIds->GetId(j) << " ";
@@ -375,10 +375,10 @@ void HexBlocker::exportBCs(QTextStream &os)
            << "\t\ttype\t" << type <<";" << endl
            << "\t\tfaces\t" << endl
            << "\t\t(" << endl;
-        vtkSmartPointer<hexPatch> p;
+        vtkSmartPointer<HexPatch> p;
         for(vtkIdType j=0; j<bc->patchIds->GetNumberOfIds();j++)
         {
-            p = hexPatch::SafeDownCast(patches->GetItemAsObject(bc->patchIds->GetId(j)));
+            p = HexPatch::SafeDownCast(patches->GetItemAsObject(bc->patchIds->GetId(j)));
             os << "\t\t\t";
             p->exportVertIds(os);
         }
@@ -533,7 +533,7 @@ void HexBlocker::readBlockMeshDict(HexReader *reader)
     //add patch actors to renderer
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
-        hexPatch *p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         renderer->AddActor(p->actor);
     }
 
@@ -569,7 +569,7 @@ void HexBlocker::rescaleActors()
     //patches
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
-        hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         p->rescaleActor();
     }
 
@@ -602,11 +602,11 @@ vtkIdType HexBlocker::findEdge(const vtkIdType a, const vtkIdType b)
 
 void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
 {
-    hexPatch * master = hexPatch::SafeDownCast(patches->GetItemAsObject(masterId));
-    hexPatch * slave  = hexPatch::SafeDownCast(patches->GetItemAsObject(slaveId));
+    HexPatch * master = HexPatch::SafeDownCast(patches->GetItemAsObject(masterId));
+    HexPatch * slave  = HexPatch::SafeDownCast(patches->GetItemAsObject(slaveId));
 
-    //    vtkSmartPointer<hexPatch>  slave =
-    //            vtkSmartPointer<hexPatch>::Take(hexPatch::SafeDownCast(patches->GetItemAsObject(slaveId)));
+    //    vtkSmartPointer<HexPatch>  slave =
+    //            vtkSmartPointer<HexPatch>::Take(HexPatch::SafeDownCast(patches->GetItemAsObject(slaveId)));
     //check so that both don't have sec.hex
 
     vtkIdList * slaveIds = vtkIdList::New();
@@ -670,7 +670,7 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
 
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
-        hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         for(vtkIdType k=0;k<4;k++)
         {
             p->changeVertId(
@@ -694,9 +694,6 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
 
     //Set hex in master patch
     master->setHex(slave->getPrimaryHexBlock());
-
-    std::cout << "masterId " << patches->IsItemPresent(master)
-              << " slaveId " << patches->IsItemPresent(slave) << std::endl;
 
     // Unregister slave patch
     //SLAVE PATCH
@@ -805,7 +802,7 @@ void HexBlocker::removeVertice(vtkIdType toRem)
 
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
-        hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         p->reduceVertId(toRem);
     }
 
@@ -893,7 +890,7 @@ void HexBlocker::arbitraryTest()
 
     //    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     //    {
-    //        hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(i));
+    //        HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
     //        p->changeVertId(15,6);
     //        p->changeVertId(11,2);
     //        p->changeVertId(8,1);
@@ -927,7 +924,7 @@ void HexBlocker::arbitraryTest()
     //    renderer->GetRenderWindow()->Render();
 
     //    //SLAVE PATCH
-    //    hexPatch * p = hexPatch::SafeDownCast(patches->GetItemAsObject(8));
+    //    HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(8));
     //    renderer->RemoveActor(p->actor);
     //    patches->RemoveItem(p);
 
