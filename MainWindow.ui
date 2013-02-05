@@ -76,6 +76,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionNewCase"/>
     <addaction name="actionOpenBlockMeshDict"/>
     <addaction name="actionReOpenBlockMeshDict"/>
     <addaction name="separator"/>
@@ -336,6 +337,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionNewCase">
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>

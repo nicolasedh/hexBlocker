@@ -144,6 +144,12 @@ void SetBCsWidget::changeBCs(HexReader * reader)
     }
 }
 
+void SetBCsWidget::clearBCs()
+{
+
+    ui->treeWidget->clear();
+}
+
 void SetBCsWidget::slotDeleteBC()
 {
     QList<QTreeWidgetItem*> selectedTreeItem = ui->treeWidget->selectedItems();

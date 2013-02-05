@@ -43,8 +43,8 @@ This file is part of hexBlocker.
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 
-#include <vtkAxesActor.h>
-#include <vtkOrientationMarkerWidget.h>
+//#include <vtkAxesActor.h>
+//#include <vtkOrientationMarkerWidget.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkIdList.h>
@@ -70,16 +70,18 @@ MainWindow::MainWindow()
     // VTK/Qt wedded
     renwin = this->ui->qvtkWidget->GetRenderWindow();
     renwin->AddRenderer(hexBlocker->renderer);
+    hexBlocker->initOrientationAxes(renwin);
 
-    // Axes interactor and widget
-    axes = vtkSmartPointer<vtkAxesActor>::New();
-    widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
-    widget->SetOutlineColor( 0.9300, 0.5700, 0.1300 );
-    widget->SetOrientationMarker( axes );
-    widget->SetInteractor( renwin->GetInteractor() );
-    widget->SetViewport( 0.0, 0.0, 0.4, 0.4 );
-    widget->SetEnabled( 1 );
-    widget->InteractiveOff();
+
+//    // Axes interactor and widget
+//    axes = vtkSmartPointer<vtkAxesActor>::New();
+//    widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+//    widget->SetOutlineColor( 0.9300, 0.5700, 0.1300 );
+//    widget->SetOrientationMarker( axes );
+//    widget->SetInteractor( renwin->GetInteractor() );
+//    widget->SetViewport( 0.0, 0.0, 0.4, 0.4 );
+//    widget->SetEnabled( 1 );
+//    widget->InteractiveOff();
 
     //Area Picker and InteractorStyles
     areaPicker = vtkSmartPointer<vtkAreaPicker>::New();
@@ -126,6 +128,7 @@ MainWindow::MainWindow()
     connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotStartSelectEdges()));
     connect(toolbox,SIGNAL(setStatusText(QString)),this,SLOT(slotShowStatusText(QString)));
 
+    connect(this->ui->actionNewCase,SIGNAL(triggered()),this,SLOT(slotNewCase()));
     connect(this->ui->actionOpenBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotOpenBlockMeshDict()));
     connect(this->ui->actionReOpenBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotReOpenBlockMeshDict()));
     connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotSaveBlockMeshDict()));
@@ -297,6 +300,37 @@ void MainWindow::slotPatchSelectionDone()
 //    std::cout << "disconnecting" << std::endl;
 }
 
+void MainWindow::slotNewCase()
+{
+
+    hexBlocker->removeOrientationAxes();
+    renwin->RemoveRenderer(hexBlocker->renderer);
+
+    hexBlocker = new HexBlocker();
+    hexBlocker->renderer->SetBackground(.2, .3, .4);
+
+    renwin->AddRenderer(hexBlocker->renderer);
+    hexBlocker->initOrientationAxes(renwin);
+    // repoint Axes interactor and widget
+//    widget->SetInteractor( renwin->GetInteractor() );
+
+    //Repoint interactors.
+    styleVertPick->SetPoints(hexBlocker->vertData);
+    styleVertPick->SelectedSphere=hexBlocker->vertSphere;
+    stylePatchPick->SetPatches(hexBlocker->patches);
+    styleEdgePick->SetEdges(hexBlocker->edges);
+
+    //Repoint widgets
+    // rensa bc's
+//    toolbox->setBCsW->changeBCs(reader);
+
+    toolbox->setBCsW->hexBCs = hexBlocker->hexBCs;
+    toolbox->setBCsW->allPatches = hexBlocker->patches;
+    toolbox->setBCsW->clearBCs();
+
+    renwin->Render();
+}
+
 void MainWindow::slotSaveAsBlockMeshDict()
 {
     QFileDialog::Options options;
@@ -390,7 +424,6 @@ void MainWindow::slotReOpenBlockMeshDict()
         slotOpenBlockMeshDict();
         return;
     }
-    HexReader * reader = new HexReader();
 
     QFile file(openFileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -400,9 +433,12 @@ void MainWindow::slotReOpenBlockMeshDict()
     }
     QTextStream * in = new QTextStream(&file);
 
+    HexReader * reader = new HexReader();
     reader->readBlockMeshDict(in);
 
     file.close();
+
+    hexBlocker->removeOrientationAxes();
     renwin->RemoveRenderer(hexBlocker->renderer);
 
     hexBlocker = new HexBlocker();
@@ -411,8 +447,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     renwin->AddRenderer(hexBlocker->renderer);
 
     hexBlocker->readBlockMeshDict(reader);
-    // repoint Axes interactor and widget
-    widget->SetInteractor( renwin->GetInteractor() );
+    hexBlocker->initOrientationAxes(renwin);
 
     //Repoint interactors.
     styleVertPick->SetPoints(hexBlocker->vertData);

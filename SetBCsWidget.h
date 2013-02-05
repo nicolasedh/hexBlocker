@@ -47,6 +47,7 @@ public:
 
 
     void changeBCs(HexReader * reader);
+    void clearBCs();
 
     vtkSmartPointer<vtkCollection> hexBCs;
     vtkSmartPointer<vtkCollection> allPatches;

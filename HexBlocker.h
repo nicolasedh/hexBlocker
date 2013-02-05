@@ -50,6 +50,9 @@ class vtkQuad;
 class vtkIdList;
 class vtkLabeledDataMapper;
 class vtkActor2D;
+class vtkAxesActor;
+class vtkOrientationMarkerWidget;
+class vtkRenderWindow;
 
 
 class HexBlocker
@@ -59,6 +62,8 @@ public:
     ~HexBlocker();
 
     //FUNCTIONS
+    void initOrientationAxes(vtkRenderWindow * renwin);
+    void removeOrientationAxes();
     void createHexBlock();
     void createHexBlock(double [3],double [3]);
     void extrudePatch(vtkIdList *selectedPatches, double dist);
@@ -99,7 +104,8 @@ public:
     vtkSmartPointer<vtkGlyph3D> vertGlyph;
     vtkSmartPointer<vtkPolyDataMapper> vertMapper;
     vtkSmartPointer<vtkActor> vertActor;
-
+    vtkSmartPointer<vtkAxesActor> orientationAxes;
+    vtkSmartPointer<vtkOrientationMarkerWidget> orientationAxesWidget;
     vtkSmartPointer<vtkLabeledDataMapper> vertLabelMapper;
     vtkSmartPointer<vtkActor2D> vertLabelActor;
     vtkSmartPointer<vtkRenderer> renderer;

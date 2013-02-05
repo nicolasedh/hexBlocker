@@ -81,6 +81,9 @@ public slots:
   void slotOpenSetBCsDialog();
   void slotPatchSelectionDone();
   void slotStartSelectPatches(vtkIdType bcID);
+  void slotNewCase();
+  void slotOpenBlockMeshDict();
+  void slotReOpenBlockMeshDict();
   void slotSaveAsBlockMeshDict();
   void slotSaveBlockMeshDict();
   void slotRender();
@@ -92,8 +95,7 @@ public slots:
   void slotStartMergePatch();
   void slotMergePatch(vtkIdList * selectedPatch);
 
-  void slotOpenBlockMeshDict();
-  void slotReOpenBlockMeshDict();
+
   // void slotSetBCs();
 
 
@@ -105,8 +107,6 @@ private:
   vtkRenderWindow                         *renwin;
   HexBlocker                              *hexBlocker;
   vtkSmartPointer<vtkInteractorStyleTrackballCamera> defStyle;
-  vtkSmartPointer<vtkAxesActor> axes;
-  vtkSmartPointer<vtkOrientationMarkerWidget> widget;
   vtkSmartPointer<vtkAreaPicker> areaPicker;
 
   ToolBoxWidget *toolbox;

@@ -55,6 +55,8 @@ This file is part of hexBlocker.
 #include <vtkActor2D.h>
 #include <vtkProperty2D.h>
 
+#include <vtkOrientationMarkerWidget.h>
+#include <vtkAxesActor.h>
 
 HexBlocker::HexBlocker()
 {
@@ -100,10 +102,38 @@ HexBlocker::HexBlocker()
     renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor(vertActor);
     renderer->AddActor(vertLabelActor);
+
+
+//    widget->SetInteractor( renderer->GetRenderWindow()->GetInteractor() );
+
+//    widget->SetEnabled( 1 );
+
+
 }
 
 HexBlocker::~HexBlocker()
 {
+
+}
+
+void HexBlocker::initOrientationAxes(vtkRenderWindow *renwin)
+{
+    // Axes interactor and widget
+    orientationAxes = vtkSmartPointer<vtkAxesActor>::New();
+    orientationAxesWidget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+    orientationAxesWidget->SetViewport( 0.0, 0.0, 0.4, 0.4 );
+    orientationAxesWidget->SetOutlineColor( 0.9300, 0.5700, 0.1300 );
+    orientationAxesWidget->SetOrientationMarker( orientationAxes );
+    orientationAxesWidget->SetInteractor(renwin->GetInteractor());
+    orientationAxesWidget->SetEnabled(1);
+    orientationAxesWidget->InteractiveOff();
+
+
+}
+
+void HexBlocker::removeOrientationAxes()
+{
+    orientationAxesWidget->Off();
 
 }
 
