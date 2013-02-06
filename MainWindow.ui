@@ -170,6 +170,9 @@
    <property name="text">
     <string>Exit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="actionDumpData">
    <property name="icon">
@@ -269,7 +272,7 @@
     <string>Open a blockMeshDict</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+R</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionAbout_Qt">
@@ -345,6 +348,9 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
  </widget>
