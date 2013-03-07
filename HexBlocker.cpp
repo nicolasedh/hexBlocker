@@ -58,6 +58,7 @@ This file is part of hexBlocker.
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkAxesActor.h>
 
+
 HexBlocker::HexBlocker()
 {
     //All vertices in the modell
@@ -417,7 +418,17 @@ void HexBlocker::exportBCs(QTextStream &os)
     os << ");" <<endl;
 }
 
-
+void HexBlocker::exportEdges(QTextStream &os)
+{
+    if(edgesDict.isEmpty())
+    {
+        os << "edges();" << endl;
+    }
+    else
+    {
+        os << edgesDict.toAscii().data() << endl;
+    }
+}
 void HexBlocker::moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
 {
     double pos[3];

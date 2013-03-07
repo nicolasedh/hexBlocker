@@ -72,17 +72,6 @@ MainWindow::MainWindow()
     renwin->AddRenderer(hexBlocker->renderer);
     hexBlocker->initOrientationAxes(renwin);
 
-
-//    // Axes interactor and widget
-//    axes = vtkSmartPointer<vtkAxesActor>::New();
-//    widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
-//    widget->SetOutlineColor( 0.9300, 0.5700, 0.1300 );
-//    widget->SetOrientationMarker( axes );
-//    widget->SetInteractor( renwin->GetInteractor() );
-//    widget->SetViewport( 0.0, 0.0, 0.4, 0.4 );
-//    widget->SetEnabled( 1 );
-//    widget->InteractiveOff();
-
     //Area Picker and InteractorStyles
     areaPicker = vtkSmartPointer<vtkAreaPicker>::New();
     styleVertPick = vtkSmartPointer<InteractorStyleVertPick>::New();
@@ -448,6 +437,7 @@ void MainWindow::slotReOpenBlockMeshDict()
 
     hexBlocker->readBlockMeshDict(reader);
     hexBlocker->initOrientationAxes(renwin);
+    hexBlocker->edgesDict = reader->edgesDict;
 
     //Repoint interactors.
     styleVertPick->SetPoints(hexBlocker->vertData);
@@ -617,7 +607,13 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
 
 void MainWindow::slotArbitraryTest()
 {
-    hexBlocker->arbitraryTest();
+    QString line = QString("edges \n(");
+    std::cout << "original: " << line.toAscii().data();
+    line.replace(QRegExp("edges[\\s,\\n]*\\("),"foo\nbar");
+    std::cout << " regexped: " << line.toAscii().data()
+              << std::endl;
+
+//    hexBlocker->arbitraryTest();
     renwin->Render();
 }
 

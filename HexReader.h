@@ -54,6 +54,8 @@ public:
     vtkSmartPointer<vtkCollection> readBlocks;  //read blocks
     vtkSmartPointer<vtkCollection> readBCs; //read boundary conditions
     vtkSmartPointer<vtkCollection> readEdges; //read edges
+
+    QString edgesDict; //such as egdes or mergePairs
 private:
     //FUNCTIONS
 
@@ -73,6 +75,10 @@ private:
 
     //Reads BCs
     bool getBCs();
+
+    //Read edges, only reads there's not yet
+    //any way to change this data in hexBlocker
+    bool getEdges();
 
     //returns an entry as a QString e.g. vertices or blocks from fileContents
     QString getEntry(QString entry,QString container);

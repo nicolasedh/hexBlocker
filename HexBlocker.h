@@ -31,6 +31,7 @@ This file is part of hexBlocker.
 
 #include <vtkSmartPointer.h>
 #include <QTextStream>
+#include <QString>
 
 //Predeclarations
 class HexBlock;
@@ -76,6 +77,8 @@ public:
     void exportVertices(QTextStream &os);
     void exportBlocks(QTextStream &os);
     void exportBCs(QTextStream &os);
+    void exportEdges(QTextStream &os);
+
     int showParallelEdges(vtkIdType edgeId); // shows all parallel edges
     void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
     int calculateTotalNumberOfCells();
@@ -109,6 +112,9 @@ public:
     vtkSmartPointer<vtkLabeledDataMapper> vertLabelMapper;
     vtkSmartPointer<vtkActor2D> vertLabelActor;
     vtkSmartPointer<vtkRenderer> renderer;
+
+    //to be removed, has info of arcs an such
+    QString edgesDict;
 
 private:
     //Functions

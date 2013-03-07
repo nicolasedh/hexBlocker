@@ -58,11 +58,11 @@ void HexExporter::exporBlockMeshDict(QTextStream &out)
 
 
     hexB->exportVertices(out);
-
+    out << endl;
     hexB->exportBlocks(out);
-
-    out << "edges" << endl << "(" << endl<< ");" << endl;
-
+    out << endl;
     hexB->exportBCs(out);
+    out << endl;
+    hexB->exportEdges(out);
 
 }

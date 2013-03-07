@@ -37,6 +37,7 @@ This file is part of hexBlocker.
 #include <QtGui>
 
 #include <QTextStream>
+#include <QRegExp>
 
 HexReader::HexReader()
 {
@@ -60,6 +61,7 @@ int HexReader::readBlockMeshDict(QTextStream *in)
 
     getBCs();
 
+    getEdges();
     return 0;
 
 }
@@ -120,21 +122,26 @@ QString HexReader::getEntry(QString entry, QString container)
 
     QString returnEntry("");
 
-    int paranthesisLevel=0;
+    int parenthesisLevel=0;
     for(int i =0; i < contentsFromStart.size();i++)
     {
         if( "(" == contentsFromStart.at(i))
         {
-            paranthesisLevel++;
+            parenthesisLevel++;
         }
         else if( ")" == contentsFromStart.at(i))
         {
-            paranthesisLevel--;
+            parenthesisLevel--;
         }
-        else if(";" == contentsFromStart.at(i) && paranthesisLevel==0)
+        else if(";" == contentsFromStart.at(i) && parenthesisLevel==0)
         {
              //add ";" ?
             break;
+        }
+        else if(parenthesisLevel<0)
+        {
+            std::cout << "Error unmatching parenthesis while getting "
+                      << entry.toAscii().data() << std::endl;
         }
         returnEntry.append(QChar(contentsFromStart.at(i)));
     }
@@ -337,3 +344,18 @@ bool HexReader::getBCs()
     return true;
 }
 
+
+bool HexReader::getEdges()
+{
+    // All line breaks and comments are removed
+    // so we have to recreate some type of structure
+    edgesDict = getEntry("edges",fileContents);
+    int index=edgesDict.lastIndexOf(")");
+    edgesDict = edgesDict.left(index);
+    edgesDict.replace(QRegExp("edges[\\s,\\n]*\\("),"edges(\n\t");
+    edgesDict.replace(")",QString(")\n\t"));
+    edgesDict.append(");");
+    edgesDict.replace(QRegExp("[\\s,\\t]*\\);"),"\n);");
+
+
+}
