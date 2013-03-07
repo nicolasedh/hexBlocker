@@ -111,3 +111,5 @@ foreach(CacheVar ${CacheVars})
   endif()
 endforeach()
 message("CMakeArgs: ${CMakeArgs}")
+
+INSTALL( TARGETS HexBlocker DESTINATION ${CMAKE_INSTALL_PREFIX} )
