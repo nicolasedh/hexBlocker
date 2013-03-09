@@ -16,6 +16,9 @@ qrc_*.cxx
 ui_*h
 HexBlocker 
 hexBlocker
+myNotes.txt
+bin/
+build/
 *_
 # editor and misc backup files - anywhere
 *~
