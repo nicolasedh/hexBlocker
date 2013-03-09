@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

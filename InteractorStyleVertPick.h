@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,12 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
+
+Description
+    This class let's the user select vertices by a selectionbox.
+    It emits a signal when the user clicks middle mouse button.
+    By using the functions of the superclass it's possible to
+    rotate the model by hold cntrl button.
 */
 
 #ifndef INTERACTORSTYLEVERTPICK_H
@@ -52,13 +59,23 @@ public:
     //Functions
     static InteractorStyleVertPick* New();
     void PrintSelf(ostream &os, vtkIndent indent);
-    virtual void OnLeftButtonUp();
-    virtual void OnMouseMove();
-    virtual void OnLeftButtonDown();
-    virtual void OnMiddleButtonUp();
+
+    //Must be called before usage.
     void SetPoints(vtkSmartPointer<vtkPolyData> points) {this->Points = points;}
-    void clearSelection();
+
+    //Start drawing the selection box
+    virtual void OnLeftButtonDown();
+    //record momement or rotate
+    virtual void OnMouseMove();
+
+    //calculate selection box and find vertices within
+    virtual void OnLeftButtonUp();
+
+    //emit signal
+    virtual void OnMiddleButtonUp();
     void OnChar(); //override from superclass
+    void clearSelection();
+
 
     //Data
     vtkSmartPointer<vtkSphereSource> SelectedSphere;

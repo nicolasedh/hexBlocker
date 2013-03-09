@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,11 +21,13 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
-*/
-/* This is the class that is in charge of storing all
-   hexblocks, vertices, edges and faces
 
-   */
+Description
+    This is the main model class. As much as possible that is not GUI or user interaction
+    is handled from this class.It's meant to be controlled by MainWindow class but could in principle be used
+    alone. It's where all hexBlocks, hexPatches, hexEdges and hexBCs are stored.
+*/
+
 
 #ifndef HEXBLOCKER_H
 #define HEXBLOCKER_H
@@ -63,32 +66,72 @@ public:
     ~HexBlocker();
 
     //FUNCTIONS
+    //inits the global axes
     void initOrientationAxes(vtkRenderWindow * renwin);
+    //removes the same
     void removeOrientationAxes();
+
+    //create a block from (0,0,0) to (1,1,1)
     void createHexBlock();
+
+    //create a block from to corner points.
     void createHexBlock(double [3],double [3]);
+
+    //create a block by extrusion of a patch.
+    //only one the first patch in the list will
+    //be used
     void extrudePatch(vtkIdList *selectedPatches, double dist);
+
+    //Sets vertices radius and so on the sensible values depending on
+    //total domain.
     void resetBounds();
+
+    //Prints blocks, and patches to std::cout
     void PrintHexBlocks();
+
+    //moves vertices by adding dist to the position
     void moveVertices(vtkSmartPointer<vtkIdList> ids, double dist[]);
+
+    //set the position of vertices. if setPos[0] is true then the
+    //x coordinate is set.
     void setVerticesPos(vtkSmartPointer<vtkIdList> ids, double pos[],bool setPos[]);
 
+    //resets colors for patches and edges.
     void resetColors();
+
+    //Exports in blockMeshDict format.
+    //Should probably be moved
+    //to hexExporter.
     void exportVertices(QTextStream &os);
     void exportBlocks(QTextStream &os);
     void exportBCs(QTextStream &os);
     void exportEdges(QTextStream &os);
 
-    int showParallelEdges(vtkIdType edgeId); // shows all parallel edges
+    //highlight all parallel edges
+    int showParallelEdges(vtkIdType edgeId);
+
+    //Set the number of cells of all dependent edges
     void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
+
+    //nx*ny*nz is sumed for all blocks
     int calculateTotalNumberOfCells();
+
+    //Clears previous data and copies pointers
+    //from reader
     void readBlockMeshDict(HexReader * reader);
+
+    //Merges two patches but only if they match
+    //i.e. each vertice in master must have
+    //at most one vertice which is closet in slave
     void mergePatch(vtkIdType masterId, vtkIdType slaveId);
 
     // Return true if vertice was removed. Only remove of no block
     // has vertices id toRem
     bool removeVerticeSafely(vtkIdType toRem);
     void removeVerticesSafely(vtkIdList * toRemove);
+
+    //this is a testfunktion for quick and dirty testing
+    //and devloping
     void arbitraryTest();
 
 
@@ -100,7 +143,6 @@ public:
     vtkSmartPointer<vtkCollection> hexBlocks;
     vtkSmartPointer<vtkCollection> hexBCs; //BCs
     vtkSmartPointer<vtkCollection> edges; //global list of edges
-
 
     //Representations
     vtkSmartPointer<vtkSphereSource> vertSphere;
@@ -122,10 +164,11 @@ private:
     void rescaleActors();
     // returns id if found else returns -1
     vtkIdType findEdge(const vtkIdType a, const vtkIdType b);
+
     void removeVertice(vtkIdType toRem);
     void removeVertices(vtkIdList * toRemove);
 
-    // decreases Ids in list above toRem (not equal to toRem)
+    // decreases Ids > toRem (not equal to toRem)
     void decreaseList(vtkIdList * list, vtkIdList * toRemove);
     void decreaseList(vtkIdList * list, vtkIdType toRem);
 };

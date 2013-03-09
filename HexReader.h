@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,11 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
+
+Description
+    This class reads a blockMeshDict and stores vertices, patches and
+    hexBlocks. It does not support advanced functions, code objects
+    nor parameters.
 */
 
 #ifndef HEXREADER_H
@@ -29,6 +35,7 @@ This file is part of hexBlocker.
 #include <QFile>
 #include <vtkSmartPointer.h>
 
+//Pre declarations
 class vtkCollection;
 class HexEdge;
 class HexPatch;
@@ -59,8 +66,8 @@ public:
 private:
     //FUNCTIONS
 
-    // reads from whereever "in" is until the next ;
-    // remove comments // and /*...*/
+    // reads from where ever "in" is until the next ;
+    // remove comments //, /*...*/ and line breaks
     QString readFileContents(QTextStream *in);
     // removes // and everyting after from a QString
     QString removeDoubleSlashes(QString line);

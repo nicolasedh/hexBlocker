@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,10 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
+
+Description
+    This class contains a list (vtkCollection) of which patches are included
+    for each defined boundary condition.
 */
 
 #ifndef HEXBC_H
@@ -53,9 +58,13 @@ public:
     // inorder to comply with vtkObect
     void PrintSelf(ostream &os, vtkIndent indent);
 
-    vtkSmartPointer<vtkIdList> patchIds;
-    vtkSmartPointer<vtkCollection> globalPatches;
+    //FUNCTIONS
+
+    //Sets the color of a patch
     void setPatchColors(double r,double g, double b);
+
+    //Resets the color to green or blue for all
+    //patches in the bc
     void resetPatchColors();
 
     //Removes patch and reduces ids a
@@ -63,10 +72,16 @@ public:
 
     //Removes patch from list
     void removePatchFromList(HexPatch *p);
+
     // finds id of patch in global list returns true if it was found
     bool insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids);
+
+    vtkSmartPointer<vtkIdList> patchIds;
+    vtkSmartPointer<vtkCollection> globalPatches; //All patches in the model
+
+    //DATA
     std::string name;
-    std::string type;
+    std::string type; //e.g. wall or patch
 private:
 
 

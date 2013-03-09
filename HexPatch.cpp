@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -246,7 +247,11 @@ void HexPatch::rescaleActor()
     vtkMath::MultiplyScalar(cog,0.25);
 //    std::cout << "centers is (" << cog[0] <<"," << cog[1] <<"," << cog[2] << ")" << std::endl;
     actor->SetOrigin(cog);
-    actor->SetScale(0.6);
+
+    if(hasSecondaryHex)
+        actor->SetScale(0.4);
+    else
+        actor->SetScale(0.6);
 }
 
 void HexPatch::changeVertId(vtkIdType from, vtkIdType to)

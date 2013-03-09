@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,11 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
+
+Description
+    This class contains vtk objects for representation of a patch. It also
+    has pointers to primary and secondary hexBlock. If its an internal patch
+    then it has two connecteds blocks.
 */
 
 #ifndef HEXPATCH_H
@@ -29,6 +35,7 @@ This file is part of hexBlocker.
 #include <vtkObject.h>
 #include <QTextStream>
 
+//pre declarations
 class vtkIdList;
 class vtkPoints;
 class vtkPolyDataMapper;
@@ -58,21 +65,36 @@ public:
     // initializes the ids and points
     void init(vtkSmartPointer<vtkIdList> vIds,vtkSmartPointer<vtkPoints> verts, vtkSmartPointer<HexBlock> hex);
 
+    //returns true if other has the same ids.
+    //the order is not important.
     bool equals(vtkSmartPointer<HexPatch> other);
+
+    //returns true if otherIds contains the same
+    //vertices as this.
     bool equals(vtkSmartPointer<vtkIdList> otherIds);
     void orderVertices(); //not yet implemented,
 
     void setColor(double,double,double);
     void resetColor();
+
+    //export vertices as ( 1 2 3 4 )
     void exportVertIds(QTextStream &os);
 
     //returns the normal outward from primary hexblock
     void getNormal(double n[3]);
+
+    //set primary if we have no block else secondary
     void setHex(vtkSmartPointer<HexBlock> hex);
     vtkSmartPointer<HexBlock> getPrimaryHexBlock();
     vtkSmartPointer<HexBlock> getSecondaryHexBlock();
+
+    //average of vertices position
     void getCenter(double cog[3]);
+
+    //if it has two block patch is scaled by 0.4 else 0.6
     void rescaleActor();
+
+    //from and two are vertices ids in global list
     void changeVertId(vtkIdType from, vtkIdType to);
     void reduceVertId(vtkIdType vId);
 

@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,13 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
+
+Description
+    This class is the representation of a hex block. It has all the
+    data to create and export blocks. Since this class is ment to be
+    created as a pointer it has init functions that actually create
+    the block. Blocks can be created from 8 vertices, two points or
+    from an extruded patch.
 */
 
 #ifndef HEXBLOCK_H
@@ -82,14 +90,33 @@ public:
               vtkSmartPointer<vtkCollection> edges,
               vtkSmartPointer<vtkCollection> patches);
 
+    //if otherP is found vtkIdType 1-5 is returned, else -1.
     vtkIdType getPatchInternalId(vtkSmartPointer<HexPatch> otherP);
+
+    //returns all dependent edges of an edgeId in the global list
     vtkSmartPointer<vtkIdList> getParallelEdges(vtkIdType edgeId);
+
+    //returns the total number of cells in the block
     void getNumberOfCells(int nCells[3]);
+
+    //set the representaton radius of the red,blue and green axes.
     void setAxesRadius(double rad);
+
+    //resets the center and rescales the axis
     void rescaleActor();
+
+    //returns the center of the block, calculated as the
+    //average of all vertices.
     void getCenter(double center[3]);
+
+    //changes the id in the internal lis. from and to
+    //are ids in the global lsit
     void changeVertId(vtkIdType from, vtkIdType to);
+
+    //reduces the ids if they are greater than vId
     void reduceVertId(vtkIdType vId);
+
+    //creates new edges if needed
     void initEdges();
 
     //DATA
@@ -104,8 +131,11 @@ public:
 
 private:
     //FUNCTIONS
-    //
+    //creates edges and patches
     void initAll();
+
+    //the litle red,green and blue representations
+    //of the local coordinates
     void drawLocalaxes();
 
     void initEdge(vtkIdType p0,vtkIdType p1);
@@ -115,8 +145,6 @@ private:
 
     //DATA
     vtkSmartPointer<vtkPolyData> axesData;
-
-
     vtkSmartPointer<vtkTubeFilter> axesTubes;
 
 };

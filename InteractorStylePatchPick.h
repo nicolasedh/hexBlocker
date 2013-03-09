@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,15 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
+
+Description
+    This class makes it possible to select one, two or multiple patches.
+    This is governed by enumerable selectionMode which takes the values
+    single, pair or multi.
+    If single then the signal selectionDone is emited upen lef mouse
+    click. If pair then the signal is emitted after the second selection.
+    If multi then the signal is emited by middleclick. Deselection is done
+    by rightclicking when applicable.
 */
 
 #ifndef INTERACTORSTYLEPATCHPICK_H

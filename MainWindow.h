@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,11 +21,21 @@ This file is part of hexBlocker.
     along with hexBlocker.  If not, see <http://www.gnu.org/licenses/>.
 
     The license is included in the file COPYING.
+
+Description
+    This is the main GUI window. It's and interface between the user
+    and the main model class, HexBlocker. The idea MainWindow class is
+    responsible for collection user inputs and data but all logics should
+    be handled by HexBlocker. The exception is InteractorStyle* classes
+    that have to pass Qt signals to the MainWindow class or other GUIs.
+    Most connections are set up in the constructor but some (thos that
+    require diconnecting) are set up in slots.
+
 */
 #ifndef MainWindow_H
 #define MainWindow_H
 
-#include "vtkSmartPointer.h"    // Required for smart pointer internal ivars.
+#include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
 #include <QMainWindow>
 
 
@@ -59,11 +70,13 @@ public:
   MainWindow();
   ~MainWindow();
 
-
+  //instances of interactor stiles.
   vtkSmartPointer<InteractorStyleVertPick> styleVertPick;
   vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
   vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;
+
 public slots:
+
   void slotViewToolBar();
   void slotViewToolBox();
   void slotZoomOut();

@@ -4,7 +4,8 @@ Author Nicolas Edh,
 Nicolas.Edh@gmail.com,
 or user "nsf" at cfd-online.com
 
-This file is part of hexBlocker.
+License
+    This file is part of hexBlocker.
 
     hexBlocker is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,11 +60,15 @@ public:
     // initializes the ids and points
     void init(vtkIdType p0,vtkIdType p1, vtkSmartPointer<vtkPoints> verts);
 
+    //true edge has same ids as in other. Doesnt have to be
+    //in the same order.
     bool equals(const HexEdge * other);
     bool equals(const vtkSmartPointer<vtkIdList> otherIds);
 
     void setColor(double,double,double);
     void resetColor();
+
+    //radius of tube representation
     void setRadius(double rad);
     void exportVertIds(QTextStream &os);
     void changeVertId(vtkIdType from, vtkIdType to);
