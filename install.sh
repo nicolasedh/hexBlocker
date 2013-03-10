@@ -34,6 +34,7 @@ vtkSRC=$baseDir/VTK
 hexBuild=$baseDir/build/hexBlocker
 hexBin=$baseDir/bin
 hexSRC=$baseDir/hexBlocker
+nprocs=4
 #---------------------------------------------------------------------------
 # Try to find qt exes
 QMAKE=$(which qmake)
@@ -65,7 +66,7 @@ cmake \
     -DBUILD_SHARED_LIBS:BOOL=ON \
     $vtkSRC || (echo "error in cmake, VTK"; exit 1)
 
-make -j 4 || (echo "error in make, VTK"; exit 1)
+make -j $nprocs || (echo "error in make, VTK"; exit 1)
 
 #Build HexBlocker
 cd $baseDir
@@ -78,7 +79,7 @@ cmake -DVTK_DIR=$vtkBuild \
     -DCMAKE_INSTALL_PREFIX=$hexBin \
     $hexSRC || (echo "error in cmake for hexBlocker";exit 1)
 
-make -j 4 || (echo "error in make for hexBlocker";exit 1)
+make -j $nprocs || (echo "error in make for hexBlocker";exit 1)
 
 make install
 
