@@ -19,6 +19,10 @@ hexBlocker
 myNotes.txt
 bin/
 build/
+vtkSrc/
+vtk/
+VTK/
+vtk-*gz
 *_
 # editor and misc backup files - anywhere
 *~

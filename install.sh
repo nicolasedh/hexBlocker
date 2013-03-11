@@ -30,10 +30,10 @@
 # Modifyable data
 baseDir=$PWD
 vtkBuild=$baseDir/build/VTK
-vtkSRC=$baseDir/VTK
+vtkSRC=$baseDir/vtkSrc
 hexBuild=$baseDir/build/hexBlocker
 hexBin=$baseDir/bin
-hexSRC=$baseDir/hexBlocker
+hexSRC=$baseDir/src
 nprocs=4
 #---------------------------------------------------------------------------
 # Try to find qt exes
@@ -54,6 +54,7 @@ fi
 
 #unpack vtk src
 tar -xzf $vtkpgk
+mv VTK $vtkSRC
 
 #build VTK
 mkdir -p $vtkBuild
@@ -64,9 +65,12 @@ cmake \
     -DVTK_USE_QT:BOOL=ON \
     -DVTK_USE_QVTK:BOOL=ON \
     -DBUILD_SHARED_LIBS:BOOL=ON \
+    -DCMAKE_INSTALL_PREFIX=$baseDir/vtk \
     $vtkSRC || (echo "error in cmake, VTK"; exit 1)
 
 make -j $nprocs || (echo "error in make, VTK"; exit 1)
+
+make install
 
 #Build HexBlocker
 cd $baseDir

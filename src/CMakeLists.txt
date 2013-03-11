@@ -26,7 +26,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-
 # Set your files and resources here  
 SET(HexBlockerSrcs
     main.cxx MainWindow.cxx HexBlock.cpp HexBlocker.cpp
@@ -83,6 +82,8 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
   SET (HexBlockerSrcs ${HexBlockerSrcs} ${HexBlockerUI})
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
+# Add install time link to vtk libraries
+SET( CMAKE_INSTALL_RPATH "\$ORIGIN/../vtk/lib/vtk-5.10" )
 ADD_EXECUTABLE( HexBlocker MACOSX_BUNDLE ${HexBlockerSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
 
 TARGET_LINK_LIBRARIES(HexBlocker
