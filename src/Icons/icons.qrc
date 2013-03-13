@@ -10,5 +10,6 @@
         <file>SetBCs.png</file>
         <file>zoomOut.png</file>
         <file>edgeProperties.png</file>
+        <file>mergePatch.png</file>
     </qresource>
 </RCC>

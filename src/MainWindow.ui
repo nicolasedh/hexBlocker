@@ -316,6 +316,10 @@
    </property>
   </action>
   <action name="actionMergePatch">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/mergePatch.png</normaloff>:/Icons/mergePatch.png</iconset>
+   </property>
    <property name="text">
     <string>mergePatch</string>
    </property>
