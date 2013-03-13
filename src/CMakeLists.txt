@@ -28,7 +28,7 @@ INCLUDE_DIRECTORIES(
 
 # Set your files and resources here  
 SET(HexBlockerSrcs
-    main.cxx MainWindow.cxx HexBlock.cpp HexBlocker.cpp
+    main.cpp MainWindow.cpp HexBlock.cpp HexBlocker.cpp
     HexPatch.cpp InteractorStyleVertPick.cpp
     MoveVerticesWidget.cpp CreateBlockWidget.cpp
     InteractorStylePatchPick.cpp HexBC.cpp ToolBoxWidget.cpp
