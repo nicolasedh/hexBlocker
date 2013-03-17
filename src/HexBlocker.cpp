@@ -357,7 +357,7 @@ void HexBlocker::exportVertices(QTextStream &os)
     {
         double x[3];
         vertices->GetPoint(i,x);
-        os << "\t(" << x[0] <<", " << x[1] << ", " << x[2] <<") //"<<i <<endl;
+        os << "\t(" << x[0] <<" " << x[1] << " " << x[2] <<") //"<<i <<endl;
     }
     os << endl <<");" << endl;
 }

@@ -119,6 +119,13 @@ QString HexReader::removeDoubleSlashes(QString line)
 QString HexReader::getEntry(QString entry, QString container)
 {
     int startEntry = container.indexOf(entry);
+    if(startEntry<0)
+    {
+        std::cout << "Warning: Entry \""
+                  << entry.toAscii().data()
+                  << "\" was not found" << std::endl;
+        return QString("");
+    }
     QString contentsFromStart = container.right(container.size()-startEntry);
 
     QString returnEntry("");
@@ -271,7 +278,11 @@ bool HexReader::getBlocks()
 bool HexReader::getBCs()
 {
     QString boun = getEntry(QString("boundary"),fileContents);
-
+    if(boun.isEmpty())
+    {
+        std::cout << "Did not find the entry \"boundary\". BCs have not been read." << std::endl;
+        return false;
+    }
 
     QStringList listBCs = boun.replace(QRegExp("boundary *\\("),QString(" "))
             .split(QString("}"),QString::SkipEmptyParts);
@@ -351,12 +362,18 @@ bool HexReader::getEdges()
     // All line breaks and comments are removed
     // so we have to recreate some type of structure
     edgesDict = getEntry("edges",fileContents);
-    int index=edgesDict.lastIndexOf(")");
-    edgesDict = edgesDict.left(index);
-    edgesDict.replace(QRegExp("edges[\\s,\\n]*\\("),"edges(\n\t");
-    edgesDict.replace(")",QString(")\n\t"));
-    edgesDict.append(");");
-    edgesDict.replace(QRegExp("[\\s,\\t]*\\);"),"\n);");
-
-
+    if(!edgesDict.isEmpty())
+    {
+        int index=edgesDict.lastIndexOf(")");
+        edgesDict = edgesDict.left(index);
+        edgesDict.replace(QRegExp("edges[\\s,\\n]*\\("),"edges(\n\t");
+        edgesDict.replace(")",QString(")\n\t"));
+        edgesDict.append(");");
+        edgesDict.replace(QRegExp("[\\s,\\t]*\\);"),"\n);");
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

@@ -36,7 +36,7 @@ HexExporter::HexExporter()
 HexExporter::HexExporter(HexBlocker *HB)
 {
     hexB = HB;
-    conv2meter=0.001;
+    conv2meter=1.0;
 }
 
 void HexExporter::exporBlockMeshDict(QTextStream &out)

@@ -355,7 +355,7 @@ void MainWindow::slotSaveBlockMeshDict()
     QString title = tr("convertToMeters");
     QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
     bool ok1;
-    double conv2meters = QInputDialog::getDouble(this,title,label,0.001,1e-255,1e255,6,&ok1);
+    double conv2meters = QInputDialog::getDouble(this,title,label,1.0,1e-255,1e255,6,&ok1);
 
     if(!ok1)
     {
@@ -370,7 +370,6 @@ void MainWindow::slotSaveBlockMeshDict()
         this->ui->statusbar->showMessage("Error opening file",5000);
         return;
     }
-
     QTextStream out(&file);
 
     HexExporter * exporter = new HexExporter(hexBlocker);
@@ -378,6 +377,7 @@ void MainWindow::slotSaveBlockMeshDict()
     exporter->exporBlockMeshDict(out);
 
     openFileName = saveFileName;
+    file.flush();
     file.close();
 }
 
