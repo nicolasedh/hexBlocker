@@ -50,5 +50,11 @@ int main( int argc, char** argv )
   myMainWindow.setStyleSheet("QToolTip {background-color: black;}");
   myMainWindow.show();
 
+  //Assume that a blockMeshDict is given on the commandline
+  if(argc > 1)
+  {
+      myMainWindow.openFileName = app.arguments().at(1);
+      myMainWindow.slotReOpenBlockMeshDict();
+  }
   return app.exec();
 }

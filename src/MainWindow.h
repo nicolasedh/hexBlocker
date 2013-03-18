@@ -75,6 +75,9 @@ public:
   vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
   vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;
 
+  //open file name, main needs access
+  QString openFileName;
+
 public slots:
 
   void slotViewToolBar();
@@ -126,7 +129,6 @@ private:
   // Designer form
   Ui_MainWindow *ui;
   QString saveFileName;
-  QString openFileName;
 };
 
 #endif // MainWindow_H
