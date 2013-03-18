@@ -172,6 +172,7 @@ void MainWindow::slotStartExtrudePatch()
     ui->statusbar->showMessage(
                 tr("Left button to select a patch, middle button to confirm, rightbutton to deselect"));
     stylePatchPick->selectionMode=InteractorStylePatchPick::single;
+    stylePatchPick->selectedPatches->Initialize();
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             this,SLOT(slotExtrudePatch(vtkIdList *)));
@@ -273,6 +274,7 @@ void MainWindow::slotOpenSetBCsDialog()
 void MainWindow::slotStartSelectPatches(vtkIdType bcID)
 {
     stylePatchPick->selectionMode=InteractorStylePatchPick::multi;
+    stylePatchPick->selectedPatches->Initialize(); //better to add old patches in bcId
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             toolbox->setBCsW,SLOT(slotSelectionDone(vtkIdList*)));
