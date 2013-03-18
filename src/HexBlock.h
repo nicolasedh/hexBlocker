@@ -140,7 +140,7 @@ private:
 
     void initEdge(vtkIdType p0,vtkIdType p1);
     void initPatches();
-    void initPatch(int ids[4]);
+    void initPatch(int id0, int id1, int id2, int id3);
     vtkIdType patchIdInGlobalList(vtkSmartPointer<HexPatch> p);
 
     //DATA
