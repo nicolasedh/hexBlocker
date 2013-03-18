@@ -379,32 +379,32 @@ void HexBlock::initPatches()
     //Normal is out of domain and according to right hand rule
     //when cycling vertices in patch
     //(dice #1)
-    initPatch((int[4]){0,3,2,1});
+    initPatch(0,3,2,1);
     //(dice #2)
-    initPatch((int[4]){0,1,5,4});
+    initPatch(0,1,5,4);
     //(dice #3)
-    initPatch((int[4]){0,4,7,3});
+    initPatch(0,4,7,3);
     //(dice #4)
-    initPatch((int[4]){1,2,6,5});
+    initPatch(1,2,6,5);
     //(dice #5)
-    initPatch((int[4]){3,7,6,2});
+    initPatch(3,7,6,2);
     //(dice #6)
-    initPatch((int[4]){4,5,6,7});
+    initPatch(4,5,6,7);
 
     globalPatches->Modified();
 }
 
-void HexBlock::initPatch(int ids[])
+void HexBlock::initPatch(int id0,int id1,int id2,int id3)
 {
     vtkSmartPointer<HexPatch> patch = vtkSmartPointer<HexPatch>::New();
 
     vtkSmartPointer<vtkIdList> vlist = //patch list of vertIds
             vtkSmartPointer<vtkIdList>::New();
 
-    vlist->InsertId(0,vertIds->GetId(ids[0]));
-    vlist->InsertId(1,vertIds->GetId(ids[1]));
-    vlist->InsertId(2,vertIds->GetId(ids[2]));
-    vlist->InsertId(3,vertIds->GetId(ids[3]));
+    vlist->InsertId(0,vertIds->GetId(id0));
+    vlist->InsertId(1,vertIds->GetId(id1));
+    vlist->InsertId(2,vertIds->GetId(id2));
+    vlist->InsertId(3,vertIds->GetId(id3));
 
     patch->init(vlist,globalVertices,this);
 
