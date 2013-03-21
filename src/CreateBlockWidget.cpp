@@ -24,6 +24,7 @@ License
 */
 
 #include "CreateBlockWidget.h"
+#include "HexBlocker.h"
 #include "ui_CreateBlockWidget.h"
 #include <QtGui>
 #include <QValidator>

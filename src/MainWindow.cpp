@@ -87,8 +87,8 @@ MainWindow::MainWindow()
 
     //Qt widgets
     toolbox = new ToolBoxWidget();
-    toolbox->setBCsW->hexBCs = hexBlocker->hexBCs;
-    toolbox->setBCsW->allPatches = hexBlocker->patches;
+    toolbox->setHexBlockerPointer(hexBlocker);
+
     this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
 
 
@@ -316,8 +316,7 @@ void MainWindow::slotNewCase()
     // rensa bc's
 //    toolbox->setBCsW->changeBCs(reader);
 
-    toolbox->setBCsW->hexBCs = hexBlocker->hexBCs;
-    toolbox->setBCsW->allPatches = hexBlocker->patches;
+    toolbox->setHexBlockerPointer(hexBlocker);
     toolbox->setBCsW->clearBCs();
 
     renwin->Render();

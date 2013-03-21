@@ -31,6 +31,8 @@ Description
 
 #include <QWidget>
 
+class HexBlocker;
+
 namespace Ui {
 class MoveVerticesWidget;
 }
@@ -45,6 +47,7 @@ public:
 
     double dist[3];
     bool delta,checkedX,checkedY,checkedZ;
+    HexBlocker *hexBlocker;
 
 public slots:
     void slotApply();

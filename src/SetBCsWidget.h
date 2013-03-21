@@ -37,7 +37,7 @@ class vtkCollection;
 class QTreeWidgetItem;
 class vtkIdList;
 class HexReader;
-
+class HexBlocker;
 namespace Ui {
 class SetBCsWidget;
 }
@@ -54,8 +54,7 @@ public:
     void changeBCs(HexReader * reader);
     void clearBCs();
 
-    vtkSmartPointer<vtkCollection> hexBCs;
-    vtkSmartPointer<vtkCollection> allPatches;
+    HexBlocker *hexBlocker;
 
 public slots:
     void slotCreateBC();

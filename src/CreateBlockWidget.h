@@ -32,6 +32,8 @@ Description
 
 #include <QWidget>
 
+class HexBlocker;
+
 namespace Ui {
 class CreateBlockWidget;
 }
@@ -46,6 +48,8 @@ public:
     
     double c0[3];
     double c1[3];
+    HexBlocker *hexBlocker;
+
 public slots:
     void slotApply();
     void slotCancel();

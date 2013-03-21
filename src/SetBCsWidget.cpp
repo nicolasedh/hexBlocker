@@ -33,7 +33,7 @@ License
 #include <vtkCollection.h>
 #include <vtkSmartPointer.h>
 #include <vtkIdList.h>
-
+#include "HexBlocker.h"
 #include <QTreeWidgetItem>
 #include <QList>
 
@@ -46,7 +46,6 @@ SetBCsWidget::SetBCsWidget(QWidget *parent) :
     headers << tr("Name") << tr("Type");
     ui->treeWidget->setHeaderLabels(headers);
 
-    allPatches = vtkSmartPointer<vtkCollection>::New();
     connect(ui->pushButtonNew,SIGNAL(clicked()),this,SLOT(slotCreateBC()));
     connect(ui->treeWidget,SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this,SLOT(slotBCchanged(QTreeWidgetItem *,int)));
@@ -70,8 +69,8 @@ void SetBCsWidget::slotCreateBC()
     bc->setFlags(bc->flags() | Qt::ItemIsEditable);
     bc->setText(0,tr("name"));
     bc->setText(1,tr("patch"));
-    bc->hexBC->globalPatches = allPatches;
-    hexBCs->AddItem(bc->hexBC);
+    bc->hexBC->globalPatches=hexBlocker->patches;
+    hexBlocker->hexBCs->AddItem(bc->hexBC);
 }
 
 void SetBCsWidget::slotBCchanged(QTreeWidgetItem *item, int col)
@@ -88,7 +87,7 @@ void SetBCsWidget::slotSelectPatches()
     if(selectedTreeItem.count()>0)
     {
         SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
-        vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
+        vtkIdType hexBCId = hexBlocker->hexBCs->IsItemPresent(bcItem->hexBC)-1;
 
         emit startSelectPatches(hexBCId);
     }
@@ -102,8 +101,8 @@ void SetBCsWidget::slotSelectionDone(vtkIdList *selectedPatches)
 {
     QList<QTreeWidgetItem*> selectedTreeItem = ui->treeWidget->selectedItems();
     SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
-    vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
-    HexBC *hexBC = HexBC::SafeDownCast(hexBCs->GetItemAsObject(hexBCId));
+    vtkIdType hexBCId = hexBlocker->hexBCs->IsItemPresent(bcItem->hexBC)-1;
+    HexBC *hexBC = HexBC::SafeDownCast(hexBlocker->hexBCs->GetItemAsObject(hexBCId));
     hexBC->patchIds->DeepCopy(selectedPatches);
 //    std::cout <<" patchIds: " << hexBC->patchIds->GetNumberOfIds()<<std::endl;
 
@@ -125,11 +124,11 @@ void SetBCsWidget::changeBCs(HexReader * reader)
 
 
     ui->treeWidget->clear();
-    hexBCs = reader->readBCs;
-    allPatches = reader->readPatches;
-    for(vtkIdType i=0;i<hexBCs->GetNumberOfItems();i++)
+    hexBlocker->hexBCs = reader->readBCs;
+    hexBlocker->patches= reader->readPatches;
+    for(vtkIdType i=0;i<hexBlocker->hexBCs->GetNumberOfItems();i++)
     {
-        vtkSmartPointer<HexBC> bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
+        vtkSmartPointer<HexBC> bc = HexBC::SafeDownCast(hexBlocker->hexBCs->GetItemAsObject(i));
         SetBCsItem *bcitem = new SetBCsItem(ui->treeWidget);
         bcitem->hexBC = bc;
 
@@ -139,7 +138,7 @@ void SetBCsWidget::changeBCs(HexReader * reader)
         bcitem->setFlags(bcitem->flags() | Qt::ItemIsEditable);
         bcitem->setText(0,name.simplified());
         bcitem->setText(1,type.simplified());
-        bcitem->hexBC->globalPatches = allPatches;
+        bcitem->hexBC->globalPatches = hexBlocker->patches;
         ui->treeWidget->addTopLevelItem(bcitem);
 
     }
@@ -164,14 +163,14 @@ void SetBCsWidget::slotDeleteBC()
     ui->treeWidget->takeTopLevelItem(i);
 
 
-    vtkIdType hexBCId = hexBCs->IsItemPresent(bcItem->hexBC)-1;
+    vtkIdType hexBCId = hexBlocker->hexBCs->IsItemPresent(bcItem->hexBC)-1;
     if(hexBCId < 0)
     {
         return;
     }
-    HexBC *hexBC = HexBC::SafeDownCast(hexBCs->GetItemAsObject(hexBCId));
+    HexBC *hexBC = HexBC::SafeDownCast(hexBlocker->hexBCs->GetItemAsObject(hexBCId));
 
     hexBC->patchIds->Delete();
-    hexBCs->RemoveItem(hexBC);
+    hexBlocker->hexBCs->RemoveItem(hexBC);
 
 }

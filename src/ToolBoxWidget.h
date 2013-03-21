@@ -25,6 +25,7 @@ License
 Description
     This is a holder dock widget. Each page holds a tool widget. Some
     signals are passed through this class from tool widgets to MainWindow.
+    The HexBlocker object must be set before usage.
 */
 
 #ifndef TOOLBOXWIDGET_H
@@ -36,6 +37,7 @@ class CreateBlockWidget;
 class MoveVerticesWidget;
 class SetBCsWidget;
 class QWidget;
+class HexBlocker;
 
 namespace Ui {
 class ToolBoxWidget;
@@ -55,8 +57,10 @@ public:
     MoveVerticesWidget *moveVerticesW;
     SetBCsWidget    *setBCsW;
 
-    void setCurrentIndex(int);
 
+
+    void setCurrentIndex(int);
+    void setHexBlockerPointer(HexBlocker *hexBker);
 public slots:
     void slotCancel();
     void slotSetStatusText(QString text);
@@ -66,6 +70,8 @@ signals:
     void setStatusText(QString);
 
 private:
+    //Pointer to the hexBlocker object
+    HexBlocker *hexBlocker;
     Ui::ToolBoxWidget *ui;
 };
 

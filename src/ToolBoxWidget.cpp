@@ -66,6 +66,14 @@ void ToolBoxWidget::setCurrentIndex(int ind)
     this->ui->stackedWidget->setCurrentIndex(ind);
 }
 
+void ToolBoxWidget::setHexBlockerPointer(HexBlocker *hexBker)
+{
+    this->hexBlocker=hexBker;
+    setBCsW->hexBlocker=hexBlocker;
+    createBlockW->hexBlocker=hexBlocker;
+    moveVerticesW->hexBlocker=hexBlocker;
+}
+
 void ToolBoxWidget::slotCancel()
 {
     this->ui->stackedWidget->setCurrentIndex(0);
