@@ -472,12 +472,9 @@ vtkSmartPointer<vtkIdList> HexBlock::getParallelEdges(vtkIdType edgeId)
 
 void HexBlock::getNumberOfCells(int nCells[3])
 {
-    HexEdge * e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(0)));
-    nCells[0] = e->nCells;
-    e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(4)));
-    nCells[1] = e->nCells;
-    e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(8)));
-    nCells[2] = e->nCells;
+    nCells[0] = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(0)))->nCells;
+    nCells[1] =  HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(4)))->nCells;
+    nCells[2] =  HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(8)))->nCells;
 }
 
 void HexBlock::setAxesRadius(double rad)

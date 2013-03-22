@@ -28,7 +28,8 @@ License
 #include <QtGui>
 #include <QValidator>
 #include <iostream>
-#include <HexBlocker.h>
+#include "HexBlocker.h"
+#include "HexEdge.h"
 #include <vtkIdList.h>
 
 EdgePropsWidget::EdgePropsWidget(QWidget *parent) :
@@ -52,6 +53,19 @@ EdgePropsWidget::~EdgePropsWidget()
 void EdgePropsWidget::slotApply()
 {
 
+
+
+    if(selectedEdge<0)
+    {
+        emit setStatusText("Select edge first!");
+        return;
+    }
+
+    int nCells = ui->numCellsSpinBox->value();
+    hexBlocker->setNumberOnParallelEdges(selectedEdge,nCells);
+    selectedEdge=-1;
+    hexBlocker->resetColors();
+
     QString msg("Total number of cells: ");
     long int NCells = hexBlocker->calculateTotalNumberOfCells();
     msg=msg.append(QString::number(NCells));
@@ -59,20 +73,7 @@ void EdgePropsWidget::slotApply()
     double aNCells = (double)NCells;
     msg.append(QString::number(aNCells,'g',3));
     msg.append(".");
-
-    if(selectedEdge<0)
-    {
-        msg.append(" - Select edge first!");
-        emit setStatusText(msg);
-        return;
-    }
-
     emit setStatusText(msg);
-    int nCells = ui->numCellsSpinBox->value();
-    hexBlocker->setNumberOnParallelEdges(selectedEdge,nCells);
-    selectedEdge=-1;
-    hexBlocker->resetColors();
-
     emit apply();
 }
 
@@ -90,5 +91,14 @@ void EdgePropsWidget::setSelectedEdge(vtkIdType selEdge)
     {
         int prevNCells=hexBlocker->showParallelEdges(selectedEdge);
         this->ui->numCellsSpinBox->setValue(prevNCells);
+
+        QString msg("Total number of cells: ");
+        long int NCells = hexBlocker->calculateTotalNumberOfCells();
+        msg=msg.append(QString::number(NCells));
+        msg.append("\n which is approximately ");
+        double aNCells = (double)NCells;
+        msg.append(QString::number(aNCells,'g',3));
+        msg.append(".");
+        emit setStatusText(msg);
     }
 }
