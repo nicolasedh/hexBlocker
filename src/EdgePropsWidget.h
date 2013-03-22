@@ -23,58 +23,51 @@ License
     The license is included in the file COPYING.
 
 Description
-    This is a holder dock widget. Each page holds a tool widget. Some
-    signals are passed through this class from tool widgets to MainWindow.
-    The HexBlocker object must be set before usage.
+    This class creates the dialog that's used to create hexblocks.
+    It sends signal to MainWindow which handles hexBlocker.
+
 */
+#ifndef EDGEPROPSWIDGET_H
+#define EDGEPROPSWIDGET_H
 
-#ifndef TOOLBOXWIDGET_H
-#define TOOLBOXWIDGET_H
+#include <vtkSmartPointer.h>
+#include <QWidget>
 
-#include <QDockWidget>
 
-class CreateBlockWidget;
-class MoveVerticesWidget;
-class SetBCsWidget;
-class EdgePropsWidget;
-class QWidget;
 class HexBlocker;
 
+
 namespace Ui {
-class ToolBoxWidget;
+class EdgePropsWidget;
 }
 
-class ToolBoxWidget : public QDockWidget
+class EdgePropsWidget : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit ToolBoxWidget(QWidget *parent = 0);
-    ~ToolBoxWidget();
-    QWidget *emptyPage;
+    explicit EdgePropsWidget(QWidget *parent = 0);
+    ~EdgePropsWidget();
 
-    //Tools views
-    CreateBlockWidget *createBlockW;
-    MoveVerticesWidget *moveVerticesW;
-    SetBCsWidget    *setBCsW;
-    EdgePropsWidget *edgePropsW;
+    //FUNCTIONS
+    void setSelectedEdge(vtkIdType selectedEdge);
+    //DATA
+    HexBlocker * hexBlocker;
 
-
-
-    void setCurrentIndex(int);
-    void setHexBlockerPointer(HexBlocker *hexBker);
+    
 public slots:
+    void slotApply();
     void slotCancel();
-    void slotSetStatusText(QString text);
 
 signals:
+    void apply();
     void cancel();
     void setStatusText(QString);
+    void startSelectEdges();
 
 private:
-    //Pointer to the hexBlocker object
-    HexBlocker *hexBlocker;
-    Ui::ToolBoxWidget *ui;
+    vtkIdType selectedEdge;
+    Ui::EdgePropsWidget *ui;
 };
 
-#endif // TOOLBOXWIDGET_H
+#endif // EDGEPROPSWIDGET_H

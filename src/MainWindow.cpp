@@ -35,6 +35,7 @@ License
 #include "ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
+#include "EdgePropsWidget.h"
 #include "SetBCsWidget.h"
 #include "HexBC.h"
 #include "HexExporter.h"
@@ -114,8 +115,9 @@ MainWindow::MainWindow()
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
     connect(toolbox->setBCsW,SIGNAL(render()),this,SLOT(slotRender()));
 
-
-    connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotStartSelectEdges()));
+    connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotOpenSetEdgePropsDialog()));
+    connect(toolbox->edgePropsW,SIGNAL(startSelectEdges()),this,SLOT(slotStartSelectEdges()));
+//    connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotStartSelectEdges()));
     connect(toolbox,SIGNAL(setStatusText(QString)),this,SLOT(slotShowStatusText(QString)));
 
     connect(this->ui->actionNewCase,SIGNAL(triggered()),this,SLOT(slotNewCase()));
@@ -458,11 +460,16 @@ void MainWindow::slotShowStatusText(QString text)
     ui->statusbar->showMessage(text,15000);
 }
 
+void MainWindow::slotOpenSetEdgePropsDialog()
+{
+    toolbox->setCurrentIndex(4);
+}
+
 void MainWindow::slotStartSelectEdges()
 {
-    toolbox->setCurrentIndex(0); // show empty page
-    ui->statusbar->showMessage(tr("Select an edge, middle button to cancel"),5000);
 
+    ui->statusbar->showMessage(tr("Select an edge, middle button to cancel"),5000);
+    hexBlocker->resetColors();
     renwin->GetInteractor()->SetInteractorStyle(styleEdgePick);
     connect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
             this,SLOT(slotEdgeSelectionDone(vtkIdType)));
@@ -471,37 +478,12 @@ void MainWindow::slotStartSelectEdges()
 }
 
 
-
 void MainWindow::slotEdgeSelectionDone(vtkIdType edgeId)
 {
 
     disconnect(styleEdgePick,SIGNAL(selectionDone(vtkIdType)),
                this,SLOT(slotEdgeSelectionDone(vtkIdType)));
-
-    int prevNCells=hexBlocker->showParallelEdges(edgeId);
-
-    QString title = tr("Number");
-    QString label = tr("Set the number of cells of this and parallel edges.");
-    bool ok;
-    int nCells = QInputDialog::getInt(this,title,label,prevNCells,1,2147483647,1,&ok);
-    if(ok && (nCells >= 1) )
-    {
-        hexBlocker->setNumberOnParallelEdges(edgeId,nCells);
-        ui->statusbar->showMessage(QString("Number of Cells has been set"),3000);
-    }
-    else
-    {
-        ui->statusbar->showMessage(QString("Cancelled or bad integer"),3000);
-        hexBlocker->resetColors();
-    }
-    QString msg("Total number of cells: ");
-    long int NCells = hexBlocker->calculateTotalNumberOfCells();
-    msg=msg.append(QString::number(NCells));
-    msg.append("\n which is approximately ");
-    double aNCells = (double)NCells;
-    msg.append(QString::number(aNCells,'g',3));
-    msg.append(".");
-    ui->statusbar->showMessage(msg,10000);
+    toolbox->edgePropsW->setSelectedEdge(edgeId);
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     renwin->Render();
 

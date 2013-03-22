@@ -290,6 +290,8 @@ void HexBlocker::resetColors()
     //edges
     for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
         HexEdge::SafeDownCast(edges->GetItemAsObject(i))->resetColor();
+
+    renderer->GetRenderWindow()->Render();
 }
 
 void HexBlocker::PrintHexBlocks()
@@ -475,6 +477,7 @@ int HexBlocker::showParallelEdges(vtkIdType edgeId)
     vtkSmartPointer<vtkIdList> allParallelEdges =
             vtkSmartPointer<vtkIdList>::New();
 
+    allParallelEdges->InsertNextId(edgeId);
     addParallelEdges(allParallelEdges,edgeId);
 
     int nCells=-1;
@@ -483,9 +486,15 @@ int HexBlocker::showParallelEdges(vtkIdType edgeId)
     {
         HexEdge *e = HexEdge::SafeDownCast(
                     edges->GetItemAsObject(allParallelEdges->GetId(i)));
-        e->setColor(0.0,8.0,0.0);
         if(i==0)
+        {
             nCells=e->nCells;
+            e->setColor(1.0,0.0,0.0);
+        }
+        else
+        {
+            e->setColor(0.0,8.0,0.0);
+        }
     }
 
     return nCells;

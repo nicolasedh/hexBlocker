@@ -104,6 +104,7 @@ public slots:
   void slotSaveBlockMeshDict();
   void slotRender();
   void slotShowStatusText(QString text);
+  void slotOpenSetEdgePropsDialog();
   void slotStartSelectEdges();
   void slotEdgeSelectionDone(vtkIdType edgeId);
   void slotAboutDialog();

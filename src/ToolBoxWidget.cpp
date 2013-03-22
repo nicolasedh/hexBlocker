@@ -28,6 +28,7 @@ License
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
 #include "SetBCsWidget.h"
+#include "EdgePropsWidget.h"
 #include <QWidget>
 
 ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
@@ -36,23 +37,26 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    emptyPage = new QWidget;
+    emptyPage = new QWidget; //index 0
     this-ui->stackedWidget->addWidget(emptyPage);
-    createBlockW = new CreateBlockWidget;
+    createBlockW = new CreateBlockWidget; //index 1
     this->ui->stackedWidget->addWidget(createBlockW);
-    moveVerticesW = new MoveVerticesWidget;
+    moveVerticesW = new MoveVerticesWidget; //index 2
     this->ui->stackedWidget->addWidget(moveVerticesW);
-    setBCsW = new SetBCsWidget;
+    setBCsW = new SetBCsWidget; //index 3
     this->ui->stackedWidget->addWidget(setBCsW);
+    edgePropsW = new EdgePropsWidget; //index 4
+    this->ui->stackedWidget->addWidget(edgePropsW);
     this->ui->stackedWidget->setCurrentIndex(1);
 
-    //connecta alla cancels till att köra setCurrentIndex(0)
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));
     connect(setBCsW,SIGNAL(done()),this,SLOT(slotCancel()));
     connect(moveVerticesW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotCancel()));
     connect(createBlockW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(setBCsW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
+    connect(edgePropsW,SIGNAL(cancel()),this,SLOT(slotCancel()));
+    connect(edgePropsW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
 
 }
 
@@ -72,6 +76,7 @@ void ToolBoxWidget::setHexBlockerPointer(HexBlocker *hexBker)
     setBCsW->hexBlocker=hexBlocker;
     createBlockW->hexBlocker=hexBlocker;
     moveVerticesW->hexBlocker=hexBlocker;
+    edgePropsW->hexBlocker=hexBlocker;
 }
 
 void ToolBoxWidget::slotCancel()
