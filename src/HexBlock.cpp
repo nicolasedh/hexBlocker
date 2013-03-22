@@ -474,9 +474,9 @@ void HexBlock::getNumberOfCells(int nCells[3])
 {
     HexEdge * e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(0)));
     nCells[0] = e->nCells;
-    e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(1)));
+    e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(4)));
     nCells[1] = e->nCells;
-    e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(2)));
+    e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(8)));
     nCells[2] = e->nCells;
 }
 
