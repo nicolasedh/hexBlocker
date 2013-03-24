@@ -38,7 +38,9 @@ EdgePropsWidget::EdgePropsWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    selectedEdge=-1;
+    selectedEdgeId=-1;
+    QDoubleValidator *gradingValidator = new QDoubleValidator(1e-6,1e6,3);
+    ui->gradingLineEdit->setValidator(gradingValidator);
 
     connect(ui->pushButtonApply,SIGNAL(clicked()),this,SLOT(slotApply()));
     connect(ui->pushButtonCancel,SIGNAL(clicked()),this,SLOT(slotCancel()));
@@ -55,17 +57,28 @@ void EdgePropsWidget::slotApply()
 
 
 
-    if(selectedEdge<0)
+    if(selectedEdgeId<0)
     {
         emit setStatusText("Select edge first!");
         return;
     }
 
-    int nCells = ui->numCellsSpinBox->value();
-    hexBlocker->setNumberOnParallelEdges(selectedEdge,nCells);
-    selectedEdge=-1;
+    HexEdge * props = HexEdge::New();
+
+    props->nCells = ui->numCellsSpinBox->value();
+    props->grading = ui->gradingLineEdit->text().toDouble();
+    int mode=1;
+    if(ui->PropagateGradingcheckBox->isChecked())
+        mode=0;
+    hexBlocker->setEdgePropsOnParallelEdges(props,selectedEdgeId,mode);
+
+    props->Delete();
+
+    //clear selection
+    selectedEdgeId=-1;
     hexBlocker->resetColors();
 
+    //Output number of cells
     QString msg("Total number of cells: ");
     long int NCells = hexBlocker->calculateTotalNumberOfCells();
     msg=msg.append(QString::number(NCells));
@@ -80,18 +93,22 @@ void EdgePropsWidget::slotApply()
 void EdgePropsWidget::slotCancel()
 {
     hexBlocker->resetColors();
-    selectedEdge=-1;
+    selectedEdgeId=-1;
     emit cancel();
 }
 
-void EdgePropsWidget::setSelectedEdge(vtkIdType selEdge)
+void EdgePropsWidget::setSelectedEdge(vtkIdType selEdgeId)
 {
-    selectedEdge=selEdge;
-    if(selectedEdge > -1)
+    selectedEdgeId=selEdgeId;
+    if(selectedEdgeId > -1)
     {
-        int prevNCells=hexBlocker->showParallelEdges(selectedEdge);
+        HexEdge * se =hexBlocker->showParallelEdges(selectedEdgeId);
+        long int prevNCells = se->nCells;
         this->ui->numCellsSpinBox->setValue(prevNCells);
-
+        double grading = se->grading;
+        QString gradS =QString();
+        gradS.sprintf("%.2f",grading);
+        this->ui->gradingLineEdit->setText(gradS);
         QString msg("Total number of cells: ");
         long int NCells = hexBlocker->calculateTotalNumberOfCells();
         msg=msg.append(QString::number(NCells));

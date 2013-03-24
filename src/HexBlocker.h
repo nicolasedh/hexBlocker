@@ -108,10 +108,13 @@ public:
     void exportEdges(QTextStream &os);
 
     //highlight all parallel edges
-    int showParallelEdges(vtkIdType edgeId);
+    HexEdge * showParallelEdges(vtkIdType edgeId);
 
-    //Set the number of cells of all dependent edges
-    void setNumberOnParallelEdges(vtkIdType edgeId,int nCells);
+    //Set the number of cells and grading
+    // mode=0 prop grading to all parallel
+    // mode=1 dont propagate grading
+    // mode=2 only to block that owns the edge (not yet implemented)
+    void setEdgePropsOnParallelEdges(HexEdge *props,vtkIdType edgeId, int mode=0);
 
     //nx*ny*nz is sumed for all blocks
     int calculateTotalNumberOfCells();

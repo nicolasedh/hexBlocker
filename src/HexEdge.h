@@ -83,6 +83,7 @@ public:
     vtkSmartPointer<vtkPolyDataMapper> mapper;
     vtkSmartPointer<vtkActor> actor;
     int nCells; // number of cells on edge
+    double grading;
 
 private:
     vtkSmartPointer<vtkLine> line;

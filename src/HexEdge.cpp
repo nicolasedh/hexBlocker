@@ -54,6 +54,7 @@ HexEdge::HexEdge()
     actor  = vtkSmartPointer<vtkActor>::New();
 
     nCells = 10; //default value
+    grading = 1.0; //default value
 }
 
 HexEdge::~HexEdge()

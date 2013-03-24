@@ -50,7 +50,7 @@ public:
     ~EdgePropsWidget();
 
     //FUNCTIONS
-    void setSelectedEdge(vtkIdType selectedEdge);
+    void setSelectedEdge(vtkIdType selEdgeId);
     //DATA
     HexBlocker * hexBlocker;
 
@@ -66,7 +66,7 @@ signals:
     void startSelectEdges();
 
 private:
-    vtkIdType selectedEdge;
+    vtkIdType selectedEdgeId;
     Ui::EdgePropsWidget *ui;
 };
 

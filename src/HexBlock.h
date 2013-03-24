@@ -36,6 +36,7 @@ Description
 #include <vtkSmartPointer.h>
 #include <vtkObject.h>
 #include <iostream>
+#include <QTextStream>
 
 //Pre declarations
 class HexPatch;
@@ -118,6 +119,12 @@ public:
 
     //creates new edges if needed
     void initEdges();
+
+    //puts hex ( 1 2 3.. ) (10 10 10) (grading) to os
+    void exportDict(QTextStream &os);
+
+    // returns true if simpleGrading is possible
+    bool getGradings(double gradings[12] );
 
     //DATA
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices

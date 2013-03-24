@@ -293,7 +293,7 @@
         <item>
          <widget class="QLineEdit" name="gradingLineEdit">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
@@ -406,7 +406,7 @@
         <item>
          <widget class="QCheckBox" name="PropagateGradingcheckBox">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
@@ -481,6 +481,9 @@
           </property>
           <property name="text">
            <string>dependent</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

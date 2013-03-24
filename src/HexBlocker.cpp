@@ -371,21 +371,7 @@ void HexBlocker::exportBlocks(QTextStream &os)
     for(vtkIdType i=0; i<hexBlocks->GetNumberOfItems(); i++)
     {
         HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
-        os << "\t hex (";
-        for(vtkIdType j=0; j<hb->vertIds->GetNumberOfIds();j++)
-        {
-            os << hb->vertIds->GetId(j);
-            if(j < hb->vertIds->GetNumberOfIds()-1)
-                os << " ";
-            else
-                os << ") ";
-        }
-
-        int nCells[3];
-        hb->getNumberOfCells(nCells);
-        os << "("
-           << nCells[0] <<" "<< nCells[1]<<" " << nCells[2]
-           << ") simpleGrading (1 1 1) " << endl;
+        hb->exportDict(os);
 
     }
     os << endl << ");" << endl;
@@ -472,7 +458,7 @@ void HexBlocker::setVerticesPos(vtkSmartPointer<vtkIdList> ids, double newPos[3]
 
 
 
-int HexBlocker::showParallelEdges(vtkIdType edgeId)
+HexEdge *HexBlocker::showParallelEdges(vtkIdType edgeId)
 {
     vtkSmartPointer<vtkIdList> allParallelEdges =
             vtkSmartPointer<vtkIdList>::New();
@@ -497,7 +483,7 @@ int HexBlocker::showParallelEdges(vtkIdType edgeId)
         }
     }
 
-    return nCells;
+    return HexEdge::SafeDownCast(edges->GetItemAsObject(edgeId));
 }
 
 void HexBlocker::addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,
@@ -538,11 +524,12 @@ void HexBlocker::addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,
 }
 
 
-void HexBlocker::setNumberOnParallelEdges(vtkIdType edgeId, int nCells)
+void HexBlocker::setEdgePropsOnParallelEdges(HexEdge * props,vtkIdType edgeId,int mode)
 {
     vtkSmartPointer<vtkIdList> allParallelEdges =
             vtkSmartPointer<vtkIdList>::New();
 
+    allParallelEdges->InsertUniqueId(edgeId);
     addParallelEdges(allParallelEdges,edgeId);
 
 
@@ -551,8 +538,10 @@ void HexBlocker::setNumberOnParallelEdges(vtkIdType edgeId, int nCells)
     {
         HexEdge *e = HexEdge::SafeDownCast(
                     edges->GetItemAsObject(allParallelEdges->GetId(i)));
-        e->resetColor();
-        e->nCells=nCells;
+        e->nCells=props->nCells;
+        //set grading if mode is propagate or selected edge
+        if(mode==0 || allParallelEdges->GetId(i)==edgeId)
+            e->grading=props->grading;
     }
 }
 

@@ -247,6 +247,59 @@ void HexBlock::PrintSelf(ostream &os, vtkIndent indent)
 
 }
 
+void HexBlock::exportDict(QTextStream &os)
+{
+    os << "\t hex (";
+    for(vtkIdType j=0; j<vertIds->GetNumberOfIds();j++)
+    {
+        os << vertIds->GetId(j);
+        if(j < vertIds->GetNumberOfIds()-1)
+            os << " ";
+        else
+            os << ") ";
+    }
+
+    int nCells[3];
+    getNumberOfCells(nCells);
+    os << "("
+       << nCells[0] <<" "<< nCells[1]<<" " << nCells[2]
+       << ") ";
+    double gradings[12];
+
+    if(getGradings(gradings))
+    {
+        os << "simpleGrading (" <<gradings[0] << " "
+           << gradings[4] << " " << gradings[8] << ")";
+    }
+    else
+    {
+        os << "edgeGrading ( ";
+        for(int i =0;i<12;i++)
+                os << gradings[i] << " ";
+        os << ")" << endl;
+    }
+}
+
+bool HexBlock::getGradings(double gradings[12])
+{
+    for(vtkIdType i =0;i<edgeIds->GetNumberOfIds();i++)
+    {
+        gradings[i] = HexEdge::SafeDownCast(
+                    globalEdges->GetItemAsObject(edgeIds->GetId(i)))->grading;
+    }
+
+    return (gradings[0] == gradings[1]
+            &&gradings[2] == gradings[3]
+            &&gradings[1] == gradings[2] //first four edges
+            &&gradings[4] == gradings[5]
+            &&gradings[6] == gradings[7]
+            &&gradings[4] == gradings[5]//second four edges
+            &&gradings[8] == gradings[9]
+            &&gradings[10] == gradings[11]
+            &&gradings[9] == gradings[10] //last edges
+            );
+}
+
 void HexBlock::drawLocalaxes()
 {
     unsigned char red[3] = {255, 0, 0};
