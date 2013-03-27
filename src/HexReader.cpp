@@ -248,10 +248,70 @@ bool HexReader::getBlocks()
 
         if(!(ok[0]&&ok[1]&&ok[2]))
         {
-            std::cout << "error reading hex sizes of block"<< readBlocks->GetNumberOfItems() << i-2 <<std::endl;
+            std::cout << "error reading cell numbers of hexBlock"<< readBlocks->GetNumberOfItems() << i-2 <<std::endl;
             return false;
         }
 
+        //get gradings // stället för break set OK no och sätt default.
+        int gradings[12];bool readGradingsOK=true;
+        QString gradingStr = entries.at(2);
+
+        //for removing *grading( from gradingstr
+        QRegExp reg=QRegExp("*(",Qt::CaseInsensitive,QRegExp::Wildcard);
+
+
+        if(gradingStr.contains("simplegrading",Qt::CaseInsensitive))
+        {
+
+            QStringList gradingStrList =
+                    gradingStr.replace(reg,"").simplified().split(" ",QString::SkipEmptyParts);
+
+            if(gradingStrList.count()!=3)
+            {
+                readGradingsOK = false;
+            }
+            //read three doubles
+            bool latestOk;
+            gradings[0] = gradings[1] = gradings[2] = gradings[3] =
+                    gradingStrList.at(0).toDouble(&latestOk);
+            readGradingsOK = readGradingsOK && latestOk;
+            gradings[4] = gradings[5] = gradings[6] = gradings[7] =
+                    gradingStrList.at(1).toDouble(&latestOk);
+            readGradingsOK = readGradingsOK && latestOk;
+            gradings[8] = gradings[9] = gradings[10] = gradings[11] =
+                    gradingStrList.at(2).toDouble(&latestOk);
+            readGradingsOK = readGradingsOK && latestOk;
+
+        }
+        else if (gradingStr.contains("edgeGrading",Qt::CaseInsensitive))
+        {
+            QStringList gradingStrList =
+                    gradingStr.replace(reg,"").simplified().split(" ",QString::SkipEmptyParts);
+
+            if(gradingStrList.count()!=12)
+            {
+                readGradingsOK=false;
+            }
+            bool latestOk;
+            for(int ei=0;ei<12;ei++)
+            {
+                gradings[ei]=gradingStrList.at(ei).toDouble(&latestOk);
+                readGradingsOK=readGradingsOK && latestOk;
+            }
+        }
+        else
+        {
+                readGradingsOK = false;
+        }
+        //if couldn't read set default value 1.
+        if(!readGradingsOK)
+        {
+            errorInGrading(i,entries.at(2));
+            for(int ei=0;ei<12;ei++)
+            {
+                gradings[ei]=1;
+            }
+        }
         //Set number on edges
         for(vtkIdType j=0;j<12;j++)
         {
@@ -262,17 +322,25 @@ bool HexReader::getBlocks()
                 e->nCells = cellNumbers[1];
             else
                 e->nCells = cellNumbers[2];
+
+            e->grading=gradings[j];
         }
 
 
         readBlocks->AddItem(b);
-        //entries.at(2) contains type of grading and grading factors.
-        //simpleGrading (1 1 1
+
 
     }
 
-    // read number, just set them in the edges of the block. e0-e3 gets the same number etc
     return true;
+}
+
+void HexReader::errorInGrading(vtkIdType hexNum,QString entry)
+{
+    std::cout << "Error while reading grading of block "
+              << hexNum << "the entry was: " << std::endl
+              << entry.toAscii().data()
+              << "setting it to 1" << std::endl;
 }
 
 bool HexReader::getBCs()

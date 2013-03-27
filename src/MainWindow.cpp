@@ -437,6 +437,9 @@ void MainWindow::slotReOpenBlockMeshDict()
     hexBlocker = new HexBlocker();
     hexBlocker->renderer->SetBackground(.2, .3, .4);
 
+    //reset pointers to hexBlocker in gui-classes
+    toolbox->setHexBlockerPointer(hexBlocker);
+
     renwin->AddRenderer(hexBlocker->renderer);
 
     hexBlocker->readBlockMeshDict(reader);
@@ -467,7 +470,6 @@ void MainWindow::slotOpenSetEdgePropsDialog()
 
 void MainWindow::slotStartSelectEdges()
 {
-
     ui->statusbar->showMessage(tr("Select an edge, middle button to cancel"),5000);
     hexBlocker->resetColors();
     renwin->GetInteractor()->SetInteractorStyle(styleEdgePick);
@@ -591,14 +593,10 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
 
 void MainWindow::slotArbitraryTest()
 {
-    QString line = QString("edges \n(");
-    std::cout << "original: " << line.toAscii().data();
-    line.replace(QRegExp("edges[\\s,\\n]*\\("),"foo\nbar");
-    std::cout << " regexped: " << line.toAscii().data()
-              << std::endl;
 
-//    hexBlocker->arbitraryTest();
-    renwin->Render();
+
+    hexBlocker->arbitraryTest();
+
 }
 
 void MainWindow::slotExit()

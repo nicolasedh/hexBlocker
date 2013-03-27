@@ -72,6 +72,7 @@ private:
     // removes // and everyting after from a QString
     QString removeDoubleSlashes(QString line);
 
+    void errorInGrading(vtkIdType hexNum, QString entry);
 
     //fills vtkPoints with points from fileContents,
     //returns true if succesfull
