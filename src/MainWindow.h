@@ -96,7 +96,7 @@ public slots:
   void slotResetInteractor();
   void slotOpenSetBCsDialog();
   void slotPatchSelectionDone();
-  void slotStartSelectPatches(vtkIdType bcID);
+  void slotStartSelectPatches(vtkIdList * selectedPatches);
   void slotNewCase();
   void slotOpenBlockMeshDict();
   void slotReOpenBlockMeshDict();

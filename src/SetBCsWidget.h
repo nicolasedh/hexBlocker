@@ -65,7 +65,7 @@ public slots:
     void slotDeleteBC();
 
 signals:
-    void startSelectPatches(vtkIdType bcId);
+    void startSelectPatches(vtkIdList *selectedPatches);
     void resetInteractor();
     void render();
     void done();

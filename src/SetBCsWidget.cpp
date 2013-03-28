@@ -88,8 +88,9 @@ void SetBCsWidget::slotSelectPatches()
     {
         SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
         vtkIdType hexBCId = hexBlocker->hexBCs->IsItemPresent(bcItem->hexBC)-1;
-
-        emit startSelectPatches(hexBCId);
+        HexBC *hexBC = HexBC::SafeDownCast(hexBlocker->hexBCs->GetItemAsObject(hexBCId));
+        setStatusText("Select patches with left mouse button, deselect with right, middle when done.");
+        emit startSelectPatches(hexBC->patchIds);
     }
     else
     {

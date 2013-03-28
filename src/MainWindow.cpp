@@ -112,7 +112,7 @@ MainWindow::MainWindow()
     connect(styleVertPick,SIGNAL(selectionDone()),this,SLOT(slotEndSelectVertices()));
     connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
-    connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdType)),this,SLOT(slotStartSelectPatches(vtkIdType)));
+    connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdList *)),this,SLOT(slotStartSelectPatches(vtkIdList *)));
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
     connect(toolbox->setBCsW,SIGNAL(render()),this,SLOT(slotRender()));
 
@@ -270,14 +270,13 @@ void MainWindow::slotResetInteractor()
 void MainWindow::slotOpenSetBCsDialog()
 {
     toolbox->setCurrentIndex(3);
-
-
 }
 
-void MainWindow::slotStartSelectPatches(vtkIdType bcID)
+void MainWindow::slotStartSelectPatches(vtkIdList *selectedPatches)
 {
     stylePatchPick->selectionMode=InteractorStylePatchPick::multi;
-    stylePatchPick->selectedPatches->Initialize(); //better to add old patches in bcId
+    stylePatchPick->selectedPatches->Initialize();
+    stylePatchPick->selectedPatches->DeepCopy(selectedPatches);
     renwin->GetInteractor()->SetInteractorStyle(stylePatchPick);
     connect(stylePatchPick,SIGNAL(selectionDone(vtkIdList *)),
             toolbox->setBCsW,SLOT(slotSelectionDone(vtkIdList*)));
@@ -461,7 +460,8 @@ void MainWindow::slotReOpenBlockMeshDict()
 
 void MainWindow::slotShowStatusText(QString text)
 {
-    ui->statusbar->showMessage(text,15000);
+    //Show for 10 secs
+    ui->statusbar->showMessage(text,10000);
 }
 
 void MainWindow::slotOpenSetEdgePropsDialog()
