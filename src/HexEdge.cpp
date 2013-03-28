@@ -187,3 +187,12 @@ void HexEdge::reduceVertId(vtkIdType vId)
     pts[1]=vertIds->GetId(1);
     lines->ReplaceCell(0,2,pts);
 }
+
+double HexEdge::getLength()
+{
+    double pos0[3],pos1[3],diff[3];
+    globalVertices->GetPoint(vertIds->GetId(0),pos0);
+    globalVertices->GetPoint(vertIds->GetId(1),pos1);
+    vtkMath::Subtract(pos0,pos1,diff);
+    return vtkMath::Norm(diff);
+}

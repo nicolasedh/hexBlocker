@@ -74,6 +74,7 @@ public:
     void changeVertId(vtkIdType from, vtkIdType to);
     void reduceVertId(vtkIdType vId);
 
+    double getLength();
 
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;

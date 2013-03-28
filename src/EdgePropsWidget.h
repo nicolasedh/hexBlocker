@@ -33,9 +33,10 @@ Description
 #include <vtkSmartPointer.h>
 #include <QWidget>
 
-
+//Predeclarations
 class HexBlocker;
-
+class GradingCalculatorDialog;
+class HexEdge;
 
 namespace Ui {
 class EdgePropsWidget;
@@ -58,6 +59,8 @@ public:
 public slots:
     void slotApply();
     void slotCancel();
+    void slotOpenCalc();
+    void slotCalcApplied();
 
 signals:
     void apply();
@@ -67,7 +70,9 @@ signals:
 
 private:
     vtkIdType selectedEdgeId;
+    HexEdge *selectedEdge;
     Ui::EdgePropsWidget *ui;
+    GradingCalculatorDialog * gradCalcDialog;
 };
 
 #endif // EDGEPROPSWIDGET_H

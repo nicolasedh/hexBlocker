@@ -24,7 +24,6 @@ License
 */
 
 
-
 #include "ui_MainWindow.h"
 #include "MainWindow.h"
 #include "HexBlocker.h"
@@ -55,6 +54,8 @@ License
 //#include <QInputDialog>
 //#include <QFileDialog>
 #include <QtGui>
+
+
 
 #define VTK_CREATE(type, name) \
     vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
@@ -594,8 +595,24 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
 void MainWindow::slotArbitraryTest()
 {
 
+     bool ok;
+    QString tester=QInputDialog::getText(this,"testar","testtext");
+//    QRegExp reg=QRegExp("^\\d{0,5}\\.{0,1}\\d{1,5}([e,E]{0,1}[\\+,\\-]{0,1}\d{1,3}){0,1}$");
+    QRegExp reg=QRegExp("^\\d{0,5}\\.{0,1}\\d{1,5}([eE][+-]{0,1}\\d{1,5}){0,1}$");
 
-    hexBlocker->arbitraryTest();
+
+    if(tester.contains(reg))
+    {
+        std::cout << "match" << std::endl;
+    }
+    else
+    {
+        std::cout << "no match" <<std::endl;
+    }
+
+
+
+
 
 }
 

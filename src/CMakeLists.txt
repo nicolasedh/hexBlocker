@@ -34,11 +34,13 @@ SET(HexBlockerSrcs
     InteractorStylePatchPick.cpp HexBC.cpp ToolBoxWidget.cpp
     SetBCsWidget.cpp SetBCsItem.cpp HexExporter.cpp HexEdge.cpp
     InteractorStyleEdgePick.cpp HexReader.cpp EdgePropsWidget.cpp
+    TEdgeSpace.cpp GradingCalculatorDialog.cpp
     )
 SET(HexBlockerUI
     MainWindow.ui ToolBoxWidget.ui
     MoveVerticesWidget.ui CreateBlockWidget.ui
     SetBCsWidget.ui EdgePropsWidget.ui
+    GradingCalculatorDialog.ui
     )
 SET(HexBlockerHeaders
     MainWindow.h HexBlock.h HexBlocker.h HexPatch.h
@@ -47,7 +49,8 @@ SET(HexBlockerHeaders
     HexBC.h ToolBoxWidget.h SetBCsWidget.h SetBCsItem.h
     HexExporter.h HexEdge.h
     InteractorStyleEdgePick.h
-    HexReader.h EdgePropsWidget.h
+    HexReader.h EdgePropsWidget.h TEdgeSpace.h
+    GradingCalculatorDialog.h
     )
 SET(HexBlockerResources Icons/icons.qrc)
 

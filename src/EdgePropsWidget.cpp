@@ -30,6 +30,7 @@ License
 #include <iostream>
 #include "HexBlocker.h"
 #include "HexEdge.h"
+#include "GradingCalculatorDialog.h"
 #include <vtkIdList.h>
 
 EdgePropsWidget::EdgePropsWidget(QWidget *parent) :
@@ -42,9 +43,14 @@ EdgePropsWidget::EdgePropsWidget(QWidget *parent) :
     QDoubleValidator *gradingValidator = new QDoubleValidator(1e-6,1e6,3);
     ui->gradingLineEdit->setValidator(gradingValidator);
 
+    gradCalcDialog = new GradingCalculatorDialog();
+
     connect(ui->pushButtonApply,SIGNAL(clicked()),this,SLOT(slotApply()));
     connect(ui->pushButtonCancel,SIGNAL(clicked()),this,SLOT(slotCancel()));
     connect(ui->selectEdgePushButton,SIGNAL(clicked()),this,SIGNAL(startSelectEdges()));
+
+    connect(ui->calcPushButton,SIGNAL(clicked()),this,SLOT(slotOpenCalc()));
+    connect(gradCalcDialog,SIGNAL(apply()),this,SLOT(slotCalcApplied()));
 }
 
 EdgePropsWidget::~EdgePropsWidget()
@@ -54,9 +60,6 @@ EdgePropsWidget::~EdgePropsWidget()
 
 void EdgePropsWidget::slotApply()
 {
-
-
-
     if(selectedEdgeId<0)
     {
         emit setStatusText("Select edge first!");
@@ -102,10 +105,10 @@ void EdgePropsWidget::setSelectedEdge(vtkIdType selEdgeId)
     selectedEdgeId=selEdgeId;
     if(selectedEdgeId > -1)
     {
-        HexEdge * se =hexBlocker->showParallelEdges(selectedEdgeId);
-        long int prevNCells = se->nCells;
+        selectedEdge =hexBlocker->showParallelEdges(selectedEdgeId);
+        long int prevNCells = selectedEdge->nCells;
         this->ui->numCellsSpinBox->setValue(prevNCells);
-        double grading = se->grading;
+        double grading = selectedEdge->grading;
         QString gradS =QString();
         gradS.sprintf("%.2f",grading);
         this->ui->gradingLineEdit->setText(gradS);
@@ -118,4 +121,36 @@ void EdgePropsWidget::setSelectedEdge(vtkIdType selEdgeId)
         msg.append(".");
         emit setStatusText(msg);
     }
+}
+
+void EdgePropsWidget::slotOpenCalc()
+{
+    if(selectedEdgeId > -1)
+    {
+        double grading = ui->gradingLineEdit->text().toDouble();
+        double length = selectedEdge->getLength();
+        long int nCells = ui->numCellsSpinBox->value();
+
+        gradCalcDialog->setLengthGradingNcells(length,grading,nCells);
+        //set length, grading and numcells
+        gradCalcDialog->show();
+
+    }
+    else
+    {
+        setStatusText("Select an edge first");
+    }
+}
+
+void EdgePropsWidget::slotCalcApplied()
+{
+    //if Im visible else nothing
+    if(this->isVisible())
+    {
+        QString str;
+        str.sprintf("%.3g",gradCalcDialog->getGrading());
+        ui->gradingLineEdit->setText(str);
+        ui->numCellsSpinBox->setValue(gradCalcDialog->getNCells());
+    }
+    //get ncells and grading
 }

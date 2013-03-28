@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>260</width>
-    <height>478</height>
+    <height>405</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>260</width>
-    <height>380</height>
+    <height>405</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -201,6 +201,12 @@
           <property name="minimum">
            <number>1</number>
           </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
          </widget>
         </item>
        </layout>
@@ -291,6 +297,19 @@
          </spacer>
         </item>
         <item>
+         <widget class="QPushButton" name="calcPushButton">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Calc</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLineEdit" name="gradingLineEdit">
           <property name="enabled">
            <bool>true</bool>
@@ -327,6 +346,9 @@
           </property>
           <property name="statusTip">
            <string>Set grading on edge &gt; 0</string>
+          </property>
+          <property name="text">
+           <string notr="true">1.00</string>
           </property>
          </widget>
         </item>
