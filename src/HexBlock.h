@@ -51,7 +51,9 @@ class vtkMapper;
 class vtkActor;
 class vtkTubeFilter;
 class vtkCellArray;
-
+class vtkHexahedron;
+class vtkUnstructuredGrid;
+class vtkDataSetMapper;
 
 
 
@@ -134,7 +136,8 @@ public:
     vtkSmartPointer<vtkIdList> vertIds; // own vertices in globalVertices
     vtkSmartPointer<vtkIdList> edgeIds;
     vtkSmartPointer<vtkIdList> patchIds; //own patches in globalPatches
-    vtkSmartPointer<vtkActor> hexActor; //for axes.
+    vtkSmartPointer<vtkActor> hexAxisActor; //for axes.
+    vtkSmartPointer<vtkActor> hexBlockActor; //for axes.
 
 private:
     //FUNCTIONS
@@ -145,6 +148,9 @@ private:
     //of the local coordinates
     void drawLocalaxes();
 
+    // draws a blue block.
+    void drawBlock();
+
     void initEdge(vtkIdType p0,vtkIdType p1);
     void initPatches();
     void initPatch(int id0,int id1,int id2,int id3);
@@ -154,6 +160,10 @@ private:
     vtkSmartPointer<vtkPolyData> axesData;
     vtkSmartPointer<vtkTubeFilter> axesTubes;
 
+//    vtkSmartPointer<vtkHexahedron> hexahedron;
+//    vtkSmartPointer<vtkCellArray> hexes;
+//    vtkSmartPointer<vtkUnstructuredGrid> uGrid;
+//    vtkSmartPointer<vtkDataSetMapper> hexaMapper;
 };
 
 #endif // HEXBLOCK_H

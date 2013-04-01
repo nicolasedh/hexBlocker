@@ -179,7 +179,8 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
         renderer->AddActor(p->actor);
     }
 
-    renderer->AddActor(hex->hexActor);
+    renderer->AddActor(hex->hexAxisActor);
+    renderer->AddActor(hex->hexBlockActor);
     vertices->Modified();
     resetBounds();
 
@@ -234,7 +235,8 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     }
 
     this->resetBounds();
-    renderer->AddActor(newHex->hexActor);
+    renderer->AddActor(newHex->hexAxisActor);
+    renderer->AddActor(newHex->hexBlockActor);
     renderer->Render();
 
 
@@ -577,7 +579,8 @@ void HexBlocker::readBlockMeshDict(HexReader *reader)
     for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
     {
         HexBlock *b = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
-        renderer->AddActor(b->hexActor);
+        renderer->AddActor(b->hexAxisActor);
+        renderer->AddActor(b->hexBlockActor);
     }
 
 

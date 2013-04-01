@@ -43,6 +43,9 @@ License
 #include <vtkLine.h>
 #include <vtkProperty.h>
 #include <vtkTubeFilter.h>
+#include <vtkHexahedron.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkDataSetMapper.h>
 
 vtkStandardNewMacro(HexBlock);
 
@@ -58,7 +61,8 @@ HexBlock::HexBlock()
     globalEdges = vtkSmartPointer<vtkCollection>::New();
     globalPatches = vtkSmartPointer<vtkCollection>::New();
 
-    hexActor = vtkSmartPointer<vtkActor>::New();
+    hexAxisActor = vtkSmartPointer<vtkActor>::New();
+    hexBlockActor = vtkSmartPointer<vtkActor>::New();
 }
 
 HexBlock::~HexBlock()
@@ -353,13 +357,52 @@ void HexBlock::drawLocalaxes()
     axesMapper->SetInputConnection(axesTubes->GetOutputPort());
 
 
-    hexActor->SetMapper(axesMapper);
+    hexAxisActor->SetMapper(axesMapper);
     double x[3];
     globalVertices->GetPoint(vertIds->GetId(0),x);
-    hexActor->SetOrigin(x);
-    hexActor->SetScale(0.4);
+    hexAxisActor->SetOrigin(x);
+    hexAxisActor->SetScale(0.4);
     //hexActor->GetProperty()->SetLineWidth(3);
-    hexActor->SetPickable(false);
+    hexAxisActor->SetPickable(false);
+}
+
+void HexBlock::drawBlock()
+{
+    vtkSmartPointer<vtkHexahedron> hexahedron =
+            vtkSmartPointer<vtkHexahedron>::New();
+    for(vtkIdType i=0;i<8;i++)
+    {
+        hexahedron->GetPointIds()->SetId(i,vertIds->GetId(i));
+    }
+
+    vtkSmartPointer<vtkCellArray> hexes =
+            vtkSmartPointer<vtkCellArray>::New();
+    hexes->InsertNextCell(hexahedron);
+
+    vtkSmartPointer<vtkUnstructuredGrid> uGrid =
+             vtkSmartPointer<vtkUnstructuredGrid>::New();
+    uGrid->SetPoints(globalVertices);
+    uGrid->InsertNextCell(hexahedron->GetCellType(), hexahedron->GetPointIds());
+
+    vtkSmartPointer<vtkDataSetMapper> hexaMapper =
+             vtkSmartPointer<vtkDataSetMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+    hexaMapper->SetInputConnection(uGrid->GetProducerPort());
+#else
+    hexaMapper->SetInputData(uGrid);
+#endif
+
+    hexBlockActor->SetMapper(hexaMapper);
+    double c[3];
+    getCenter(c);
+    hexBlockActor->SetOrigin(c);
+    hexBlockActor->SetScale(0.4);
+    hexBlockActor->GetProperty()->SetColor(0,100,110);
+    hexBlockActor->GetProperty()->SetEdgeColor(0,0,0);
+    hexBlockActor->GetProperty()->EdgeVisibilityOn();
+    hexBlockActor->SetVisibility(true);
+    hexBlockActor->GetProperty()->SetOpacity(1.0);
+
 }
 
 void HexBlock::initAll()
@@ -367,6 +410,7 @@ void HexBlock::initAll()
     initEdges();
     initPatches();
     drawLocalaxes();
+    drawBlock();
 }
 
 void HexBlock::initEdges()
@@ -558,8 +602,8 @@ void HexBlock::rescaleActor()
 {
     double x[3];
     globalVertices->GetPoint(vertIds->GetId(0),x);
-    hexActor->SetOrigin(x);
-    hexActor->SetScale(0.4);
+    hexAxisActor->SetOrigin(x);
+    hexAxisActor->SetScale(0.4);
 }
 
 void HexBlock::getCenter(double center[])
@@ -587,6 +631,7 @@ void HexBlock::changeVertId(vtkIdType from, vtkIdType to)
         vertIds->SetId(pos,to);
     }
     drawLocalaxes();
+    drawBlock();
 }
 
 void HexBlock::reduceVertId(vtkIdType vId)
@@ -598,5 +643,6 @@ void HexBlock::reduceVertId(vtkIdType vId)
             vertIds->SetId(i,oldId-1);
     }
     drawLocalaxes();
+    drawBlock();
 }
 
