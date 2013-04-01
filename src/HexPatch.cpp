@@ -121,6 +121,7 @@ void HexPatch::init(vtkSmartPointer<vtkIdList> vIds,
     actor->SetMapper(mapper);
     actor->SetOrigin(actor->GetCenter());
     actor->SetScale(0.6);
+    actor->GetProperty()->EdgeVisibilityOn();
     resetColor();
 }
 
