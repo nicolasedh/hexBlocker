@@ -76,6 +76,7 @@ public:
 
     double getLength();
 
+    bool hasVertice(vtkIdType vId);
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;
     vtkSmartPointer<vtkPoints> globalVertices;

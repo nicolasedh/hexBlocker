@@ -196,3 +196,9 @@ double HexEdge::getLength()
     vtkMath::Subtract(pos0,pos1,diff);
     return vtkMath::Norm(diff);
 }
+
+
+bool HexEdge::hasVertice(vtkIdType vId)
+{
+    return vertIds->IsId(vId) > -1;
+}

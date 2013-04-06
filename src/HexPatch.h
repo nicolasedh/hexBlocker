@@ -84,9 +84,9 @@ public:
     void getNormal(double n[3]);
 
     //set primary if we have no block else secondary
-    void setHex(vtkSmartPointer<HexBlock> hex);
-    vtkSmartPointer<HexBlock> getPrimaryHexBlock();
-    vtkSmartPointer<HexBlock> getSecondaryHexBlock();
+    void setHex(HexBlock * hex);
+    HexBlock * getPrimaryHexBlock();
+    HexBlock * getSecondaryHexBlock();
 
     //average of vertices position
     void getCenter(double cog[3]);
@@ -97,6 +97,11 @@ public:
     //from and two are vertices ids in global list
     void changeVertId(vtkIdType from, vtkIdType to);
     void reduceVertId(vtkIdType vId);
+
+    //if we only have one block then
+    void removeSafely(HexBlock *hex);
+
+    bool hasVertice(vtkIdType vId);
 
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;
@@ -110,8 +115,8 @@ private:
     vtkSmartPointer<vtkQuad> quad;
     vtkSmartPointer<vtkCellArray> quads;
     vtkSmartPointer<vtkPolyData> data;
-    vtkSmartPointer<HexBlock> primaryHex;
-    vtkSmartPointer<HexBlock> secondaryHex;
+    HexBlock * primaryHex;
+    HexBlock * secondaryHex;
     bool hasPrimaryHex;
     bool hasSecondaryHex;
 };

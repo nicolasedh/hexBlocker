@@ -401,7 +401,7 @@ void HexBlock::drawBlock()
     hexBlockActor->GetProperty()->SetEdgeColor(0,0,0);
     hexBlockActor->GetProperty()->EdgeVisibilityOn();
     hexBlockActor->SetVisibility(true);
-    hexBlockActor->GetProperty()->SetOpacity(1.0);
+    hexBlockActor->GetProperty()->SetOpacity(6.0);
 
 }
 
@@ -604,6 +604,11 @@ void HexBlock::rescaleActor()
     globalVertices->GetPoint(vertIds->GetId(0),x);
     hexAxisActor->SetOrigin(x);
     hexAxisActor->SetScale(0.4);
+
+    double c[3];
+    getCenter(c);
+    hexBlockActor->SetOrigin(c);
+    hexBlockActor->SetScale(0.4);
 }
 
 void HexBlock::getCenter(double center[])
@@ -646,3 +651,33 @@ void HexBlock::reduceVertId(vtkIdType vId)
     drawBlock();
 }
 
+vtkIdList * HexBlock::commonVertices(HexBlock *hb)
+{
+    vtkIdList * comVerts;
+    for(vtkIdType i=0;i<8;i++)
+    {
+        //isId returns the id if it's present
+        if(this->vertIds->IsId(hb->vertIds->GetId(i)>-1))
+            comVerts->InsertNextId(vertIds->GetId(i));
+    }
+    return comVerts;
+}
+
+bool HexBlock::hasVertice(vtkIdType vId)
+{
+    if(vertIds->IsId(vId)>-1)
+        return true;
+    else
+        return false;
+}
+
+bool HexBlock::equals(HexBlock *other)
+{
+    for(vtkIdType i=0;i<vertIds->GetNumberOfIds();i++)
+    {
+        if(! this->vertIds->GetId(i) == other->vertIds->GetId(i))
+            return false;
+    }
+
+    return true;
+}

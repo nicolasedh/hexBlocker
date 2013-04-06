@@ -128,6 +128,16 @@ public:
     // returns true if simpleGrading is possible
     bool getGradings(double gradings[12] );
 
+    // returns a list of common vertices. NOT YET TESTED
+    vtkIdList* commonVertices(HexBlock *hb);
+
+    // returns true if vId is in vertIds
+    bool hasVertice(vtkIdType vId);
+
+    //returns true if they have the same vertices
+    //in the same order
+    bool equals(HexBlock *other);
+
     //DATA
     vtkSmartPointer<vtkPoints> globalVertices; //Global list of vertices
     vtkSmartPointer<vtkCollection> globalEdges;

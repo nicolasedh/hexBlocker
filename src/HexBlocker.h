@@ -133,11 +133,16 @@ public:
     bool removeVerticeSafely(vtkIdType toRem);
     void removeVerticesSafely(vtkIdList * toRemove);
 
+    // remove a block and any patch or edge that has vertices
+    // that are no longer needed by any block.
+    // it does not remove vertices
+    void removeHexBlock(vtkIdType toRem);
+
+    //As above but fill vertsToRem with vertices that are no longer needed.
+    void removeHexBlock(const vtkIdType toRem, vtkIdList * vertsToRem);
     //this is a testfunktion for quick and dirty testing
     //and devloping
     void arbitraryTest();
-
-
 
     //DATA
     vtkSmartPointer<vtkPoints> vertices;

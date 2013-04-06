@@ -595,25 +595,7 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
 void MainWindow::slotArbitraryTest()
 {
 
-     bool ok;
-    QString tester=QInputDialog::getText(this,"testar","testtext");
-//    QRegExp reg=QRegExp("^\\d{0,5}\\.{0,1}\\d{1,5}([e,E]{0,1}[\\+,\\-]{0,1}\d{1,3}){0,1}$");
-    QRegExp reg=QRegExp("^\\d{0,5}\\.{0,1}\\d{1,5}([eE][+-]{0,1}\\d{1,5}){0,1}$");
-
-
-    if(tester.contains(reg))
-    {
-        std::cout << "match" << std::endl;
-    }
-    else
-    {
-        std::cout << "no match" <<std::endl;
-    }
-
-
-
-
-
+    hexBlocker->arbitraryTest();
 }
 
 void MainWindow::slotExit()

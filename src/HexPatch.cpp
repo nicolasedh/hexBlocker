@@ -134,7 +134,10 @@ void HexPatch::setColor(double r, double g, double b)
 void HexPatch::resetColor()
 {
     if(!hasSecondaryHex)
+    {
         actor->GetProperty()->SetColor(0.2,0.9,0.2);
+        actor->GetProperty()->SetOpacity(1.0);
+    }
     else
     {
         actor->GetProperty()->SetColor(0.2,0.2,0.9);
@@ -207,7 +210,7 @@ void HexPatch::getCenter(double c[3])
     vtkMath::MultiplyScalar(c,0.25);
 }
 
-void HexPatch::setHex(vtkSmartPointer<HexBlock> hex)
+void HexPatch::setHex(HexBlock *hex)
 {
     //error check?
     if (!hasPrimaryHex)
@@ -224,14 +227,34 @@ void HexPatch::setHex(vtkSmartPointer<HexBlock> hex)
 
 }
 
-vtkSmartPointer<HexBlock> HexPatch::getPrimaryHexBlock()
+HexBlock* HexPatch::getPrimaryHexBlock()
 {
-    return primaryHex;
+    if(hasPrimaryHex)
+        return primaryHex;
+    else
+    {
+         std::cout << "Error: patch (" << vertIds->GetId(0) << " "
+                  << vertIds->GetId(1) << " "
+                  << vertIds->GetId(2) << " "
+                  << vertIds->GetId(3) << ")"
+                  << "was asked for a hexblock witch it doesn't have" << std::endl;
+        return primaryHex;
+    }
 }
 
-vtkSmartPointer<HexBlock> HexPatch::getSecondaryHexBlock()
+HexBlock* HexPatch::getSecondaryHexBlock()
 {
-    return secondaryHex;
+    if(hasSecondaryHex)
+        return secondaryHex;
+    else
+    {
+        std::cout << "Error: patch (" << vertIds->GetId(0) << " "
+                  << vertIds->GetId(1) << " "
+                  << vertIds->GetId(2) << " "
+                  << vertIds->GetId(3) << ")"
+                  << "was asked for a hexblock witch it doesn't have" << std::endl;
+        return secondaryHex;
+    }
 }
 
 
@@ -293,4 +316,45 @@ void HexPatch::reduceVertId(vtkIdType vId)
     pts[2]=vertIds->GetId(2);
     pts[3]=vertIds->GetId(3);
     quads->ReplaceCell(0,4,pts);
+}
+
+void HexPatch::removeSafely(HexBlock * hex)
+{
+//    std::cout << "calld on patch (" << vertIds->GetId(0) << " "
+//              << vertIds->GetId(1) << " "
+//              << vertIds->GetId(2) << " "
+//              << vertIds->GetId(3) << ")" << std::endl;
+    if(hasSecondaryHex)
+    {
+        if(primaryHex->equals(hex) || secondaryHex->equals(hex))
+        {
+            if(primaryHex->equals(hex))
+            {
+                   primaryHex=secondaryHex;
+            }
+            hasSecondaryHex=false;
+            secondaryHex=0;
+            resetColor();
+            rescaleActor();
+        }
+        else
+        {
+            //don't do anything
+            return;
+        }
+    }
+          //but not secondary
+    else if(hasPrimaryHex && primaryHex->equals(hex))
+    {
+        //This patch will get deleted. The smartpointers should clean up.
+        hasPrimaryHex=false;
+        primaryHex=0;
+    }
+    else //if we havn't been initialized
+        return;
+}
+
+bool HexPatch::hasVertice(vtkIdType vId)
+{
+    return vertIds->IsId(vId) > -1;
 }
