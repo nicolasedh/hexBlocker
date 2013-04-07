@@ -86,6 +86,9 @@ MainWindow::MainWindow()
     styleEdgePick = vtkSmartPointer<InteractorStyleEdgePick>::New();
     styleEdgePick->SetEdges(hexBlocker->edges);
 
+    styleActorPick = vtkSmartPointer<InteractorStyleActorPick>::New();
+    styleActorPick->setHexBlocker(hexBlocker);
+
     defStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
 
     //Qt widgets
@@ -119,7 +122,6 @@ MainWindow::MainWindow()
 
     connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotOpenSetEdgePropsDialog()));
     connect(toolbox->edgePropsW,SIGNAL(startSelectEdges()),this,SLOT(slotStartSelectEdges()));
-//    connect(this->ui->actionSetNumber,SIGNAL(triggered()),this,SLOT(slotStartSelectEdges()));
     connect(toolbox,SIGNAL(setStatusText(QString)),this,SLOT(slotShowStatusText(QString)));
 
     connect(this->ui->actionNewCase,SIGNAL(triggered()),this,SLOT(slotNewCase()));
@@ -127,13 +129,13 @@ MainWindow::MainWindow()
     connect(this->ui->actionReOpenBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotReOpenBlockMeshDict()));
     connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotSaveBlockMeshDict()));
     connect(this->ui->actionSaveAs,SIGNAL(triggered()),this, SLOT(slotSaveAsBlockMeshDict()));
-
+    connect(this->ui->actionMergePatch,SIGNAL(triggered()),this,SLOT(slotStartMergePatch()));
+    connect(this->ui->actionDeleteBlocks,SIGNAL(triggered()),this,SLOT(slotStartDeleteHexBlock()));
 
     connect(this->ui->actionAbout_Qt,SIGNAL(triggered()),
             qApp,SLOT(aboutQt()));
     connect(this->ui->actionAbout_hexBlocker,SIGNAL(triggered()),
             this,SLOT(slotAboutDialog()));
-    connect(this->ui->actionMergePatch,SIGNAL(triggered()),this,SLOT(slotStartMergePatch()));
     connect(this->ui->actionArbitraryTest,SIGNAL(triggered()),this,SLOT(slotArbitraryTest()));
 
 }
@@ -163,6 +165,31 @@ void MainWindow::slotCreateHexBlock()
     hexBlocker->createHexBlock(toolbox->createBlockW->c0,toolbox->createBlockW->c1);
     hexBlocker->resetBounds();
     renwin->Render();
+}
+
+void MainWindow::slotStartDeleteHexBlock()
+{
+    toolbox->setCurrentIndex(0); // show empty page
+    ui->statusbar->showMessage(tr(
+      "Select the blocks to delete with left button, middle when done and right to deslect"),
+      10000);
+    styleActorPick->setSelection(
+        InteractorStyleActorPick::block,
+        InteractorStyleActorPick::multi
+        );
+    renwin->GetInteractor()->SetInteractorStyle(styleActorPick);
+    connect(styleActorPick,SIGNAL(selectionDone()),this,SLOT(slotDeleteHexBlock()));
+
+
+}
+
+void MainWindow::slotDeleteHexBlock()
+{
+    disconnect(styleActorPick,SIGNAL(selectionDone()),this,SLOT(slotDeleteHexBlock()));
+    renwin->GetInteractor()->SetInteractorStyle(defStyle);
+    vtkIdList * selIds = styleActorPick->selectedIds;
+    hexBlocker->removeHexBlocks(selIds);
+    hexBlocker->renderer->GetRenderWindow()->Render();
 }
 
 void MainWindow::slotPrintHexBlocks()
@@ -301,6 +328,7 @@ void MainWindow::slotNewCase()
     hexBlocker->removeOrientationAxes();
     renwin->RemoveRenderer(hexBlocker->renderer);
 
+    delete hexBlocker;
     hexBlocker = new HexBlocker();
     hexBlocker->renderer->SetBackground(.2, .3, .4);
 
@@ -314,6 +342,7 @@ void MainWindow::slotNewCase()
     styleVertPick->SelectedSphere=hexBlocker->vertSphere;
     stylePatchPick->SetPatches(hexBlocker->patches);
     styleEdgePick->SetEdges(hexBlocker->edges);
+    styleActorPick->setHexBlocker(hexBlocker);
 
     //Repoint widgets
     // rensa bc's
@@ -435,6 +464,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     hexBlocker->removeOrientationAxes();
     renwin->RemoveRenderer(hexBlocker->renderer);
 
+    delete hexBlocker;
     hexBlocker = new HexBlocker();
     hexBlocker->renderer->SetBackground(.2, .3, .4);
 
@@ -452,6 +482,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     styleVertPick->SelectedSphere=hexBlocker->vertSphere;
     stylePatchPick->SetPatches(hexBlocker->patches);
     styleEdgePick->SetEdges(hexBlocker->edges);
+    styleActorPick->setHexBlocker(hexBlocker);
 
     //Repoint widgets
     toolbox->setBCsW->changeBCs(reader);

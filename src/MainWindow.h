@@ -56,6 +56,7 @@ class vtkAreaPicker;
 class InteractorStyleVertPick;
 class InteractorStylePatchPick;
 class InteractorStyleEdgePick;
+class InteractorStyleActorPick;
 class vtkInteractorStyleTrackballCamera;
 class ToolBoxWidget;
 class vtkIdList;
@@ -74,6 +75,7 @@ public:
   vtkSmartPointer<InteractorStyleVertPick> styleVertPick;
   vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
   vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;
+  vtkSmartPointer<InteractorStyleActorPick> styleActorPick;
 
   //open file name, main needs access
   QString openFileName;
@@ -86,6 +88,8 @@ public slots:
   void slotExit();
   void slotCreateHexBlock();
   void slotOpenCreateHexBlockDialog();
+  void slotStartDeleteHexBlock();
+  void slotDeleteHexBlock();
   void slotPrintHexBlocks();
   void slotStartExtrudePatch();
   void slotExtrudePatch(vtkIdList *selectedPatches);

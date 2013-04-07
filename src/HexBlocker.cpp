@@ -998,6 +998,18 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
 
 }
 
+void HexBlocker::removeHexBlocks(vtkIdList *toRems)
+{
+    for(vtkIdType i=0;i<toRems->GetNumberOfIds();i++)
+    {
+        vtkSmartPointer<vtkIdList> verts2rem =
+                vtkSmartPointer<vtkIdList>::New();
+        removeHexBlock(toRems->GetId(i),verts2rem);
+        removeVerticesSafely(verts2rem);
+        decreaseList(toRems,toRems->GetId(i));
+    }
+}
+
 void HexBlocker::arbitraryTest()
 {
 

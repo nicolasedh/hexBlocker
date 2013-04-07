@@ -150,6 +150,7 @@
    <addaction name="actionZoomOut"/>
    <addaction name="actionCreateHexBlock"/>
    <addaction name="actionExtrudePatch"/>
+   <addaction name="actionDeleteBlocks"/>
    <addaction name="actionOpenMoveVerticesDialog"/>
    <addaction name="actionSetBCs"/>
    <addaction name="actionSetNumber"/>
@@ -367,6 +368,14 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionDeleteBlocks">
+   <property name="text">
+    <string>delete blocks</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete one or several HexBlocks</string>
    </property>
   </action>
  </widget>

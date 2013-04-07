@@ -78,6 +78,7 @@ void InteractorStyleActorPick::OnChar()
 void InteractorStyleActorPick::setHexBlocker(HexBlocker *hexb)
 {
     hexBlocker=hexb;
+    this->SetCurrentRenderer(hexBlocker->renderer);
 }
 
 void InteractorStyleActorPick::setSelection(selectionTypes type, selectionModes mode)
