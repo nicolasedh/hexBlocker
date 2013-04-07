@@ -108,6 +108,9 @@ public:
     //resets the center and rescales the axis
     void rescaleActor();
 
+    //reset the color of the box
+    void resetColor();
+
     //returns the center of the block, calculated as the
     //average of all vertices.
     void getCenter(double center[3]);

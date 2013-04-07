@@ -31,6 +31,7 @@ License
 #include "InteractorStyleVertPick.h"
 #include "InteractorStylePatchPick.h"
 #include "InteractorStyleEdgePick.h"
+#include "InteractorStyleActorPick.h"
 #include "ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
@@ -594,7 +595,17 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
 
 void MainWindow::slotArbitraryTest()
 {
+    InteractorStyleActorPick *is =
+            InteractorStyleActorPick::New();
+    is->SetCurrentRenderer(hexBlocker->renderer);
+    is->setHexBlocker(hexBlocker);
 
+    is->setSelection(
+                InteractorStyleActorPick::edge,
+                InteractorStyleActorPick::single
+                );
+
+    renwin->GetInteractor()->SetInteractorStyle(is);
     hexBlocker->arbitraryTest();
 }
 

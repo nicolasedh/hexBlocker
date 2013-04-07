@@ -611,6 +611,11 @@ void HexBlock::rescaleActor()
     hexBlockActor->SetScale(0.4);
 }
 
+void HexBlock::resetColor()
+{
+    hexBlockActor->GetProperty()->SetColor(0,100,110);
+}
+
 void HexBlock::getCenter(double center[])
 {
     center[0] = 0.0;
