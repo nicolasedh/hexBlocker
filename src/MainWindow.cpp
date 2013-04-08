@@ -178,6 +178,9 @@ void MainWindow::slotStartDeleteHexBlock()
         InteractorStyleActorPick::multi
         );
     renwin->GetInteractor()->SetInteractorStyle(styleActorPick);
+
+    hexBlocker->hidePatches();
+    renwin->Render();
     connect(styleActorPick,SIGNAL(selectionDone()),this,SLOT(slotDeleteHexBlock()));
 
 
@@ -189,6 +192,7 @@ void MainWindow::slotDeleteHexBlock()
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     vtkIdList * selIds = styleActorPick->selectedIds;
     hexBlocker->removeHexBlocks(selIds);
+    hexBlocker->showPatches();
     hexBlocker->renderer->GetRenderWindow()->Render();
 }
 

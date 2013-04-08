@@ -1010,6 +1010,25 @@ void HexBlocker::removeHexBlocks(vtkIdList *toRems)
     }
 }
 
+void HexBlocker::showPatches()
+{
+    visibilityPatches(true);
+}
+
+void HexBlocker::hidePatches()
+{
+    visibilityPatches(false);
+}
+
+void HexBlocker::visibilityPatches(bool mode)
+{
+    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+    {
+        HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
+        p->actor->SetVisibility(mode);
+    }
+}
+
 void HexBlocker::arbitraryTest()
 {
 

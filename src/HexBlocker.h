@@ -148,6 +148,10 @@ public:
     void removeHexBlocks(vtkIdList * toRems);
     void arbitraryTest();
 
+    //show/hide objects
+    void showPatches();
+    void hidePatches();
+    void visibilityPatches(bool mode);
     //DATA
     vtkSmartPointer<vtkPoints> vertices;
     vtkSmartPointer<vtkPolyData> vertData;
