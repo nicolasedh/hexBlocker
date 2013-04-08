@@ -11,5 +11,6 @@
         <file>zoomOut.png</file>
         <file>edgeProperties.png</file>
         <file>mergePatch.png</file>
+        <file>DeletHexBlock.png</file>
     </qresource>
 </RCC>

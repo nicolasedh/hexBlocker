@@ -371,6 +371,11 @@
    </property>
   </action>
   <action name="actionDeleteBlocks">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Icons/DeletHexBlock.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>delete blocks</string>
    </property>

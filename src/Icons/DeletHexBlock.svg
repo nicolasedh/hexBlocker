@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="DeletHexBlock.svg"
+   inkscape:export-filename="/home/nico/Dropbox/Projekt/myQtApps/hexBlocker/src/Icons/DeletHexBlock.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="-477.48843 : 1157.9882 : 1"
+       inkscape:vp_y="0 : 2798.0444 : 0"
+       inkscape:vp_z="1445.2037 : 702.30658 : 1"
+       inkscape:persp3d-origin="337.20442 : 139.59748 : 1"
+       id="perspective2985" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="96.184073"
+     inkscape:cy="471.13339"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1301"
+     inkscape:window-height="744"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:snap-page="true" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       sodipodi:type="inkscape:box3d"
+       style="fill:none;stroke:none"
+       id="g2987"
+       inkscape:perspectiveID="#perspective2985"
+       inkscape:corner0="0.70620438 : 0.15238103 : 0 : 1"
+       inkscape:corner7="0.060263989 : -0.040155036 : 0.68535329 : 1">
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path2997"
+         style="fill:#afafde;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="13"
+         d="M -3.8994352e-7,557.10015 290.89837,960.85017 744.09448,721.04384 414.15481,497.767 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path2989"
+         style="fill:#353564;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="6"
+         d="m -3.8994352e-7,241.35576 0,315.74439 L 414.15481,497.767 l 0,-225.26091 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path2999"
+         style="fill:#e9e9ff;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="11"
+         d="m 414.15481,272.50609 329.93967,139.9223 0,308.61545 L 414.15481,497.767 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path2991"
+         style="fill:#4d4d9f;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="5"
+         d="M -3.8994352e-7,241.35576 290.89837,452.74608 744.09448,412.42839 414.15481,272.50609 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path2995"
+         style="fill:#d7d7ff;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="14"
+         d="m 290.89837,452.74608 0,508.10409 453.19611,-239.80633 0,-308.61545 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path2993"
+         style="fill:#8686bf;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="3"
+         d="M -3.8994352e-7,241.35576 290.89837,452.74608 l 0,508.10409 L -3.8994352e-7,557.10015 z" />
+    </g>
+    <g
+       id="g3139"
+       transform="translate(779.8378,105.05586)">
+      <flowRoot
+         transform="matrix(12.666299,0,0,12.44712,-3313.0976,-4775.4083)"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:'YoFrankie.org';-inkscape-font-specification:'YoFrankie.org Bold'"
+         id="flowRoot3085"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3087"><rect
+             style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#000000;font-family:'YoFrankie.org';-inkscape-font-specification:'YoFrankie.org Bold'"
+             y="375.55997"
+             x="200.01021"
+             height="109.09646"
+             width="80.81221"
+             id="rect3089" /></flowRegion><flowPara
+           id="flowPara3091">X</flowPara></flowRoot>      <flowRoot
+         transform="matrix(12.666299,0,0,12.44712,-3359.5646,-4791.5707)"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;font-family:'YoFrankie.org';-inkscape-font-specification:'YoFrankie.org Bold'"
+         id="flowRoot3085-9"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3087-7"><rect
+             style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#ff0000;font-family:'YoFrankie.org';-inkscape-font-specification:'YoFrankie.org Bold'"
+             y="375.55997"
+             x="200.01021"
+             height="109.09646"
+             width="80.81221"
+             id="rect3089-9" /></flowRegion><flowPara
+           id="flowPara3091-4">X</flowPara></flowRoot>    </g>
+  </g>
+</svg>
