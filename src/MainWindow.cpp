@@ -132,6 +132,13 @@ MainWindow::MainWindow()
     connect(this->ui->actionMergePatch,SIGNAL(triggered()),this,SLOT(slotStartMergePatch()));
     connect(this->ui->actionDeleteBlocks,SIGNAL(triggered()),this,SLOT(slotStartDeleteHexBlock()));
 
+    connect(this->ui->actionBlockVisibility,SIGNAL(triggered()),
+            this,SLOT(slotHexObjVisibility()));
+    connect(this->ui->actionPatchVisibility,SIGNAL(triggered()),
+            this,SLOT(slotHexObjVisibility()));
+    connect(this->ui->actionEdgeVisibility,SIGNAL(triggered()),
+            this,SLOT(slotHexObjVisibility()));
+
     connect(this->ui->actionAbout_Qt,SIGNAL(triggered()),
             qApp,SLOT(aboutQt()));
     connect(this->ui->actionAbout_hexBlocker,SIGNAL(triggered()),
@@ -625,6 +632,15 @@ void MainWindow::slotMergePatch(vtkIdList * selectedPatches)
     }
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
     slotResetInteractor();
+    renwin->Render();
+}
+
+void MainWindow::slotHexObjVisibility()
+{
+    //maybe sett all here
+    hexBlocker->visibilityBlocks(this->ui->actionBlockVisibility->isChecked());
+    hexBlocker->visibilityPatches(this->ui->actionPatchVisibility->isChecked());
+    hexBlocker->visibilityEdges(this->ui->actionEdgeVisibility->isChecked());
     renwin->Render();
 }
 

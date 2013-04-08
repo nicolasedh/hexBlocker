@@ -116,8 +116,9 @@ public slots:
   void slotStartMergePatch();
   void slotMergePatch(vtkIdList * selectedPatch);
 
+  void slotHexObjVisibility();
 
-  // void slotSetBCs();
+
 
 
 protected:

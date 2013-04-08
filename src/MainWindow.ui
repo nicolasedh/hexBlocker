@@ -111,6 +111,10 @@
     </property>
     <addaction name="actionView_tool_bar"/>
     <addaction name="actionView_tool_box"/>
+    <addaction name="separator"/>
+    <addaction name="actionBlockVisibility"/>
+    <addaction name="actionPatchVisibility"/>
+    <addaction name="actionEdgeVisibility"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -381,6 +385,48 @@
    </property>
    <property name="toolTip">
     <string>Delete one or several HexBlocks</string>
+   </property>
+  </action>
+  <action name="actionBlockVisibility">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>block visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionPatchVisibility">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>patch visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionEdgeVisibility">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>edge visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>

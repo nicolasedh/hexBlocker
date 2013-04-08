@@ -1010,6 +1010,31 @@ void HexBlocker::removeHexBlocks(vtkIdList *toRems)
     }
 }
 
+void HexBlocker::showBlocks()
+{
+    visibilityBlocks(true);
+}
+
+void HexBlocker::hideBlocks()
+{
+    visibilityBlocks(false);
+}
+
+void HexBlocker::visibilityBlocks(bool mode)
+{
+    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+    {
+        HexBlock * hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        hb->hexBlockActor->SetVisibility(mode);
+    }
+    //dont show local axis
+//    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+//    {
+//        HexBlock * hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+//        hb->hexAxisActor->SetVisibility(mode);
+//    }
+}
+
 void HexBlocker::showPatches()
 {
     visibilityPatches(true);
@@ -1026,6 +1051,25 @@ void HexBlocker::visibilityPatches(bool mode)
     {
         HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         p->actor->SetVisibility(mode);
+    }
+}
+
+void HexBlocker::showEdges()
+{
+    visibilityEdges(true);
+}
+
+void HexBlocker::hideEdges()
+{
+    visibilityEdges(false);
+}
+
+void HexBlocker::visibilityEdges(bool mode)
+{
+    for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        e->actor->SetVisibility(mode);
     }
 }
 

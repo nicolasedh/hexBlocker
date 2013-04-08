@@ -149,9 +149,16 @@ public:
     void arbitraryTest();
 
     //show/hide objects
+    void showBlocks();
+    void hideBlocks();
+    void visibilityBlocks(bool mode);
     void showPatches();
     void hidePatches();
     void visibilityPatches(bool mode);
+    void showEdges();
+    void hideEdges();
+    void visibilityEdges(bool mode);
+
     //DATA
     vtkSmartPointer<vtkPoints> vertices;
     vtkSmartPointer<vtkPolyData> vertData;
