@@ -29,8 +29,6 @@ License
 #include "HexBlocker.h"
 #include "HexBlock.h"
 #include "InteractorStyleVertPick.h"
-#include "InteractorStylePatchPick.h"
-#include "InteractorStyleEdgePick.h"
 #include "InteractorStyleActorPick.h"
 #include "ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
