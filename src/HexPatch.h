@@ -101,7 +101,9 @@ public:
     //if we only have one block then
     void removeSafely(HexBlock *hex);
 
+    bool hasBlock(HexBlock * hb);
     bool hasVertice(vtkIdType vId);
+    bool hasBlocks();
 
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;

@@ -896,21 +896,36 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
     vertsToRem->Initialize();
     vertsToRem->DeepCopy(b2rem->vertIds);
 
-    //remove vertices used by other blocks from vertsToRem
-    for(vtkIdType v=0;v<b2rem->vertIds->GetNumberOfIds();v++)
+    //Start with a list of all vertices(edges) in the block to be
+    //removed. Then remove vertices(edges)  that are need by
+    //other blocks in that list.
+    vtkSmartPointer<vtkIdList> edges2berem = vtkSmartPointer<vtkIdList>::New();
+    edges2berem->DeepCopy(b2rem->edgeIds);
+
+    //loop over all blocks but not the one to be deleted
+    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
     {
-        vtkIdType vId = b2rem->vertIds->GetId(v);
-        //loop over all blocks but not the one to be deleted
-        for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+        if(i==toRem)
+            continue; //dont check the block to be deleted!
+
+        HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+
+        //check vertices
+        for(vtkIdType v=0;v<b2rem->vertIds->GetNumberOfIds();v++)
         {
-            if(i!=toRem)
+            vtkIdType vId = b2rem->vertIds->GetId(v);
+            if(hb->hasVertice(vId))
             {
-                HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
-                if(hb->hasVertice(vId))
-                {
-                    vertsToRem->DeleteId(vId);
-                }
+                vertsToRem->DeleteId(vId);
             }
+        }
+
+        //check edges
+        for(vtkIdType ei=0;ei<b2rem->edgeIds->GetNumberOfIds();ei++)
+        {
+            vtkIdType eId = b2rem->edgeIds->GetId(ei);
+            if(hb->hasEdge(eId))
+                edges2berem->DeleteId(eId);
         }
     }
 //    std::cout << "verts to remove: " ;
@@ -920,57 +935,8 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
 //    }
 //    std::cout << std::endl;
 
-    //Find all patches and edges that has vertices in vertsToRem
-    vtkSmartPointer<vtkIdList> patches2berem = vtkSmartPointer<vtkIdList>::New();
-    vtkSmartPointer<vtkIdList> edges2berem = vtkSmartPointer<vtkIdList>::New();
-    for(vtkIdType dI=0;dI<vertsToRem->GetNumberOfIds();dI++)
-    {
-        vtkIdType vert2rem = vertsToRem->GetId(dI);
-        //find patches to remove (don't change the list while we are searching)
-        for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
-        {
-            HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
-            if(p->hasVertice(vert2rem))
-            {
-                patches2berem->InsertUniqueId(i);
-                //remove from bc's
-                for(vtkIdType bI;bI<hexBCs->GetNumberOfItems();bI++)
-                {
-                    HexBC * bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(bI));
-                    bc->patchIds->DeleteId(i);
-                }
-            }
-        }
-
-        //edges
-        for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
-        {
-            HexEdge * e= HexEdge::SafeDownCast(edges->GetItemAsObject(i));
-            if(e->hasVertice(vert2rem))
-                edges2berem->InsertUniqueId(i);
-        }
-
-    }
-
-    //remove the patches
-    for(vtkIdType i=0;i<patches2berem->GetNumberOfIds();i++)
-    {
-        HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(patches2berem->GetId(i)));
-        renderer->RemoveActor(p->actor);
-        patches->RemoveItem(p);
-        decreaseList(patches2berem,patches2berem->GetId(i));
-    }
-
-
-    //fix patches that have two hexes
-    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
-    {
-        HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
-        p->removeSafely(b2rem);
-
-    }
-
-    //remove the edges
+    //remove the edges (points are not removed in this function)
+    //since we might wan't to keep them for split and ogrids
     for(vtkIdType i=0;i<edges2berem->GetNumberOfIds();i++)
     {
         HexEdge * e= HexEdge::SafeDownCast(edges->GetItemAsObject(edges2berem->GetId(i)));
@@ -979,7 +945,54 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
         decreaseList(edges2berem,edges2berem->GetId(i));
     }
 
-    //also degrease patchIds and edgeIds in all blocks not to be removed
+    //remove the patches
+    //since patches has pointers to blocks they know if they
+    //should be deleted. We still need to build a list since
+    //we don't want to delete patches while we loop over pathces
+    vtkSmartPointer<vtkIdList> patches2berem =
+            vtkSmartPointer<vtkIdList>::New();
+    for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
+    {
+        HexPatch *p = HexPatch::SafeDownCast(
+                    patches->GetItemAsObject(i));
+        if(p->hasBlock(b2rem))
+        {
+            patches2berem->InsertUniqueId(i);
+//            std::cout << "adding patch ( "
+//                      << p->vertIds->GetId(0) << " "
+//                      << p->vertIds->GetId(1) << " "
+//                      << p->vertIds->GetId(2) << " "
+//                      << p->vertIds->GetId(3) << ") to be removed "
+//                      << std::endl;
+        }
+    }
+
+    //delete the patches
+    for(vtkIdType i=0;i<patches2berem->GetNumberOfIds();i++)
+    {
+        HexPatch *p = HexPatch::SafeDownCast(
+                    patches->GetItemAsObject(patches2berem->GetId(i)));
+        p->removeSafely(b2rem);
+        //really delete if patch don't have any block left
+        //after remove safely
+        if(! p->hasBlocks())
+        {
+            //delete patches from all bcs
+            for(vtkIdType bci=0;bci<hexBCs->GetNumberOfItems();bci++)
+            {
+                HexBC * bc = HexBC::SafeDownCast(
+                            hexBCs->GetItemAsObject(bci));
+                bc->patchIds->DeleteId(i);
+                decreaseList(bc->patchIds,i);
+            }
+            renderer->RemoveActor(p->actor);
+            patches->RemoveItem(p);
+            decreaseList(patches2berem,patches2berem->GetId(i));
+        }
+    }
+
+
+    //also decrease patchIds and edgeIds in all blocks not to be removed
     for(vtkIdType bi=0;bi<hexBlocks->GetNumberOfItems();bi++)
     {
         if(bi != toRem)
@@ -994,7 +1007,7 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
     renderer->RemoveActor(b2rem->hexAxisActor);
     renderer->RemoveActor(b2rem->hexBlockActor);
     hexBlocks->RemoveItem(b2rem);
-    //delete vertices
+    //delete vertices (dont!)
 
 }
 
@@ -1078,19 +1091,22 @@ void HexBlocker::arbitraryTest()
 
     createHexBlock();
     vtkIdList *extrudelist= vtkIdList::New();
-    extrudelist->InsertId(0,0);
+    extrudelist->InsertId(0,4);
     extrudePatch(extrudelist,1.0);
-    extrudelist->SetId(0,6);
-    extrudePatch(extrudelist,2.0);
-    HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(0));
+    extrudelist->SetId(0,9);
+    extrudePatch(extrudelist,1.0);
+
+//    HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(0));
 
     renderer->GetRenderWindow()->Render();
     std::cout << "removing" << std::endl;
 //    removeHexBlock(0);
     vtkSmartPointer<vtkIdList> vertsToRemove =
             vtkSmartPointer<vtkIdList>::New();
-    removeHexBlock(0,vertsToRemove);
-    removeVerticesSafely(vertsToRemove);
+    removeHexBlock(1,vertsToRemove);
+
+    renderer->GetRenderWindow()->Render();
+//    removeVerticesSafely(vertsToRemove);
 
     std::cout << "num blocks " << hexBlocks->GetNumberOfItems()
               << " num patches " << patches->GetNumberOfItems()

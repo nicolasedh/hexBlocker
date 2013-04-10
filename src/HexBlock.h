@@ -136,6 +136,7 @@ public:
 
     // returns true if vId is in vertIds
     bool hasVertice(vtkIdType vId);
+    bool hasEdge(vtkIdType vId);
 
     //returns true if they have the same vertices
     //in the same order

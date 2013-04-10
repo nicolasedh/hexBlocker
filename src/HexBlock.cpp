@@ -670,17 +670,21 @@ vtkIdList * HexBlock::commonVertices(HexBlock *hb)
 
 bool HexBlock::hasVertice(vtkIdType vId)
 {
-    if(vertIds->IsId(vId)>-1)
-        return true;
-    else
-        return false;
+    return vertIds->IsId(vId) > -1;
+}
+
+bool HexBlock::hasEdge(vtkIdType vId)
+{
+    return edgeIds->IsId(vId) > -1;
 }
 
 bool HexBlock::equals(HexBlock *other)
 {
+//    std::cout << "\t comparing: this, other" <<std::endl;
     for(vtkIdType i=0;i<vertIds->GetNumberOfIds();i++)
     {
-        if(! this->vertIds->GetId(i) == other->vertIds->GetId(i))
+//        std::cout << "\t " << vertIds->GetId(i) << " " << other->vertIds->GetId(i) <<std::endl;
+        if( this->vertIds->GetId(i) != other->vertIds->GetId(i))
             return false;
     }
 

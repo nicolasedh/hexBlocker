@@ -358,3 +358,18 @@ bool HexPatch::hasVertice(vtkIdType vId)
 {
     return vertIds->IsId(vId) > -1;
 }
+
+bool HexPatch::hasBlock(HexBlock *hb)
+{
+    if(hasSecondaryHex)
+        return (primaryHex->equals(hb) || secondaryHex->equals(hb));
+    else if(hasPrimaryHex)
+        return primaryHex->equals(hb);
+    else
+        return false;
+}
+
+bool HexPatch::hasBlocks()
+{
+    return hasPrimaryHex;
+}
