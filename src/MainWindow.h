@@ -73,8 +73,6 @@ public:
 
   //instances of interactor stiles.
   vtkSmartPointer<InteractorStyleVertPick> styleVertPick;
-  vtkSmartPointer<InteractorStylePatchPick> stylePatchPick;
-  vtkSmartPointer<InteractorStyleEdgePick> styleEdgePick;
   vtkSmartPointer<InteractorStyleActorPick> styleActorPick;
 
   //open file name, main needs access
@@ -92,7 +90,7 @@ public slots:
   void slotDeleteHexBlock();
   void slotPrintHexBlocks();
   void slotStartExtrudePatch();
-  void slotExtrudePatch(vtkIdList *selectedPatches);
+  void slotExtrudePatch();
   void slotOpenMoveVerticesDialog();
   void slotStartSelectVertices();
   void slotEndSelectVertices();
@@ -110,11 +108,11 @@ public slots:
   void slotShowStatusText(QString text);
   void slotOpenSetEdgePropsDialog();
   void slotStartSelectEdges();
-  void slotEdgeSelectionDone(vtkIdType edgeId);
+  void slotEdgeSelectionDone();
   void slotAboutDialog();
   void slotArbitraryTest();
   void slotStartMergePatch();
-  void slotMergePatch(vtkIdList * selectedPatch);
+  void slotMergePatch();
 
   void slotHexObjVisibility();
 
