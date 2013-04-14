@@ -293,7 +293,7 @@ void InteractorStyleActorPick::OnMiddleButtonDown()
     if (this->CurrentRenderer == NULL)
       return;
     storePosition();
-    vtkInteractorStyleTrackballCamera::OnRightButtonDown();
+    vtkInteractorStyleTrackballCamera::OnMiddleButtonDown();
 }
 
 void InteractorStyleActorPick::OnMiddleButtonUp()
@@ -301,7 +301,7 @@ void InteractorStyleActorPick::OnMiddleButtonUp()
     if (this->CurrentRenderer == NULL)
         return;
 
-    vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+    vtkInteractorStyleTrackballCamera::OnMiddleButtonUp();
 
     //only emit the user din't move the model
     if(didMouseMove())
