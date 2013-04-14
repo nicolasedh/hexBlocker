@@ -159,6 +159,9 @@ public:
     void hideEdges();
     void visibilityEdges(bool mode);
 
+    //force a render
+    void render();
+
     //DATA
     vtkSmartPointer<vtkPoints> vertices;
     vtkSmartPointer<vtkPolyData> vertData;

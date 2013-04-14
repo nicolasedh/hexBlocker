@@ -23,62 +23,60 @@ License
     The license is included in the file COPYING.
 
 Description
-    This class creates the dialog that's used to create hexblocks.
-    It sends signal to MainWindow which handles hexBlocker.
+    This class creates the dialog sets the type of edge, i.e. line,
+    arc, polyLine, polySpline
 
 */
-#ifndef EDGEPROPSWIDGET_H
-#define EDGEPROPSWIDGET_H
+#ifndef EDGESETTYPEWIDGET_H
+#define EDGESETTYPEWIDGET_H
 
 #include <vtkSmartPointer.h>
 #include <QWidget>
-
+#include <QItemSelection>
 //Predeclarations
 class HexBlocker;
-class GradingCalculatorDialog;
 class HexEdge;
+class PointsTableModel;
 
 namespace Ui {
-class EdgePropsWidget;
+class EdgeSetTypeWidget;
 }
 
-class EdgePropsWidget : public QWidget
+class EdgeSetTypeWidget : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit EdgePropsWidget(QWidget *parent = 0);
-    ~EdgePropsWidget();
+    explicit EdgeSetTypeWidget(QWidget *parent = 0);
+    ~EdgeSetTypeWidget();
 
     //FUNCTIONS
     void setSelectedEdge(vtkIdType selEdgeId);
+    //Called when the user selected a patch
+    //for arc creation
+    void setSelectedPatch(vtkIdType selPatchId);
     //DATA
     HexBlocker * hexBlocker;
-    //this rereads info from the selectedEdge
-    void edgeChanged();
+
     
 public slots:
     void slotApply();
-    void slotCancel();
-    void slotOpenCalc();
-    void slotCalcApplied();
-    void slotOpenSetTypeDialog();
-    void slotSetObjectsEnabled(bool enable=true);
+    void slotTypeChanged();
+    void slotDataChanged();
+    void slotUseRadiusToggled();
 
 
 signals:
     void apply();
-    void cancel();
     void setStatusText(QString);
-    void startSelectEdges();
-    void openSetTypeDialog(vtkIdType);
+    void startSelectPatch();
+    void selectionChanged (const QItemSelection &selected);
 
 private:
     vtkIdType selectedEdgeId;
     HexEdge *selectedEdge;
-    Ui::EdgePropsWidget *ui;
-    GradingCalculatorDialog * gradCalcDialog;
-
+    Ui::EdgeSetTypeWidget *ui;
+    PointsTableModel * table;
 };
 
-#endif // EDGEPROPSWIDGET_H
+#endif // EDGESETTYPEWIDGET_H

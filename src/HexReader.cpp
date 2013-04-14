@@ -428,20 +428,129 @@ bool HexReader::getBCs()
 bool HexReader::getEdges()
 {
     // All line breaks and comments are removed
-    // so we have to recreate some type of structure
+    // so there is no nice structure
     edgesDict = getEntry("edges",fileContents);
+
     if(!edgesDict.isEmpty())
     {
+        //remove edges( and the terminating )
+        edgesDict.replace(QRegExp("edges[\\s,\\n]*\\("),"");
         int index=edgesDict.lastIndexOf(")");
         edgesDict = edgesDict.left(index);
-        edgesDict.replace(QRegExp("edges[\\s,\\n]*\\("),"edges(\n\t");
-        edgesDict.replace(")",QString(")\n\t"));
-        edgesDict.append(");");
-        edgesDict.replace(QRegExp("[\\s,\\t]*\\);"),"\n);");
+        edgesDict = edgesDict.simplified();
+
+        //each entry starts with the type
+        QRegExp typeReg = QRegExp("[a-z]+",Qt::CaseInsensitive);
+        while(edgesDict.contains(typeReg)) //while? och capa med right?
+        {
+            index = edgesDict.indexOf(typeReg);
+            QString type=typeReg.cap(0);
+            int length = typeReg.matchedLength();
+            //nextInd = -1 if there are no more matches
+            int nextInd = edgesDict.indexOf(typeReg,index+length);
+            //returns the entire string if nextInd=-1
+            QString edgeDict=edgesDict.mid(index,nextInd-index);
+
+            //fix edgesDict for next iteration
+            if(nextInd > -1)
+                edgesDict=edgesDict.mid(nextInd-1);//what I think right(nextInd) should do
+            else
+                edgesDict="";
+            //get vertIds
+
+            QStringList edgeDictList =
+                    edgeDict.simplified().split(" ");
+            if(edgeDictList.size() < 3) //6?
+            {
+                badEdgeEntry(edgeDict);
+                continue;
+            }
+
+            bool ok0,ok1;
+            vtkIdType vId0 =
+                    vtkIdType(edgeDictList.at(1).toInt(&ok0));
+            vtkIdType vId1 =
+                    vtkIdType(edgeDictList.at(2).toInt(&ok1));
+            vtkIdType eId = findEge(vId0,vId1);
+            if(eId < 0)
+            {
+                badEdgeEntry(edgeDict);
+                continue;
+            }
+            HexEdge *e = HexEdge::SafeDownCast(
+                        readEdges->GetItemAsObject(eId));
+            if(!(ok0 && ok1))
+            {
+                badEdgeEntry(edgeDict);
+                continue;
+            }
+            if(type == "line")
+            {
+                //do nothin'
+            }
+            else if(type == "arc")
+            {
+                double pos[3];
+                int pInd0 = edgeDict.indexOf("(");
+                int pInd1 = edgeDict.indexOf(")");
+//                QString foo = edgeDict.mid(pInd0+1,pInd1-1);
+                QStringList vertList = edgeDict.mid(pInd0+1,pInd1-pInd0-1)
+                        .simplified().split(" ",QString::SkipEmptyParts);
+                ok1=true;ok0=true;
+                pos[0]=vertList.at(0).toDouble(&ok1);
+                ok0=ok0 & ok1;
+                pos[1]=vertList.at(1).toDouble(&ok1);
+                ok0=ok0 & ok1;
+                pos[2]=vertList.at(2).toDouble(&ok1);
+                ok0=ok0 & ok1;
+
+                e->setType(HexEdge::ARC);
+                e->setControlPoint(0,pos);
+                e->redrawedge();
+                if(!ok0)
+                {
+                    badEdgeEntry(edgeDict);
+                    continue;
+                }
+
+            }
+            else
+            {
+                badEdgeEntry(edgeDict);
+                continue;
+            }
+
+        }
+
         return true;
     }
     else
     {
         return false;
     }
+}
+
+vtkIdType HexReader::findEge(vtkIdType vId0, vtkIdType vId1)
+{
+    for(vtkIdType i=0;i<readEdges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(
+                    readEdges->GetItemAsObject(i));
+        if(e->hasVertice(vId0) && e->hasVertice(vId1) )
+        {
+            //check for correct order
+            if(e->vertIds->GetId(0)!=vId0)
+                std::cout << "Warning edge (" << vId0 <<" " << vId1 <<")"
+                          << " was precribed with wron order. This could cause problems." <<std::endl;
+            return i;
+        }
+    }
+    return -1;
+
+}
+
+void HexReader::badEdgeEntry(QString edgeDict)
+{
+    std::cout << "warning can\'t parse edgeDict: " << edgeDict.toAscii().data()
+              << ". Note that some types are not yet supported." << std::endl;
 }

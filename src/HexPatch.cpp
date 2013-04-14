@@ -197,6 +197,7 @@ void HexPatch::getNormal(double n[3])
 void HexPatch::getCenter(double c[3])
 {
     double pos[3];
+    c[0]=0.0;c[1]=0.0;c[2]=0.0;
     for(vtkIdType i=0;i<4;i++)
     {
         globalVertices->GetPoint(vertIds->GetId(i),pos);

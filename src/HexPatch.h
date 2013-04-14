@@ -89,7 +89,7 @@ public:
     HexBlock * getSecondaryHexBlock();
 
     //average of vertices position
-    void getCenter(double cog[3]);
+    void getCenter(double c[3]);
 
     //if it has two block patch is scaled by 0.4 else 0.6
     void rescaleActor();

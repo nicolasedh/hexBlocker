@@ -407,16 +407,24 @@ void HexBlocker::exportBCs(QTextStream &os)
 
 void HexBlocker::exportEdges(QTextStream &os)
 {
-    if(edgesDict.isEmpty())
+    os << "edges" << endl << "(" << endl;
+    for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
     {
-        os << "edges();" << endl;
+        HexEdge *e = HexEdge::SafeDownCast(
+                    edges->GetItemAsObject(i));
+        e->exportEdgeDict(os);
     }
-    else
-    {
-        os << edgesDict.toAscii().data() << endl;
-    }
+    os << ");" <<endl;
+//    if(edgesDict.isEmpty())
+//    {
+//        os << "edges();" << endl;
+//    }
+//    else
+//    {
+//        os << edgesDict.toAscii().data() << endl;
+//    }
 }
-void HexBlocker::moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
+void HexBlocker:: moveVertices(vtkSmartPointer<vtkIdList> ids,double dist[3])
 {
     double pos[3];
     for(vtkIdType i = 0;i<ids->GetNumberOfIds();i++)
@@ -605,6 +613,11 @@ int HexBlocker::calculateTotalNumberOfCells()
 void HexBlocker::rescaleActors()
 {
     //edges presently dont need to be reset
+    for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
+        e->redrawedge();
+    }
     //patches
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
@@ -618,7 +631,6 @@ void HexBlocker::rescaleActors()
         HexBlock * b = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
         b->rescaleActor();
     }
-
     renderer->Render();
 }
 
@@ -1064,6 +1076,7 @@ void HexBlocker::visibilityPatches(bool mode)
     {
         HexPatch *p = HexPatch::SafeDownCast(patches->GetItemAsObject(i));
         p->actor->SetVisibility(mode);
+        p->resetColor();
     }
 }
 
@@ -1086,35 +1099,22 @@ void HexBlocker::visibilityEdges(bool mode)
     }
 }
 
+void HexBlocker::render()
+{
+     renderer->Render();
+     renderer->GetRenderWindow()->Render();
+}
+
 void HexBlocker::arbitraryTest()
 {
 
     createHexBlock();
-    vtkIdList *extrudelist= vtkIdList::New();
-    extrudelist->InsertId(0,4);
-    extrudePatch(extrudelist,1.0);
-    extrudelist->SetId(0,9);
-    extrudePatch(extrudelist,1.0);
-
-//    HexPatch * p = HexPatch::SafeDownCast(patches->GetItemAsObject(0));
-
-    renderer->GetRenderWindow()->Render();
-    std::cout << "removing" << std::endl;
-//    removeHexBlock(0);
-    vtkSmartPointer<vtkIdList> vertsToRemove =
-            vtkSmartPointer<vtkIdList>::New();
-    removeHexBlock(1,vertsToRemove);
-
-    renderer->GetRenderWindow()->Render();
-//    removeVerticesSafely(vertsToRemove);
-
-    std::cout << "num blocks " << hexBlocks->GetNumberOfItems()
-              << " num patches " << patches->GetNumberOfItems()
-              << " num edges " << edges->GetNumberOfItems() << std::endl;
-//    p->removeSafely(HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(0)));
+    HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(0));
+    double c[3]={0.5,0,0.5};
+//    e->drawArc(c);
 
 
-    //    long int a = 6; //Max value 9223372036854775807
+
 }
 
 

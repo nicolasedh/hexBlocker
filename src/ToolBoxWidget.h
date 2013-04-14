@@ -32,11 +32,12 @@ Description
 #define TOOLBOXWIDGET_H
 
 #include <QDockWidget>
-
+#include <vtkSmartPointer.h>
 class CreateBlockWidget;
 class MoveVerticesWidget;
 class SetBCsWidget;
 class EdgePropsWidget;
+class EdgeSetTypeWidget;
 class QWidget;
 class HexBlocker;
 
@@ -58,6 +59,7 @@ public:
     MoveVerticesWidget *moveVerticesW;
     SetBCsWidget    *setBCsW;
     EdgePropsWidget *edgePropsW;
+    EdgeSetTypeWidget * edgeSetTypeW;
 
 
 
@@ -66,6 +68,8 @@ public:
 public slots:
     void slotCancel();
     void slotSetStatusText(QString text);
+    void slotOpenSetEdgeTypeDialog(vtkIdType selEdgeId);
+    void slotCloseSetEdgeTypeDialog();
 
 signals:
     void cancel();

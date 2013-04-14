@@ -29,6 +29,7 @@ License
 #include "MoveVerticesWidget.h"
 #include "SetBCsWidget.h"
 #include "EdgePropsWidget.h"
+#include "EdgeSetTypeWidget.h"
 #include <QWidget>
 
 ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
@@ -47,7 +48,8 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
     this->ui->stackedWidget->addWidget(setBCsW);
     edgePropsW = new EdgePropsWidget; //index 4
     this->ui->stackedWidget->addWidget(edgePropsW);
-    this->ui->stackedWidget->setCurrentIndex(1);
+    edgeSetTypeW = new EdgeSetTypeWidget; //index 5;
+    this->ui->stackedWidget->addWidget(edgeSetTypeW);
 
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));
     connect(setBCsW,SIGNAL(done()),this,SLOT(slotCancel()));
@@ -57,7 +59,14 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
     connect(setBCsW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(edgePropsW,SIGNAL(cancel()),this,SLOT(slotCancel()));
     connect(edgePropsW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
+    connect(edgePropsW,SIGNAL(openSetTypeDialog(vtkIdType)),this,SLOT(slotOpenSetEdgeTypeDialog(vtkIdType)));
 
+    connect(edgeSetTypeW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
+    connect(edgeSetTypeW,SIGNAL(apply()),this,SLOT(slotCloseSetEdgeTypeDialog()));
+
+
+
+    this->ui->stackedWidget->setCurrentIndex(1);
 }
 
 ToolBoxWidget::~ToolBoxWidget()
@@ -77,6 +86,7 @@ void ToolBoxWidget::setHexBlockerPointer(HexBlocker *hexBker)
     createBlockW->hexBlocker=hexBlocker;
     moveVerticesW->hexBlocker=hexBlocker;
     edgePropsW->hexBlocker=hexBlocker;
+    edgeSetTypeW->hexBlocker=hexBlocker;
 }
 
 void ToolBoxWidget::slotCancel()
@@ -88,4 +98,16 @@ void ToolBoxWidget::slotCancel()
 void ToolBoxWidget::slotSetStatusText(QString text)
 {
     emit setStatusText(text);
+}
+
+void ToolBoxWidget::slotOpenSetEdgeTypeDialog(vtkIdType selEdgeId)
+{
+    edgeSetTypeW->setSelectedEdge(selEdgeId);
+    this->ui->stackedWidget->setCurrentIndex(5);
+}
+
+void ToolBoxWidget::slotCloseSetEdgeTypeDialog()
+{
+    edgePropsW->edgeChanged();
+    this->ui->stackedWidget->setCurrentIndex(4);
 }

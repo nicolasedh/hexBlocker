@@ -6,7 +6,7 @@ IF(NOT VTK_DIR)
   SET(VTK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../build/VTK)
 ENDIF(NOT VTK_DIR)
 IF(NOT VTK_BINARY_DIR)
-    FIND_PACKAGE(VTK)
+    FIND_PACKAGE(VTK REQUIRED)
     INCLUDE(${VTK_USE_FILE})
 ENDIF(NOT VTK_BINARY_DIR)
 
@@ -35,12 +35,13 @@ SET(HexBlockerSrcs
     SetBCsWidget.cpp SetBCsItem.cpp HexExporter.cpp HexEdge.cpp
     HexReader.cpp EdgePropsWidget.cpp
     TEdgeSpace.cpp GradingCalculatorDialog.cpp InteractorStyleActorPick.cpp
+    EdgeSetTypeWidget.cpp PointsTableModel.cpp
     )
 SET(HexBlockerUI
     MainWindow.ui ToolBoxWidget.ui
     MoveVerticesWidget.ui CreateBlockWidget.ui
     SetBCsWidget.ui EdgePropsWidget.ui
-    GradingCalculatorDialog.ui
+    GradingCalculatorDialog.ui EdgeSetTypeWidget.ui
     )
 SET(HexBlockerHeaders
     MainWindow.h HexBlock.h HexBlocker.h HexPatch.h
@@ -49,6 +50,7 @@ SET(HexBlockerHeaders
     SetBCsWidget.h SetBCsItem.h HexExporter.h HexEdge.h
     HexReader.h EdgePropsWidget.h TEdgeSpace.h
     GradingCalculatorDialog.h InteractorStyleActorPick.h
+    EdgeSetTypeWidget.h PointsTableModel.h
     )
 SET(HexBlockerResources Icons/icons.qrc)
 
@@ -85,9 +87,17 @@ ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
 # Add install time link to vtk libraries
 SET( CMAKE_INSTALL_RPATH "\$ORIGIN/../vtk/lib/vtk-5.10" )
-ADD_EXECUTABLE( HexBlocker MACOSX_BUNDLE ${HexBlockerSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
+IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    MESSAGE("This is a debug build")
+    SET(EXE_NAME HexBlocker-dbg)
+ELSE()
+    MESSAGE("This is a release build")
+    SET(EXE_NAME HexBlocker)
+ENDIF()
 
-TARGET_LINK_LIBRARIES(HexBlocker
+ADD_EXECUTABLE( ${EXE_NAME} MACOSX_BUNDLE ${HexBlockerSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
+
+TARGET_LINK_LIBRARIES(${EXE_NAME}
   QVTK
   ${QT_LIBRARIES}
   vtkRendering
@@ -114,4 +124,4 @@ foreach(CacheVar ${CacheVars})
 endforeach()
 message("CMakeArgs: ${CMakeArgs}")
 
-INSTALL( TARGETS HexBlocker DESTINATION ${CMAKE_INSTALL_PREFIX} )
+INSTALL( TARGETS ${EXE_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX} )

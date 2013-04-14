@@ -43,7 +43,7 @@ EdgePropsWidget::EdgePropsWidget(QWidget *parent) :
     QDoubleValidator *gradingValidator = new QDoubleValidator(1e-6,1e6,3,this);
     ui->gradingLineEdit->setValidator(gradingValidator);
 
-    gradCalcDialog = new GradingCalculatorDialog();
+    gradCalcDialog = new GradingCalculatorDialog(this);
 
     connect(ui->pushButtonApply,SIGNAL(clicked()),this,SLOT(slotApply()));
     connect(ui->pushButtonCancel,SIGNAL(clicked()),this,SLOT(slotCancel()));
@@ -51,6 +51,7 @@ EdgePropsWidget::EdgePropsWidget(QWidget *parent) :
 
     connect(ui->calcPushButton,SIGNAL(clicked()),this,SLOT(slotOpenCalc()));
     connect(gradCalcDialog,SIGNAL(apply()),this,SLOT(slotCalcApplied()));
+    connect(ui->setTypePushButton,SIGNAL(clicked()),this,SLOT(slotOpenSetTypeDialog()));
 }
 
 EdgePropsWidget::~EdgePropsWidget()
@@ -97,30 +98,45 @@ void EdgePropsWidget::slotCancel()
 {
     hexBlocker->resetColors();
     selectedEdgeId=-1;
+    slotSetObjectsEnabled(false);
     emit cancel();
 }
 
 void EdgePropsWidget::setSelectedEdge(vtkIdType selEdgeId)
 {
     selectedEdgeId=selEdgeId;
-    if(selectedEdgeId > -1)
+    //enable or disable buttons
+    slotSetObjectsEnabled(selectedEdgeId > -1);
+    if(selectedEdgeId < 0)
+        return;
+
+    selectedEdge =hexBlocker->showParallelEdges(selectedEdgeId);
+    long int prevNCells = selectedEdge->nCells;
+    this->ui->numCellsSpinBox->setValue(prevNCells);
+    double grading = selectedEdge->grading;
+    QString gradS =QString();
+    gradS.sprintf("%.2f",grading);
+    this->ui->gradingLineEdit->setText(gradS);
+    QString msg("Total number of cells: ");
+    long int NCells = hexBlocker->calculateTotalNumberOfCells();
+    msg=msg.append(QString::number(NCells));
+    msg.append("\n which is approximately ");
+    double aNCells = (double)NCells;
+    msg.append(QString::number(aNCells,'g',3));
+    msg.append(".");
+    switch(selectedEdge->getType())
     {
-        selectedEdge =hexBlocker->showParallelEdges(selectedEdgeId);
-        long int prevNCells = selectedEdge->nCells;
-        this->ui->numCellsSpinBox->setValue(prevNCells);
-        double grading = selectedEdge->grading;
-        QString gradS =QString();
-        gradS.sprintf("%.2f",grading);
-        this->ui->gradingLineEdit->setText(gradS);
-        QString msg("Total number of cells: ");
-        long int NCells = hexBlocker->calculateTotalNumberOfCells();
-        msg=msg.append(QString::number(NCells));
-        msg.append("\n which is approximately ");
-        double aNCells = (double)NCells;
-        msg.append(QString::number(aNCells,'g',3));
-        msg.append(".");
-        emit setStatusText(msg);
+    case 0:
+        this->ui->setTypePushButton->setText("Line");
+        break;
+    case 1:
+        this->ui->setTypePushButton->setText("Arc");
+        break;
     }
+
+
+    emit setStatusText(msg);
+
 }
 
 void EdgePropsWidget::slotOpenCalc()
@@ -153,4 +169,30 @@ void EdgePropsWidget::slotCalcApplied()
         ui->numCellsSpinBox->setValue(gradCalcDialog->getNCells());
     }
     //get ncells and grading
+}
+
+void EdgePropsWidget::slotOpenSetTypeDialog()
+{
+    if(selectedEdgeId>-1)
+        emit openSetTypeDialog(selectedEdgeId);
+    else
+        emit setStatusText(tr("select an edge first!"));
+}
+
+void EdgePropsWidget::slotSetObjectsEnabled(bool enable)
+{
+    ui->numCellsSpinBox->setEnabled(enable);
+    ui->calcPushButton->setEnabled(enable);
+    ui->gradingLineEdit->setEnabled(enable);
+    ui->PropagateGradingcheckBox->setEnabled(enable);
+    ui->setTypePushButton->setEnabled(enable);
+    ui->pushButtonApply->setEnabled(enable);
+}
+
+void EdgePropsWidget::edgeChanged()
+{
+    if(selectedEdgeId <0)
+        return;
+    //all we wan't to do now is already done here
+    setSelectedEdge(selectedEdgeId);
 }

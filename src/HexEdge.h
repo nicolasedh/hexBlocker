@@ -52,6 +52,8 @@ protected:
     void operator=(const HexEdge&);  // Not implemented in order to comply with vtkObject.
 
 public:
+    enum edgeTypes{LINE=0,ARC=1};
+
     //FUNCTIONS
     static HexEdge *New();
     // inorder to comply with vtkObect
@@ -70,13 +72,42 @@ public:
 
     //radius of tube representation
     void setRadius(double rad);
+
+    //for debug output, outpus edgeIds
     void exportVertIds(QTextStream &os);
+    //export the edge info to screen
+    void exportEdgeDict(QTextStream &os);
     void changeVertId(vtkIdType from, vtkIdType to);
     void reduceVertId(vtkIdType vId);
 
     double getLength();
 
     bool hasVertice(vtkIdType vId);
+
+    //redraws and edge and updates internal points
+    void redrawedge();
+
+    //sets the type and prepares internal structures
+    void setType(edgeTypes newType);
+    int getType();
+
+    // calculates a point on the line between the two vertices
+    // of the edge
+    void calcParametricPointOnLine(const double t,double pt[3]);
+
+    // calculates a point on the arc between the two edges
+    // given the center of the arc
+    void calcParametricPointOnArc(const double t, const double c[3],double arcp[3]);
+
+    //not used
+    void getControlPoint(const vtkIdType cId,double cntrp[3]);
+    void setControlPoint(const vtkIdType cId,const double cntrp[3]);
+
+    //calculates and sets a control point from patch center and optionally radius
+    void calcArcControlPointFromCenter(const double pac[3], double radius=0.0);
+//    void getControlPoints(vtkPoints *pnts,vtkIdList *ctrlPsIds);
+    int getNumberOfControlPoints();
+
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;
     vtkSmartPointer<vtkPoints> globalVertices;
@@ -87,9 +118,24 @@ public:
     int nCells; // number of cells on edge
     double grading;
 
+    //cntrlPoints are to be printed in blockMeshDict
+    //they are ids of myPoints. Empty if type is line.
+    vtkSmartPointer<vtkIdList> cntrlPointsIds;
+    vtkSmartPointer<vtkPoints> myPoints;
 private:
-    vtkSmartPointer<vtkLine> line;
+    //DATA
+    edgeTypes edgeType;
     vtkSmartPointer<vtkCellArray> lines;
+    int arcNpoints;
+
+
+
+    //FUNCTIONS
+    void drawArc(double c[3]);
+    void drawLine();
+    //calcs f=|r_n| - R, used by calcArcControlPointFromCenter
+    //please see images/HexEdge_calcArcPoint_prescribed_radius*
+    double secF(const double R,const double pac[3], const double xn);
 };
 
 #endif // EDGE_H

@@ -35,6 +35,7 @@ hexBuild=$baseDir/build/hexBlocker
 hexBin=$baseDir/bin
 hexSRC=$baseDir/src
 nprocs=4
+debug="true" #set to anythin else to skip building debug version
 #---------------------------------------------------------------------------
 # Try to find qt exes
 QMAKE=$(which qmake)
@@ -53,12 +54,16 @@ if [ ! -f $vtkpgk ];then
 fi
 
 #unpack vtk src
-tar -xzf $vtkpgk
-mv VTK $vtkSRC
+if [ ! -d $vtkSrc];then
+    tar -xzf $vtkpgk
+    mv VTK $vtkSRC
+fi
 
 #build VTK
-mkdir -p $vtkBuild
-cd $vtkBuild
+if [ ! -d $vtkBuild ];then
+    mkdir -p $vtkBuild
+    cd $vtkBuild
+fi
 #cmake --build --config=Release
 cmake \
     -DVTK_USE_GUISUPPORT:BOOL=ON \
@@ -87,6 +92,23 @@ make -j $nprocs || (echo "error in make for hexBlocker";exit 1)
 
 make install
 
+#Buil debug version (optional)
+
+if [ $debug == "true" ];then
+    mkdir -p $baseDir/$hexBuild-dbg
+    cd $hexBuild-dbg
+    cmake -DCMAKE_BUILD_TYPE=Debug \
+	-DVTK_DIR=$vtkBuild \
+	-DQT_QMAKE_EXECUTABLE=$QMAKE \
+	-DQT_MOC_EXECUTABLE=$MOC \
+	-DQT_UIC_EXECUTABLE=$UIC \
+	-DCMAKE_INSTALL_PREFIX=$hexBin \
+	$hexSRC || (echo "error in cmake for hexBlocker";exit 1)
+
+    make -j $nprocs || (echo "error in make for hexBlocker";exit 1)
+
+    make install
+fi
 echo "Congratz everythin compiled"
 exit 0
 

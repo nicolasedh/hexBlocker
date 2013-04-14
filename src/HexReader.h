@@ -88,8 +88,13 @@ private:
     //any way to change this data in hexBlocker
     bool getEdges();
 
+    //returns the id in readEdges if found an edge
+    //whith ids vId0 and vId1 else returns -1.
+    vtkIdType findEge(vtkIdType vId0,vtkIdType vId1);
     //returns an entry as a QString e.g. vertices or blocks from fileContents
     QString getEntry(QString entry,QString container);
+
+    void badEdgeEntry(QString edgeDict);
     //DATA
     QString fileContents;
 };

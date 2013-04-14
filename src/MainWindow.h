@@ -113,10 +113,10 @@ public slots:
   void slotArbitraryTest();
   void slotStartMergePatch();
   void slotMergePatch();
-
   void slotHexObjVisibility();
 
-
+  void slotStartSelectPatchForEdgeSetType();
+  void slotStartSelectPatchForEdgeSetTypeDone();
 
 
 protected:

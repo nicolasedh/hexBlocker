@@ -54,7 +54,7 @@ License
 //#include <QFileDialog>
 #include <QtGui>
 
-
+#include <EdgeSetTypeWidget.h>
 
 #define VTK_CREATE(type, name) \
     vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
@@ -132,6 +132,7 @@ MainWindow::MainWindow()
     connect(this->ui->actionEdgeVisibility,SIGNAL(triggered()),
             this,SLOT(slotHexObjVisibility()));
 
+    connect(toolbox->edgeSetTypeW,SIGNAL(startSelectPatch()),this,SLOT(slotStartSelectPatchForEdgeSetType()));
     connect(this->ui->actionAbout_Qt,SIGNAL(triggered()),
             qApp,SLOT(aboutQt()));
     connect(this->ui->actionAbout_hexBlocker,SIGNAL(triggered()),
@@ -632,20 +633,42 @@ void MainWindow::slotHexObjVisibility()
     renwin->Render();
 }
 
+void MainWindow::slotStartSelectPatchForEdgeSetType()
+{
+    this->ui->actionPatchVisibility->setChecked(true);
+    hexBlocker->visibilityPatches(true);
+    styleActorPick->setSelection(InteractorStyleActorPick::patch,InteractorStyleActorPick::single);
+    renwin->GetInteractor()->SetInteractorStyle(styleActorPick);
+    ui->statusbar->showMessage("Select a patch with left button, deselect with right, middle when done.",10000);
+    connect(styleActorPick,SIGNAL(selectionDone()),
+            this,SLOT(slotStartSelectPatchForEdgeSetTypeDone()));
+//
+
+}
+
+void MainWindow::slotStartSelectPatchForEdgeSetTypeDone()
+{
+    disconnect(styleActorPick,SIGNAL(selectionDone()),this,
+               SLOT(slotStartSelectPatchForEdgeSetTypeDone()));
+    if(styleActorPick->selectedIds->GetNumberOfIds() < 1)
+    {
+        slotShowStatusText("Cancelled");
+        return;
+    }
+    toolbox->edgeSetTypeW->setSelectedPatch(
+                styleActorPick->selectedIds->GetId(0));
+}
+
+
 void MainWindow::slotArbitraryTest()
 {
-    InteractorStyleActorPick *is =
-            InteractorStyleActorPick::New();
-    is->SetCurrentRenderer(hexBlocker->renderer);
-    is->setHexBlocker(hexBlocker);
-
-    is->setSelection(
-                InteractorStyleActorPick::edge,
-                InteractorStyleActorPick::single
-                );
-
-    renwin->GetInteractor()->SetInteractorStyle(is);
     hexBlocker->arbitraryTest();
+    EdgeSetTypeWidget * diag = new EdgeSetTypeWidget();
+
+    diag->hexBlocker=hexBlocker;
+    diag->setSelectedEdge(0);
+    diag->show();
+
 }
 
 void MainWindow::slotExit()
