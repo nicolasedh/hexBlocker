@@ -35,9 +35,9 @@ GradingCalculatorDialog::GradingCalculatorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QDoubleValidator * posDoubleValidator = new QDoubleValidator(1e-200,1e200,3);
+    QDoubleValidator * posDoubleValidator = new QDoubleValidator(1e-200,1e200,3,this);
     posDoubleValidator->setNotation(QDoubleValidator::ScientificNotation);
-    dsdeDoubleValidator = new QDoubleValidator(1e-200,1,3);
+    dsdeDoubleValidator = new QDoubleValidator(1e-200,1,3,this);
 
 // QRegExp reg=QRegExp("\\d{0,5}\\.{0,1}\\d{1,5}([eE][+-]{0,1}\\d{1,5}){0,1}");
 //    QRegExpValidator * gradValidator = new QRegExpValidator(reg,ui->gradingLineEdit);

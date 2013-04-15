@@ -40,7 +40,7 @@ EdgePropsWidget::EdgePropsWidget(QWidget *parent) :
     ui->setupUi(this);
 
     selectedEdgeId=-1;
-    QDoubleValidator *gradingValidator = new QDoubleValidator(1e-6,1e6,3);
+    QDoubleValidator *gradingValidator = new QDoubleValidator(1e-6,1e6,3,this);
     ui->gradingLineEdit->setValidator(gradingValidator);
 
     gradCalcDialog = new GradingCalculatorDialog();
