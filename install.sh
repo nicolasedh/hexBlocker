@@ -38,8 +38,8 @@ nprocs=4
 #---------------------------------------------------------------------------
 # Try to find qt exes
 QMAKE=$(which qmake)
-MOC=$(which moc-qt4)
-UIC=$(which uic-qt4)
+MOC=$(which moc-qt4 moc | head -n1)
+UIC=$(which uic-qt4 uic | head -n1)
 if [ -z "$QMAKE" -o -z "$MOC" -o -z "$UIC" ]; then
     echo Did not find qmake. 
     exit 1

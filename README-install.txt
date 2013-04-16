@@ -13,6 +13,13 @@ are
 
 sudo apt-get install build-essential flex bison cmake zlib1g-dev qt4-dev-tools libqt4-dev gnuplot libreadline-dev libncurses-dev libxt-dev
 
+For OpenSUSE the following packages names are different.
+libqt4-dev ---> libqt4-devel
+zlib1g-dev ---> zlib-devel
+libreadline-dev ---> readline-devel
+libncurses-dev ---> ncurses-devel
+libxt-dev ---> libXt-devel
+
 I would also recommend to install qtcreator if you want to modify hexBlocker
 
 Best of luck
