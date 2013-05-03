@@ -255,7 +255,7 @@ void MainWindow::slotStartSelectVertices()
     renwin->GetInteractor()->SetPicker(areaPicker);
     styleVertPick->clearSelection();
     styleVertPick->StartSelect();
-    ui->statusbar->showMessage(tr("Left button to select, middle when finished, cntrl to control camera"),10000);
+    ui->statusbar->showMessage(tr("Draw a box with left button to select, middle when finished, cntrl to control camera"),10000);
 
 }
 
