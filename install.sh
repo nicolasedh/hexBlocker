@@ -26,16 +26,17 @@
 #     This script first download  VTK version 5.10.0 then builds vtk and 
 #     then builds HexBlocker.
 #
-
+set -x
 # Modifyable data
 baseDir=$PWD
 vtkBuild=$baseDir/build/VTK
+vtkInstall=$baseDir/vtk
 vtkSRC=$baseDir/vtkSrc
 hexBuild=$baseDir/build/hexBlocker
 hexBin=$baseDir/bin
 hexSRC=$baseDir/src
 nprocs=4
-debug="true" #set to anythin else to skip building debug version
+debug="false" #set to true to build debug version aswell.
 #---------------------------------------------------------------------------
 # Try to find qt exes
 QMAKE=$(which qmake)
@@ -54,7 +55,7 @@ if [ ! -f $vtkpgk ];then
 fi
 
 #unpack vtk src
-if [ ! -d $vtkSrc];then
+if [ ! -d $vtkSRC ];then
     tar -xzf $vtkpgk
     mv VTK $vtkSRC
 fi
@@ -70,18 +71,19 @@ cmake \
     -DVTK_USE_QT:BOOL=ON \
     -DVTK_USE_QVTK:BOOL=ON \
     -DBUILD_SHARED_LIBS:BOOL=ON \
-    -DCMAKE_INSTALL_PREFIX=$baseDir/vtk \
+    -DCMAKE_INSTALL_PREFIX=$vtkInstall \
     $vtkSRC || (echo "error in cmake, VTK"; exit 1)
 
 make -j $nprocs || (echo "error in make, VTK"; exit 1)
 
 make install
-
+ 
 #Build HexBlocker
 cd $baseDir
 mkdir -p $hexBuild
 cd $hexBuild 
-cmake -DVTK_DIR=$vtkBuild \
+cmake \
+    -DVTK_DIR=$vtkInstall/lib/vtk-5.10\
     -DQT_QMAKE_EXECUTABLE=$QMAKE \
     -DQT_MOC_EXECUTABLE=$MOC \
     -DQT_UIC_EXECUTABLE=$UIC \
@@ -97,8 +99,9 @@ make install
 if [ $debug == "true" ];then
     mkdir -p $baseDir/$hexBuild-dbg
     cd $hexBuild-dbg
-    cmake -DCMAKE_BUILD_TYPE=Debug \
-	-DVTK_DIR=$vtkBuild \
+    cmake \
+	-DCMAKE_BUILD_TYPE=Debug \
+	-DVTK_DIR=$vtkInstall/lib/vtk-5.10\
 	-DQT_QMAKE_EXECUTABLE=$QMAKE \
 	-DQT_MOC_EXECUTABLE=$MOC \
 	-DQT_UIC_EXECUTABLE=$UIC \
@@ -109,7 +112,7 @@ if [ $debug == "true" ];then
 
     make install
 fi
-echo "Congratz everythin compiled"
+
 exit 0
 
 
