@@ -374,6 +374,7 @@ void HexBlocker::exportBlocks(QTextStream &os)
     {
         HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
         hb->exportDict(os);
+        os << endl;
 
     }
     os << endl << ");" << endl;
