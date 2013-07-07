@@ -194,20 +194,7 @@ void HexEdge::changeVertId(vtkIdType from, vtkIdType to)
     vtkIdType pos = vertIds->IsId(from);
     if(pos >= 0)
     {
-//        vertIds->SetId(pos,to);
-//        line->GetPointIds()->SetId(pos,to);
-//        vtkIdType pts[2];
-//        pts[0]=vertIds->GetId(0);
-//        pts[1]=vertIds->GetId(1);
-//        lines->ReplaceCell(0,2,pts);
-
-//        line->GetPoints()
-//        line->Modified();
-//        lines->Modified();
-//        data->Modified(); //funkar
-//        tube->Modified(); //funkar
-//        actor->Modified();
-//        std::cout << "found i" << std::endl;
+        vertIds->SetId(pos,to);
     }
 
 }
@@ -222,10 +209,6 @@ void HexEdge::reduceVertId(vtkIdType vId)
             vertIds->SetId(i,oldId-1);
         }
     }
-    vtkIdType pts[2];
-    pts[0]=vertIds->GetId(0);
-    pts[1]=vertIds->GetId(1);
-    lines->ReplaceCell(0,2,pts);
 }
 
 double HexEdge::getLength()

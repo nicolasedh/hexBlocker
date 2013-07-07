@@ -717,6 +717,7 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
             e->changeVertId(
                         slaveIds->GetId(k),
                         slaveIdsInMaster->GetId(k));
+            e->redrawedge();
         }
     }
 
@@ -772,6 +773,7 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
         }
     }
     removeVerticesSafely(slaveIds);
+
     vertices->Modified();
     renderer->Render();
     renderer->GetRenderWindow()->Render();

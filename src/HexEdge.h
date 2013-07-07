@@ -77,6 +77,9 @@ public:
     void exportVertIds(QTextStream &os);
     //export the edge info to screen
     void exportEdgeDict(QTextStream &os);
+
+    //changes Id of a vertice. redrawEdge should probably
+    //be called after this.
     void changeVertId(vtkIdType from, vtkIdType to);
     void reduceVertId(vtkIdType vId);
 
