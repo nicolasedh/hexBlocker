@@ -61,6 +61,8 @@ private:
     vtkIdList * showOnlyIds;
     bool hasPointsBeenSet;
 
+signals:
+    void pointEdited();
 };
 
 

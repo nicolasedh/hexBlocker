@@ -541,7 +541,7 @@ vtkIdType HexReader::findEge(vtkIdType vId0, vtkIdType vId1)
             //check for correct order
             if(e->vertIds->GetId(0)!=vId0)
                 std::cout << "Warning edge (" << vId0 <<" " << vId1 <<")"
-                          << " was precribed with wron order. This could cause problems." <<std::endl;
+                          << " was precribed with wrong order. This could cause problems." <<std::endl;
             return i;
         }
     }

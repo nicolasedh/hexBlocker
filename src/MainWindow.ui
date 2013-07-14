@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
-    <height>520</height>
+    <width>1000</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>450</width>
+    <width>600</width>
     <height>520</height>
    </size>
   </property>
@@ -60,7 +60,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>240</width>
+         <width>400</width>
          <height>200</height>
         </size>
        </property>
@@ -74,7 +74,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>686</width>
+     <width>1000</width>
      <height>25</height>
     </rect>
    </property>
@@ -111,6 +111,7 @@
     </property>
     <addaction name="actionView_tool_bar"/>
     <addaction name="actionView_tool_box"/>
+    <addaction name="actionViewVerticeEditor"/>
     <addaction name="separator"/>
     <addaction name="actionBlockVisibility"/>
     <addaction name="actionPatchVisibility"/>
@@ -427,6 +428,20 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionViewVerticeEditor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>View VerticeEditor</string>
+   </property>
+   <property name="toolTip">
+    <string>view table of vertices</string>
    </property>
   </action>
  </widget>

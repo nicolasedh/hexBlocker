@@ -49,7 +49,7 @@ int PointsTableModel::rowCount(const QModelIndex &parent) const
 int PointsTableModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 3;
+    return 4;
 }
 
 QVariant PointsTableModel::data(const QModelIndex &index, int role) const
@@ -61,8 +61,13 @@ QVariant PointsTableModel::data(const QModelIndex &index, int role) const
     row = index.row();
     col = index.column();
 
-    if (row < 0 || col < 0 || col > 2)
+    if (row < 0 || col < 0 || col > 3)
         return QVariant();
+
+    if(role == Qt::DisplayRole && col == 0)
+        return row; //show index
+    else
+        col=col-1; //shift col (index is not part of vtkPoints)
 
     if (role == Qt::DisplayRole && hasPointsBeenSet)
     {
@@ -92,11 +97,13 @@ QVariant PointsTableModel::headerData(int section, Qt::Orientation orientation, 
     if (orientation == Qt::Horizontal) {
         switch (section) {
         case 0:
+            return QVariant("NR");
+        case 1:
             return QVariant("X");
 
-        case 1:
-            return QVariant("Y");
         case 2:
+            return QVariant("Y");
+        case 3:
             return QVariant("Z");
         default:
                 return QVariant();
@@ -128,21 +135,24 @@ bool PointsTableModel::setData(const QModelIndex &index, const QVariant &value, 
 {
     int row = index.row();
     int col = index.column();
+    if(col == 0)
+        return false;
+
     bool isDouble;
     double val = value.toDouble(&isDouble);
-    if (isDouble && index.isValid() && role == Qt::EditRole && hasPointsBeenSet && col < 3)
+    if (isDouble && index.isValid() && role == Qt::EditRole && hasPointsBeenSet && col < 4)
     {
         double pos[3];
         if( showOnlyIds != 0 && row < showOnlyIds->GetNumberOfIds())
         {
             points->GetPoint(showOnlyIds->GetId(row),pos);
-            pos[col]=val;
+            pos[col-1]=val;
             points->SetPoint(showOnlyIds->GetId(row),pos);
         }
         else if(row < points->GetNumberOfPoints())
         {
             points->GetPoint(row,pos);
-            pos[col]=val;
+            pos[col-1]=val;
             points->SetPoint(row,pos);
         }
         else
@@ -151,7 +161,8 @@ bool PointsTableModel::setData(const QModelIndex &index, const QVariant &value, 
         }
 
         points->Modified();
-        emit dataChanged(index, index);
+        emit pointEdited();
+//        emit dataChanged(index, index);
 
         return true;
     }
@@ -161,10 +172,22 @@ bool PointsTableModel::setData(const QModelIndex &index, const QVariant &value, 
 
 Qt::ItemFlags PointsTableModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return Qt::ItemIsEnabled;
+    Qt::ItemFlags fgs;
 
-    return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+    if (!index.isValid())
+        return Qt::ItemIsDragEnabled;
+
+    if (index.column() > 0)
+    {
+        fgs = QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+    }
+    else
+    {
+        fgs = Qt::ItemIsEditable;
+    }
+
+    return fgs;
+//        return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
 }
 
 

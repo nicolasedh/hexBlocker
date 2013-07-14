@@ -59,6 +59,7 @@ class InteractorStyleEdgePick;
 class InteractorStyleActorPick;
 class vtkInteractorStyleTrackballCamera;
 class ToolBoxWidget;
+class VerticeEditorWidget;
 class vtkIdList;
 
 class MainWindow : public QMainWindow
@@ -130,6 +131,7 @@ private:
   vtkSmartPointer<vtkAreaPicker> areaPicker;
 
   ToolBoxWidget *toolbox;
+  VerticeEditorWidget *verticeEditor;
   // Designer form
   Ui_MainWindow *ui;
   QString saveFileName;
