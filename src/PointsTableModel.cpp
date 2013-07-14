@@ -193,6 +193,8 @@ Qt::ItemFlags PointsTableModel::flags(const QModelIndex &index) const
 
 void PointsTableModel::setPoints(vtkPoints *pnts)
 {
+    points=0;
+    hasPointsBeenSet=false;
     beginResetModel();
     endResetModel();
     showOnlyIds=0;
