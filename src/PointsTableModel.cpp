@@ -193,7 +193,9 @@ Qt::ItemFlags PointsTableModel::flags(const QModelIndex &index) const
 
 void PointsTableModel::setPoints(vtkPoints *pnts)
 {
-    points=0;
+    //beginResetModel will call other functions so
+    //disable pointers to objects since they might be invalid.
+    points=0;showOnlyIds=0;
     hasPointsBeenSet=false;
     beginResetModel();
     endResetModel();
@@ -212,7 +214,10 @@ void PointsTableModel::setPoints(vtkPoints *pnts)
 
 void PointsTableModel::setPoints(vtkPoints *pnts, vtkIdList *shwOnlyIds)
 {
-
+    //beginResetModel will call other functions so
+    //disable pointers to objects since they might be invalid.
+    points=0;showOnlyIds=0;
+    hasPointsBeenSet=false;
     beginResetModel();
     endResetModel();
     points = pnts;
