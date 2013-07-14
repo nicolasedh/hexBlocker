@@ -38,6 +38,7 @@ License
 #include "HexBC.h"
 #include "HexExporter.h"
 #include "HexReader.h"
+#include "VerticeEditorWidget.h"
 
 #include <vtkActor.h>
 #include <vtkRenderer.h>
@@ -87,10 +88,11 @@ MainWindow::MainWindow()
     //Qt widgets
     toolbox = new ToolBoxWidget();
     toolbox->setHexBlockerPointer(hexBlocker);
-
     this->addDockWidget(Qt::LeftDockWidgetArea,toolbox);
 
-
+    verticeEditor = new VerticeEditorWidget();
+    this->addDockWidget(Qt::RightDockWidgetArea,verticeEditor);
+    verticeEditor->setHexBlocker(hexBlocker);
     renwin->Render();
 
     // Set up action signals and slots
@@ -131,7 +133,8 @@ MainWindow::MainWindow()
             this,SLOT(slotHexObjVisibility()));
     connect(this->ui->actionEdgeVisibility,SIGNAL(triggered()),
             this,SLOT(slotHexObjVisibility()));
-
+    connect(this->ui->actionViewVerticeEditor,SIGNAL(toggled(bool)),
+            verticeEditor,SLOT(setVisible(bool)));
     connect(toolbox->edgeSetTypeW,SIGNAL(startSelectPatch()),this,SLOT(slotStartSelectPatchForEdgeSetType()));
     connect(this->ui->actionAbout_Qt,SIGNAL(triggered()),
             qApp,SLOT(aboutQt()));
@@ -165,6 +168,7 @@ void MainWindow::slotCreateHexBlock()
 {
     hexBlocker->createHexBlock(toolbox->createBlockW->c0,toolbox->createBlockW->c1);
     hexBlocker->resetBounds();
+    verticeEditor->updateVertices();
     renwin->Render();
 }
 
@@ -194,7 +198,8 @@ void MainWindow::slotDeleteHexBlock()
     vtkIdList * selIds = styleActorPick->selectedIds;
     hexBlocker->removeHexBlocks(selIds);
     hexBlocker->showPatches();
-    hexBlocker->renderer->GetRenderWindow()->Render();
+    verticeEditor->updateVertices();
+    hexBlocker->render();
 }
 
 void MainWindow::slotPrintHexBlocks()
@@ -241,8 +246,10 @@ void MainWindow::slotExtrudePatch()
     disconnect(styleActorPick,SIGNAL(selectionDone()),
                this,SLOT(slotExtrudePatch()));
 
-    renwin->GetInteractor()->SetInteractorStyle(defStyle);
-    renwin->Render();
+    verticeEditor->updateVertices();
+    hexBlocker->render();
+    //renwin->GetInteractor()->SetInteractorStyle(defStyle);
+    slotResetInteractor();
 }
 
 void MainWindow::slotOpenMoveVerticesDialog()
@@ -263,7 +270,7 @@ void MainWindow::slotStartSelectVertices()
 void MainWindow::slotEndSelectVertices()
 {
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
-    renwin->Render();
+    hexBlocker->render();
 }
 
 void MainWindow::slotMoveVertices()
@@ -282,7 +289,8 @@ void MainWindow::slotMoveVertices()
     }
 
     slotResetInteractor();
-    renwin->Render();
+    verticeEditor->updateVertices();
+    hexBlocker->render();
 }
 
 void MainWindow::slotRender()
@@ -350,8 +358,8 @@ void MainWindow::slotNewCase()
 
     toolbox->setHexBlockerPointer(hexBlocker);
     toolbox->setBCsW->clearBCs();
-
-    renwin->Render();
+    verticeEditor->setHexBlocker(hexBlocker);
+    slotRender();
 }
 
 void MainWindow::slotSaveAsBlockMeshDict()
@@ -484,8 +492,9 @@ void MainWindow::slotReOpenBlockMeshDict()
 
     //Repoint widgets
     toolbox->setBCsW->changeBCs(reader);
-
-    renwin->Render();
+    verticeEditor->setHexBlocker(hexBlocker);
+    verticeEditor->updateVertices();
+    slotRender();
 }
 
 void MainWindow::slotShowStatusText(QString text)
@@ -619,9 +628,10 @@ void MainWindow::slotMergePatch()
     {
         hexBlocker->mergePatch(selectedPatches->GetId(0),selectedPatches->GetId(1));
     }
-    renwin->GetInteractor()->SetInteractorStyle(defStyle);
+
+    verticeEditor->updateVertices();
     slotResetInteractor();
-    renwin->Render();
+    slotRender();
 }
 
 void MainWindow::slotHexObjVisibility()
@@ -662,13 +672,16 @@ void MainWindow::slotStartSelectPatchForEdgeSetTypeDone()
 
 void MainWindow::slotArbitraryTest()
 {
-    hexBlocker->arbitraryTest();
-    EdgeSetTypeWidget * diag = new EdgeSetTypeWidget();
-
-    diag->hexBlocker=hexBlocker;
-    diag->setSelectedEdge(0);
-    diag->show();
-
+//    hexBlocker->arbitraryTest();
+      verticeEditor->updateVertices();
+//    hexBlocker->createHexBlock();
+//    verticeEditor->slotApply();
+//    for(int i=0;i<100;i++)
+//    {
+//        hexBlocker->createHexBlock();
+//    }
+//    hexBlocker->render();
+//    verticeEditor->slotApply();
 }
 
 void MainWindow::slotExit()

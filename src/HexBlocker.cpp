@@ -632,7 +632,7 @@ void HexBlocker::rescaleActors()
         HexBlock * b = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
         b->rescaleActor();
     }
-    renderer->Render();
+    this->render();
 }
 
 vtkIdType HexBlocker::findEdge(const vtkIdType a, const vtkIdType b)

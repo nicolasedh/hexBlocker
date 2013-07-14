@@ -138,6 +138,9 @@ public:
     // it does not remove vertices
     void removeHexBlock(vtkIdType toRem);
 
+    // redraw all actors and render
+    void rescaleActors();
+
     //As above but fill vertsToRem with vertices that are no longer needed.
     void removeHexBlock(const vtkIdType toRem, vtkIdList * vertsToRem);
     //this is a testfunktion for quick and dirty testing
@@ -187,7 +190,6 @@ public:
 private:
     //Functions
     void addParallelEdges(vtkSmartPointer<vtkIdList> allParallelEdges,vtkIdType edgeId);
-    void rescaleActors();
     // returns id if found else returns -1
     vtkIdType findEdge(const vtkIdType a, const vtkIdType b);
 
