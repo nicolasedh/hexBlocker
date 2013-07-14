@@ -64,7 +64,7 @@ fi
 if [ ! -d $vtkBuild ];then
     mkdir -p $vtkBuild
     cd $vtkBuild
-fi
+
 #cmake --build --config=Release
 cmake \
     -DVTK_USE_GUISUPPORT:BOOL=ON \
@@ -77,6 +77,7 @@ cmake \
 make -j $nprocs || (echo "error in make, VTK"; exit 1)
 
 make install
+fi
  
 #Build HexBlocker
 cd $baseDir
