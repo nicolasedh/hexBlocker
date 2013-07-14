@@ -490,11 +490,12 @@ void MainWindow::slotReOpenBlockMeshDict()
     styleVertPick->SelectedSphere=hexBlocker->vertSphere;
     styleActorPick->setHexBlocker(hexBlocker);
 
+    slotRender();
     //Repoint widgets
     toolbox->setBCsW->changeBCs(reader);
     verticeEditor->setHexBlocker(hexBlocker);
-    verticeEditor->updateVertices();
-    slotRender();
+//    verticeEditor->updateVertices();
+
 }
 
 void MainWindow::slotShowStatusText(QString text)
