@@ -244,24 +244,19 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
 
 void HexBlocker::resetBounds()
 {
-    double minDiag=1e6;
-    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
+    double minLength=1e6;
+    for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
     {
-        HexBlock * hex =
-                HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
+        HexEdge * e =
+                HexEdge::SafeDownCast(edges->GetItemAsObject(i));
         double c1[3], c2[3];
-        vertices->GetPoint(hex->vertIds->GetId(0),c1);
-        vertices->GetPoint(hex->vertIds->GetId(6),c2);
-        double diag = pow(vtkMath::Distance2BetweenPoints(c1,c2),0.5);
-        if(i==0)
-            minDiag=diag;
-        fmin(minDiag,diag);
-
+        double edgeLength=e->getLength();
+        minLength=fmin(minLength,edgeLength);
     }
 
-    double vertRadius=minDiag*0.02;
-    double edgeRadius=vertRadius*0.4;
-    double locAxesRadius=edgeRadius*4;
+    double vertRadius=minLength*0.02;
+    double edgeRadius=vertRadius*0.5;
+    double locAxesRadius=edgeRadius*2;
 
     vertSphere->SetRadius(vertRadius);
     //set radius on edges
