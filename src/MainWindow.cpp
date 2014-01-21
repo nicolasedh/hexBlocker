@@ -673,8 +673,8 @@ void MainWindow::slotStartSelectPatchForEdgeSetTypeDone()
 
 void MainWindow::slotArbitraryTest()
 {
-//    hexBlocker->arbitraryTest();
-      verticeEditor->updateVertices();
+    hexBlocker->arbitraryTest();
+//      verticeEditor->updateVertices();
 //    hexBlocker->createHexBlock();
 //    verticeEditor->slotApply();
 //    for(int i=0;i<100;i++)

@@ -256,7 +256,7 @@ void HexBlocker::resetBounds()
 
     double vertRadius=minLength*0.02;
     double edgeRadius=vertRadius*0.5;
-    double locAxesRadius=edgeRadius*2;
+    double locAxesRadius=edgeRadius*3;
 
     vertSphere->SetRadius(vertRadius);
     //set radius on edges
@@ -1106,10 +1106,12 @@ void HexBlocker::render()
 void HexBlocker::arbitraryTest()
 {
 
-    createHexBlock();
-    HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(0));
-    double c[3]={0.5,0,0.5};
+//    createHexBlock();
+//    HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(0));
+//    double c[3]={0.5,0,0.5};
 //    e->drawArc(c);
+      resetBounds();
+      rescaleActors();
 
 
 
