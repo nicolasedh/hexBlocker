@@ -136,7 +136,12 @@ public:
 
     // returns true if vId is in vertIds
     bool hasVertice(vtkIdType vId);
-    bool hasEdge(vtkIdType vId);
+
+    //eId is global id
+    //if local or global is needed use
+    //localEdges->isItemPresent(e)-1
+    bool hasEdge(vtkIdType eId);
+    bool hasEdge(HexEdge *e);
 
     //returns true if they have the same vertices
     //in the same order
@@ -148,8 +153,8 @@ public:
     vtkSmartPointer<vtkCollection> globalPatches;
     vtkSmartPointer<vtkPolyData> hexData;
     vtkSmartPointer<vtkIdList> vertIds; // own vertices in globalVertices
-    vtkSmartPointer<vtkIdList> edgeIds;
-    vtkSmartPointer<vtkIdList> patchIds; //own patches in globalPatches
+    vtkSmartPointer<vtkCollection> localPatches; //own patches
+    vtkSmartPointer<vtkCollection> localEdges; //own edges
     vtkSmartPointer<vtkActor> hexAxisActor; //for axes.
     vtkSmartPointer<vtkActor> hexBlockActor; //for axes.
 

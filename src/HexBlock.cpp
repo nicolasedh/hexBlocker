@@ -53,8 +53,8 @@ vtkStandardNewMacro(HexBlock);
 HexBlock::HexBlock()
 {
     vertIds = vtkSmartPointer<vtkIdList>::New();
-    edgeIds  = vtkSmartPointer<vtkIdList>::New();
-    patchIds = vtkSmartPointer<vtkIdList>::New();
+    localEdges = vtkSmartPointer<vtkCollection>::New();
+    localPatches = vtkSmartPointer<vtkCollection>::New();
 
     hexData = vtkSmartPointer<vtkPolyData>::New();
     axesTubes = vtkSmartPointer<vtkTubeFilter>::New();
@@ -230,20 +230,7 @@ void HexBlock::init(vtkSmartPointer<HexPatch> p,
 
 vtkIdType HexBlock::getPatchInternalId(vtkSmartPointer<HexPatch> otherP)
 {
-    vtkIdType pId=-1;
-    for(vtkIdType i=0;i<patchIds->GetNumberOfIds();i++)
-    {
-        HexPatch * p = HexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
-        if(p->equals(otherP))
-            pId=i;
-    }
-//    for(vtkIdType i=0;i<globalPatches->GetNumberOfItems();i++)
-//    {
-//        HexPatch * p = HexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
-//        if(p->equals(otherP))
-//            patchId=i;
-//    }
-    return pId;
+    return localPatches->IsItemPresent(otherP)-1;
 }
 
 void HexBlock::PrintSelf(ostream &os, vtkIndent indent)
@@ -286,12 +273,11 @@ void HexBlock::exportDict(QTextStream &os)
 
 bool HexBlock::getGradings(double gradings[12])
 {
-    for(vtkIdType i =0;i<edgeIds->GetNumberOfIds();i++)
+    for(vtkIdType i=0;i<localEdges->GetNumberOfItems();i++)
     {
-        gradings[i] = HexEdge::SafeDownCast(
-                    globalEdges->GetItemAsObject(edgeIds->GetId(i)))->grading;
+        HexEdge *e = HexEdge::SafeDownCast(localEdges->GetItemAsObject(i));
+        gradings[i] = e->grading;
     }
-
     return (gradings[0] == gradings[1]
             &&gradings[2] == gradings[3]
             &&gradings[1] == gradings[2] //first four edges
@@ -417,7 +403,6 @@ void HexBlock::initEdges()
 {
     //Keep the same order of edges as on
     //docs on blockMesh
-    edgeIds->Initialize();
     initEdge(vertIds->GetId(1),vertIds->GetId(0)); //0
     initEdge(vertIds->GetId(2),vertIds->GetId(3)); //1
     initEdge(vertIds->GetId(6),vertIds->GetId(7)); //2
@@ -460,12 +445,14 @@ void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
 //                  << newEdge->vertIds->GetId(1) << ")"
 //                  << std::endl;
         globalEdges->AddItem(newEdge);
-        edgeIds->InsertNextId(globalEdges->GetNumberOfItems()-1);
+        localEdges->AddItem(newEdge);
     }
     else
     {
-        edgeIds->InsertNextId(posInGlobal);
+        HexEdge *e = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(posInGlobal));
+        localEdges->AddItem(e);
     }
+
 }
 
 void HexBlock::initPatches()
@@ -514,14 +501,13 @@ void HexBlock::initPatch(int id0,int id1,int id2,int id3)
         HexPatch * existingPatch =
                 HexPatch::SafeDownCast(globalPatches->GetItemAsObject(pId));
         existingPatch->setHex(this);
-        patchIds->InsertNextId(pId);
+        localPatches->AddItem(existingPatch);
     }
     else //i.e. it doesn't exist in global list
     {
-        //add to global list
+        //add to global and local collection
         globalPatches->AddItem(patch);
-        patchIds->InsertNextId(globalPatches->GetNumberOfItems()-1);
-
+        localPatches->AddItem(patch);
     }
 }
 
@@ -539,29 +525,33 @@ vtkSmartPointer<vtkIdList> HexBlock::getParallelEdges(vtkIdType edgeId)
     HexEdge *edge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeId));
 
     //do we have the edge?
-    bool haveEdge = false;
-    vtkIdType internalEdgeId=-1;
-    for( vtkIdType i = 0; i<edgeIds->GetNumberOfIds();i++)
-    {
-        HexEdge * e = HexEdge::SafeDownCast(
-                    globalEdges->GetItemAsObject(edgeIds->GetId(i)));
-        if(edge->equals(e))
-        {
-            haveEdge=true;
-            internalEdgeId=i;
-        }
-    }
+    vtkIdType internalEdgeId = localEdges->IsItemPresent(edge) -1;
+    bool haveEdge=internalEdgeId > -1;
 
     if(haveEdge)
     {
-        // edges 0-3 are parallel and so are 4-7, 8-11.
-        // the list of parrallel are alwas edgeId -mod(edgeId) + 0 1 2 3
+        // edges 0-3 are parallel to each other
+        // and so are 4-7 and 8-11.
+        // the list of parrallel are always edgeId -mod(edgeId) + 0 1 2 3
+        // Let's say edge 6 is selected, mainEdgeId=6-6%4=6-2=4 and
+        // the parallel edges are mainEdgeId + 0,1,2,3 i.e
+        // 4,5,6,7. Find them in the global list and return
         vtkIdType mainEdgeId = internalEdgeId - internalEdgeId%4;
 
-        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId));
-        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId+1));
-        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId+2));
-        parallelEdges->InsertNextId(edgeIds->GetId(mainEdgeId+3));
+        vtkIdType idInGlobal=-1;
+        for(vtkIdType i=0;i<4;i++)
+        {
+            HexEdge *e = HexEdge::SafeDownCast(localEdges->GetItemAsObject(mainEdgeId+i));
+            parallelEdges->InsertNextId(globalEdges->IsItemPresent(e)-1);
+        }
+/*
+        std::cout << "pEdges: (" ;
+        for(vtkIdType i=0;i<parallelEdges->GetNumberOfIds();i++)
+        {
+            std::cout << parallelEdges->GetId(i) << " ";
+        }
+        std::cout << ")" << endl;
+*/
     }
 
     return parallelEdges;
@@ -569,9 +559,9 @@ vtkSmartPointer<vtkIdList> HexBlock::getParallelEdges(vtkIdType edgeId)
 
 void HexBlock::getNumberOfCells(int nCells[3])
 {
-    nCells[0] = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(0)))->nCells;
-    nCells[1] =  HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(4)))->nCells;
-    nCells[2] =  HexEdge::SafeDownCast(globalEdges->GetItemAsObject(edgeIds->GetId(8)))->nCells;
+    nCells[0] = HexEdge::SafeDownCast(localEdges->GetItemAsObject(0))->nCells;
+    nCells[1] = HexEdge::SafeDownCast(localEdges->GetItemAsObject(4))->nCells;
+    nCells[2] = HexEdge::SafeDownCast(localEdges->GetItemAsObject(8))->nCells;
 }
 
 void HexBlock::setAxesRadius(double rad)
@@ -673,9 +663,15 @@ bool HexBlock::hasVertice(vtkIdType vId)
     return vertIds->IsId(vId) > -1;
 }
 
-bool HexBlock::hasEdge(vtkIdType vId)
+bool HexBlock::hasEdge(vtkIdType eId)
 {
-    return edgeIds->IsId(vId) > -1;
+    HexEdge *ge = HexEdge::SafeDownCast(globalEdges->GetItemAsObject(eId));
+    return this->hasEdge(ge);
+}
+
+bool HexBlock::hasEdge(HexEdge *e)
+{
+    return localEdges->IsItemPresent(e)>0 ;
 }
 
 bool HexBlock::equals(HexBlock *other)

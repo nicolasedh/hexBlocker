@@ -315,7 +315,7 @@ bool HexReader::getBlocks()
         //Set number on edges
         for(vtkIdType j=0;j<12;j++)
         {
-            HexEdge * e = HexEdge::SafeDownCast(readEdges->GetItemAsObject(b->edgeIds->GetId(j)));
+            HexEdge * e = HexEdge::SafeDownCast(b->localEdges->GetItemAsObject(j));
             if(j<4)
                 e->nCells = cellNumbers[0];
             else if(j<8)

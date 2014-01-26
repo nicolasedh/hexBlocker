@@ -250,6 +250,7 @@ void MainWindow::slotExtrudePatch()
     hexBlocker->render();
     //renwin->GetInteractor()->SetInteractorStyle(defStyle);
     slotResetInteractor();
+//    hexBlocker->arbitraryTest();
 }
 
 void MainWindow::slotOpenMoveVerticesDialog()

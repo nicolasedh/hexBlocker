@@ -203,7 +203,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
                 patches->GetItemAsObject(selectedPatches->GetId(0)));
     HexBlock * hex = p->getPrimaryHexBlock();
 
-    /*
+/*
     std::cout << "I'am block " << hexBlocks->IsItemPresent(hex) -1 << " patch: "
               << hex->getPatchInternalId(p)
               << ", verts are ("
@@ -211,7 +211,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
               << p->vertIds->GetId(1) << " "
               << p->vertIds->GetId(2) << " "
               << p->vertIds->GetId(3) << ")"<<std::endl;
-    */
+*/
 
     vtkSmartPointer<HexBlock> newHex=
             vtkSmartPointer<HexBlock>::New();
@@ -249,7 +249,6 @@ void HexBlocker::resetBounds()
     {
         HexEdge * e =
                 HexEdge::SafeDownCast(edges->GetItemAsObject(i));
-        double c1[3], c2[3];
         double edgeLength=e->getLength();
         minLength=fmin(minLength,edgeLength);
     }
@@ -755,18 +754,6 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
     }
     patches->RemoveItem(slave);
 
-
-    //re point patch ids in blocks
-    for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
-    {
-        HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(i));
-        for(vtkIdType k=0;k<hb->patchIds->GetNumberOfIds();k++)
-        {
-            vtkIdType pId = hb->patchIds->GetId(k);
-            if(pId > slaveId)
-                hb->patchIds->SetId(k,pId-1);
-        }
-    }
     removeVerticesSafely(slaveIds);
 
     vertices->Modified();
@@ -776,11 +763,14 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
 
 void HexBlocker::decreaseList(vtkIdList *list, vtkIdList * toRemove)
 {
-    for(vtkIdType k=0;k<toRemove->GetNumberOfIds();k++)
+    //make a copy of the list of items to delete since don't want to modify that
+    vtkIdList * cpToRemove = vtkIdList::New();
+    cpToRemove->DeepCopy(toRemove);
+    for(vtkIdType k=0;k<cpToRemove->GetNumberOfIds();k++)
     {
-        vtkIdType toRem = toRemove->GetId(k);
+        vtkIdType toRem = cpToRemove->GetId(k);
         decreaseList(list,toRem);
-        decreaseList(toRemove,toRem);
+        decreaseList(cpToRemove,toRem);
 
     }
 }
@@ -902,17 +892,21 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
     HexBlock *b2rem = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(toRem));
 
     //Create a list of vertices that can be removed.
-    //start with all verts of b2rem then remove those that are used by other blocks
+    //start with all verts of b2rem then remove those that aren't used by other blocks
     vertsToRem->Initialize();
     vertsToRem->DeepCopy(b2rem->vertIds);
 
-    //Start with a list of all vertices(edges) in the block to be
-    //removed. Then remove vertices(edges)  that are need by
-    //other blocks in that list.
-    vtkSmartPointer<vtkIdList> edges2berem = vtkSmartPointer<vtkIdList>::New();
-    edges2berem->DeepCopy(b2rem->edgeIds);
+    //Create a Collection of edges to remove
+    vtkSmartPointer<vtkCollection> edges2rem =
+             vtkSmartPointer<vtkCollection>::New();
+    for(vtkIdType ei=0;ei<b2rem->localEdges->GetNumberOfItems();ei++)
+    {
+        HexEdge *e = HexEdge::SafeDownCast(b2rem->localEdges->GetItemAsObject(ei));
+        edges2rem->AddItem(e);
+    }
 
     //loop over all blocks but not the one to be deleted
+    //too make sure we don't delete stuff other blocks need
     for(vtkIdType i=0;i<hexBlocks->GetNumberOfItems();i++)
     {
         if(i==toRem)
@@ -931,28 +925,23 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
         }
 
         //check edges
-        for(vtkIdType ei=0;ei<b2rem->edgeIds->GetNumberOfIds();ei++)
+        for(vtkIdType hi=0;hi<hb->localEdges->GetNumberOfItems();hi++)
         {
-            vtkIdType eId = b2rem->edgeIds->GetId(ei);
-            if(hb->hasEdge(eId))
-                edges2berem->DeleteId(eId);
+            HexEdge *e = HexEdge::SafeDownCast(hb->localEdges->GetItemAsObject(hi));
+            if(edges2rem->IsItemPresent(e)>0)
+                edges2rem->RemoveItem(e);
         }
+
     }
-//    std::cout << "verts to remove: " ;
-//    for(vtkIdType i=0;i<vertsToRem->GetNumberOfIds();i++)
-//    {
-//        std::cout << vertsToRem->GetId(i) << " ";
-//    }
-//    std::cout << std::endl;
+
 
     //remove the edges (points are not removed in this function)
     //since we might wan't to keep them for split and ogrids
-    for(vtkIdType i=0;i<edges2berem->GetNumberOfIds();i++)
+    for(vtkIdType i=0;i<edges2rem->GetNumberOfItems();i++)
     {
-        HexEdge * e= HexEdge::SafeDownCast(edges->GetItemAsObject(edges2berem->GetId(i)));
+        HexEdge * e= HexEdge::SafeDownCast(edges2rem->GetItemAsObject(i));
         renderer->RemoveActor(e->actor);
         edges->RemoveItem(e);
-        decreaseList(edges2berem,edges2berem->GetId(i));
     }
 
     //remove the patches
@@ -982,11 +971,19 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
     {
         HexPatch *p = HexPatch::SafeDownCast(
                     patches->GetItemAsObject(patches2berem->GetId(i)));
+//        std::cout << "deleting patch ( "
+//                  << p->vertIds->GetId(0) << " "
+//                  << p->vertIds->GetId(1) << " "
+//                  << p->vertIds->GetId(2) << " "
+//                  << p->vertIds->GetId(3) << ") "
+//                  << std::endl;
         p->removeSafely(b2rem);
-        //really delete if patch don't have any block left
+        //really delete if patch doesn't have any block left
         //after remove safely
         if(! p->hasBlocks())
         {
+            vtkIdList * cpToRemList = vtkIdList::New();
+            cpToRemList->DeepCopy(patches2berem);
             //delete patches from all bcs
             for(vtkIdType bci=0;bci<hexBCs->GetNumberOfItems();bci++)
             {
@@ -998,18 +995,6 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
             renderer->RemoveActor(p->actor);
             patches->RemoveItem(p);
             decreaseList(patches2berem,patches2berem->GetId(i));
-        }
-    }
-
-
-    //also decrease patchIds and edgeIds in all blocks not to be removed
-    for(vtkIdType bi=0;bi<hexBlocks->GetNumberOfItems();bi++)
-    {
-        if(bi != toRem)
-        {
-            HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(bi));
-            decreaseList(hb->edgeIds,edges2berem);
-            decreaseList(hb->patchIds,patches2berem);
         }
     }
 
@@ -1107,12 +1092,29 @@ void HexBlocker::arbitraryTest()
 {
 
 //    createHexBlock();
-//    HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(0));
-//    double c[3]={0.5,0,0.5};
-//    e->drawArc(c);
-      resetBounds();
-      rescaleActors();
+    for(vtkIdType hi=0;hi<hexBlocks->GetNumberOfItems();hi++)
+    {
+        HexBlock *hb = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(hi));
+        std::cout << "block nr: " << hi << endl;
+        for(vtkIdType i=0;i<hb->localEdges->GetNumberOfItems();i++)
+        {
+            HexEdge * e = HexEdge::SafeDownCast(hb->localEdges->GetItemAsObject(i));
+            std::cout << "edge: ("
+                      << e->vertIds->GetId(0) << ","
+                      << e->vertIds->GetId(1) << ")p"
+                      << e
+                      << "isItemPresent" << edges->IsItemPresent(e) << std::endl;
 
+
+            /*
+        for(vtkIdType j=0;j<edges->GetNumberOfItems();j++)
+        {
+
+        }
+        */
+        }
+
+    }
 
 
 }
