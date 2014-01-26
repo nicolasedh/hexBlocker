@@ -37,8 +37,8 @@ HexBC::HexBC()
 {
     name = std::string("DefaultPatches");
     type = std::string("patch");
-    patchIds = vtkSmartPointer<vtkIdList>::New();
     globalPatches = vtkSmartPointer<vtkCollection>::New();
+    localPatches = vtkSmartPointer<vtkCollection>::New();
     //delete name;
     //name = new QString("foo");
 }
@@ -50,22 +50,22 @@ HexBC::~HexBC()
 
 void HexBC::setPatchColors(double r, double g, double b)
 {
-    for(vtkIdType i=0; i<patchIds->GetNumberOfIds();i++)
+    for(vtkIdType i=0; i<localPatches->GetNumberOfItems();i++)
     {
         HexPatch *p =
-                HexPatch::SafeDownCast(globalPatches->GetItemAsObject(patchIds->GetId(i)));
+                HexPatch::SafeDownCast(localPatches->GetItemAsObject(i));
         p->setColor(r,g,b);
     }
+
 }
 
 void HexBC::resetPatchColors()
 {
-    for(vtkIdType i=0; i<patchIds->GetNumberOfIds();i++)
+    for(vtkIdType i=0; i<localPatches->GetNumberOfItems();i++)
     {
-        HexPatch *p = HexPatch::SafeDownCast(
-                    globalPatches->GetItemAsObject(patchIds->GetId(i)));
+        HexPatch *p =
+                HexPatch::SafeDownCast(localPatches->GetItemAsObject(i));
         p->resetColor();
-
     }
 }
 
@@ -83,58 +83,46 @@ bool HexBC::insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids)
         HexPatch * p = HexPatch::SafeDownCast(globalPatches->GetItemAsObject(i));
         if(p->equals(ids))
         {
-//            std::cout << "patch exists " << i <<std::endl;
-            patchIds->InsertUniqueId(i);
+            localPatches->AddItem(p);
             foundIt=true;
         }
     }
 
-//    for(vtkIdType i=0;i<allPatches->GetNumberOfItems();i++)
-//    {
-
-//        HexPatch * p = HexPatch::SafeDownCast(allPatches->GetItemAsObject(i));
-//        bool idsInP[4];
-//        //return true if all ids in ids exist in patch
-//        for(vtkIdType j=0;j<ids->GetNumberOfIds();j++)
-//        {
-//            idsInP[j]=false;
-//            for(vtkIdType k=0;p->vertIds->GetNumberOfIds();k++)
-//            {
-//                if(p->vertIds->GetId(k) == ids->GetId(j))
-//                {
-
-//                    idsInP[j]=true;
-//                }
-//            }
-
-//        }
-//        if(foundIt)
-//        {
-//            std::cout << "patches are equal, glbpatc" << i << std::endl;
-//            patchIds->InsertNextId(i);
-//        }
-//    }
     return foundIt;
 }
 
-void HexBC::notifyRemovedPatch(HexPatch *p)
+void HexBC::insertPatches(vtkIdList *pids)
 {
-    vtkIdType pId = globalPatches->IsItemPresent(p)-1;
-    patchIds->DeleteId(pId);
-
-    //reduce pointers since pId will be removed in global
-    for(vtkIdType i=0;i<patchIds->GetNumberOfIds();i++)
+    for(vtkIdType i=0;i<pids->GetNumberOfIds();i++)
     {
-        vtkIdType k = patchIds->GetId(i);
-        if(k>pId)
-        {
-            patchIds->SetId(i,k-1);
-        }
+        HexPatch *p = HexPatch::SafeDownCast
+                (
+                    globalPatches->GetItemAsObject(pids->GetId(i))
+                    );
+        if(p!=NULL)
+            localPatches->AddItem(p);
+//        std::cout << "inP ("
+//                  << p->vertIds->GetId(0) << " "
+//                  << p->vertIds->GetId(1) << " "
+//                  << p->vertIds->GetId(2) << " "
+//                  << p->vertIds->GetId(3) << ")" << endl;
+
     }
 }
 
+void HexBC::getLocalPatchesIdsInGlobal(vtkIdList *idsInGlobal)
+{
+    for(vtkIdType i=0;i<localPatches->GetNumberOfItems();i++)
+    {
+        HexPatch *p = HexPatch::SafeDownCast(localPatches->GetItemAsObject(i));
+        vtkIdType idInGlobal = globalPatches->IsItemPresent(p)-1;
+        if(idInGlobal>-1)
+            idsInGlobal->InsertNextId(idInGlobal);
+    }
+}
+
+
 void HexBC::removePatchFromList(HexPatch *p)
 {
-    vtkIdType pId = globalPatches->IsItemPresent(p)-1;
-    patchIds->DeleteId(pId);
+    localPatches->RemoveItem(p);
 }

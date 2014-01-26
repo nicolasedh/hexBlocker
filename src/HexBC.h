@@ -74,11 +74,15 @@ public:
     void removePatchFromList(HexPatch *p);
 
     // finds id of patch in global list returns true if it was found
+    // ids is a list of vertices
     bool insertPatchIfIdsExists(vtkSmartPointer<vtkIdList> ids);
 
-    vtkSmartPointer<vtkIdList> patchIds;
-    vtkSmartPointer<vtkCollection> globalPatches; //All patches in the model
+    //insert a list of patches. The list contains ids in globalList
+    void insertPatches(vtkIdList *pids);
 
+    void getLocalPatchesIdsInGlobal(vtkIdList *idsInGlobal);
+    vtkSmartPointer<vtkCollection> globalPatches; //All patches in the model
+    vtkSmartPointer<vtkCollection> localPatches; //All patches in the model
     //DATA
     std::string name;
     std::string type; //e.g. wall or patch

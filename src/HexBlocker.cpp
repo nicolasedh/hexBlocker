@@ -328,10 +328,21 @@ void HexBlocker::PrintHexBlocks()
 
         HexBC * bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
         std::cout << "\t BC " << i << ": " << bc->name << ", "
-                  << bc->type << ", ";
+                  << bc->type << endl;
+        for(vtkIdType pi=0;pi<bc->localPatches->GetNumberOfItems();pi++)
+        {
+            HexPatch *p = HexPatch::SafeDownCast(bc->localPatches->GetItemAsObject(pi));
+            std::cout << "\t\t("
+                      << p->vertIds->GetId(0) << " "
+                      << p->vertIds->GetId(1) << " "
+                      << p->vertIds->GetId(2) << " "
+                      << p->vertIds->GetId(3) << ")" <<std::endl;
+        }
+        /*
         for(vtkIdType j = 0;j<bc->patchIds->GetNumberOfIds();j++)
             std::cout << bc->patchIds->GetId(j) << " ";
         std::cout << std::endl;
+        */
     }
 
     std::cout << "Edges: " << edges->GetNumberOfItems() << std::endl;
@@ -389,9 +400,9 @@ void HexBlocker::exportBCs(QTextStream &os)
            << "\t\tfaces\t" << endl
            << "\t\t(" << endl;
         vtkSmartPointer<HexPatch> p;
-        for(vtkIdType j=0; j<bc->patchIds->GetNumberOfIds();j++)
+        for(vtkIdType j=0; j<bc->localPatches->GetNumberOfItems();j++)
         {
-            p = HexPatch::SafeDownCast(patches->GetItemAsObject(bc->patchIds->GetId(j)));
+            p = HexPatch::SafeDownCast(bc->localPatches->GetItemAsObject(j));
             os << "\t\t\t";
             p->exportVertIds(os);
         }
@@ -749,7 +760,7 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
     {
         HexBC *bc = HexBC::SafeDownCast(hexBCs->GetItemAsObject(i));
         bc->removePatchFromList(master);
-        bc->notifyRemovedPatch(slave);
+        bc->removePatchFromList(slave);
 
     }
     patches->RemoveItem(slave);
@@ -989,8 +1000,11 @@ void HexBlocker::removeHexBlock(vtkIdType toRem,vtkIdList * vertsToRem)
             {
                 HexBC * bc = HexBC::SafeDownCast(
                             hexBCs->GetItemAsObject(bci));
+                bc->localPatches->RemoveItem(p);
+                /*
                 bc->patchIds->DeleteId(i);
                 decreaseList(bc->patchIds,i);
+                */
             }
             renderer->RemoveActor(p->actor);
             patches->RemoveItem(p);

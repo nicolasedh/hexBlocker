@@ -82,7 +82,7 @@ void SetBCsWidget::slotBCchanged(QTreeWidgetItem *item, int col)
 
 void SetBCsWidget::slotSelectPatches()
 {
-    //If non selected
+    //If none selected
     QList<QTreeWidgetItem*> selectedTreeItem = ui->treeWidget->selectedItems();
     if(selectedTreeItem.count()>0)
     {
@@ -90,7 +90,9 @@ void SetBCsWidget::slotSelectPatches()
         vtkIdType hexBCId = hexBlocker->hexBCs->IsItemPresent(bcItem->hexBC)-1;
         HexBC *hexBC = HexBC::SafeDownCast(hexBlocker->hexBCs->GetItemAsObject(hexBCId));
         setStatusText("Select patches with left mouse button, deselect with right, middle when done.");
-        emit startSelectPatches(hexBC->patchIds);
+        vtkSmartPointer<vtkIdList> bcIds = vtkSmartPointer<vtkIdList>::New();
+        hexBC->getLocalPatchesIdsInGlobal(bcIds);
+        emit startSelectPatches(bcIds);
     }
     else
     {
@@ -104,9 +106,7 @@ void SetBCsWidget::slotSelectionDone(vtkIdList *selectedPatches)
     SetBCsItem *bcItem = static_cast<SetBCsItem*>(selectedTreeItem[0]);
     vtkIdType hexBCId = hexBlocker->hexBCs->IsItemPresent(bcItem->hexBC)-1;
     HexBC *hexBC = HexBC::SafeDownCast(hexBlocker->hexBCs->GetItemAsObject(hexBCId));
-    hexBC->patchIds->DeepCopy(selectedPatches);
-//    std::cout <<" patchIds: " << hexBC->patchIds->GetNumberOfIds()<<std::endl;
-
+    hexBC->insertPatches(selectedPatches);
     emit resetInteractor();
 }
 
@@ -170,8 +170,6 @@ void SetBCsWidget::slotDeleteBC()
         return;
     }
     HexBC *hexBC = HexBC::SafeDownCast(hexBlocker->hexBCs->GetItemAsObject(hexBCId));
-
-    hexBC->patchIds->Delete();
     hexBlocker->hexBCs->RemoveItem(hexBC);
 
 }
