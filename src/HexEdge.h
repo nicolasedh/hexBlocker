@@ -96,11 +96,13 @@ public:
 
     // calculates a point on the line between the two vertices
     // of the edge
+    void calcParametricPoint(const double t, double pt[3]);
     void calcParametricPointOnLine(const double t,double pt[3]);
-
+    void calcParametricPointOnArc(const double t,double pt[3]);
     // calculates a point on the arc between the two edges
-    // given the center of the arc
-    void calcParametricPointOnArc(const double t, const double c[3],double arcp[3]);
+    // given the center of the arc, assuming the arcp has not
+    // been set or is unknown
+    void calcParametricPointOnArc(const double t, const double c[3],double pt[3]);
 
     //not used
     void getControlPoint(const vtkIdType cId,double cntrp[3]);

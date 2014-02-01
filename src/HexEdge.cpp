@@ -368,6 +368,19 @@ void HexEdge::drawArc(double c[3])
     tube->Modified();
 }
 
+void HexEdge::calcParametricPoint(const double t, double pt[])
+{
+    switch (edgeType)
+    {
+    case LINE:
+        calcParametricPointOnLine(t,pt);
+        break;
+    case ARC:
+        calcParametricPointOnArc(t,pt);
+        break;
+    }
+}
+
 void HexEdge::calcParametricPointOnLine(const double t, double pt[3])
 {
     double pc0[3], pc1[3];
@@ -378,6 +391,16 @@ void HexEdge::calcParametricPointOnLine(const double t, double pt[3])
     pt[0]=t*pc1[0] + (1-t)*pc0[0];
     pt[1]=t*pc1[1] + (1-t)*pc0[1];
     pt[2]=t*pc1[2] + (1-t)*pc0[2];
+}
+
+void HexEdge::calcParametricPointOnArc(const double t, double pt[])
+{
+    double center[3],arcp[3],pc0[3],pc1[3];
+    globalVertices->GetPoint(vertIds->GetId(0),pc0); //tail
+    globalVertices->GetPoint(vertIds->GetId(1),pc1); //head
+    myPoints->GetPoint(cntrlPointsIds->GetId(0),arcp);
+    vtkMath::Solve3PointCircle(pc1,arcp,pc0,center);
+    calcParametricPointOnArc(t,center,pt);
 }
 
 void HexEdge::calcParametricPointOnArc(const double t, const double c[3], double arcp[3])
