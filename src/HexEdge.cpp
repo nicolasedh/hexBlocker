@@ -291,21 +291,41 @@ int HexEdge::getType()
 
 void HexEdge::redrawedge()
 {
-    double pc0[3], pc1[3];
-    globalVertices->GetPoint(vertIds->GetId(0),pc0);
-    globalVertices->GetPoint(vertIds->GetId(1),pc1);
-    myPoints->SetPoint(0,pc0);
+    double gp0[3], gp1[3];
+    globalVertices->GetPoint(vertIds->GetId(0),gp0);
+    globalVertices->GetPoint(vertIds->GetId(1),gp1);
+
+    //have the points changed?
+    double op0[3],op1[3],delta0[3],delta1[3];
+    myPoints->GetPoint(0,op0);
+    myPoints->GetPoint(myPoints->GetNumberOfPoints()-1,op1);
+
+    vtkMath::Subtract(gp0,op0,delta0);
+    vtkMath::Subtract(gp1,op1,delta1);
+
+
     switch(edgeType)
     {
     case LINE:
-        myPoints->SetPoint(1,pc1);
+        myPoints->SetPoint(0,gp0);
+        myPoints->SetPoint(1,gp1);
         drawLine();
         break;
     case ARC:
         double c[3],arcpnt[3];
         myPoints->GetPoint(cntrlPointsIds->GetId(0),arcpnt);
-        myPoints->SetPoint(arcNpoints-1,pc1);
-        vtkMath::Solve3PointCircle(pc0,arcpnt,pc1,c);
+        //new arcp = oldarcp + t*delta0 +(1-t)*delta1
+        double t = calcParameterFromId(0);
+        vtkMath::MultiplyScalar(delta0,t);
+        vtkMath::MultiplyScalar(delta1,1-t);
+        vtkMath::Add(delta0,arcpnt,arcpnt);
+        vtkMath::Add(delta1,arcpnt,arcpnt);
+
+        //Store the new points
+        myPoints->SetPoint(0,gp0);
+        myPoints->SetPoint(cntrlPointsIds->GetId(0),arcpnt);
+        myPoints->SetPoint(arcNpoints-1,gp1);
+        vtkMath::Solve3PointCircle(gp0,arcpnt,gp1,c);
         drawArc(c);
         break;
     }
@@ -401,6 +421,40 @@ void HexEdge::calcParametricPointOnArc(const double t, double pt[])
     myPoints->GetPoint(cntrlPointsIds->GetId(0),arcp);
     vtkMath::Solve3PointCircle(pc1,arcp,pc0,center);
     calcParametricPointOnArc(t,center,pt);
+}
+
+double HexEdge::calcParameterFromId(vtkIdType cntlId)
+{
+    switch(edgeType)
+    {
+    case LINE:
+        return 0.0;
+    case ARC:
+        double center[3],arcp[3],pc0[3],pc1[3];
+        globalVertices->GetPoint(vertIds->GetId(0),pc0); //tail
+        globalVertices->GetPoint(vertIds->GetId(1),pc1); //head
+        myPoints->GetPoint(cntrlPointsIds->GetId(0),arcp);
+        vtkMath::Solve3PointCircle(pc1,arcp,pc0,center);
+
+        double u[3],v[3],w[3];
+        vtkMath::Subtract(pc0,center,u);
+        vtkMath::Subtract(pc1,center,v);
+        vtkMath::Subtract(arcp,center,w);
+
+        //cos(a) = u*w / |u| |w|
+        vtkMath::Normalize(u);
+        vtkMath::Normalize(v);
+        vtkMath::Normalize(w);
+
+        double dotp=vtkMath::Dot(w,u);
+        double alpha = std::acos(dotp);
+        dotp=vtkMath::Dot(v,u);
+        double alphaMax = std::acos(dotp);//+std::asin(1);
+        //t = alpha/alphaMax
+        return alpha/alphaMax;
+
+    }
+
 }
 
 void HexEdge::calcParametricPointOnArc(const double t, const double c[3], double arcp[3])

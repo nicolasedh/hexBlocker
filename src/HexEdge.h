@@ -99,12 +99,15 @@ public:
     void calcParametricPoint(const double t, double pt[3]);
     void calcParametricPointOnLine(const double t,double pt[3]);
     void calcParametricPointOnArc(const double t,double pt[3]);
-    // calculates a point on the arc between the two edges
+
+    // calculates a point on the arc between the two points
     // given the center of the arc, assuming the arcp has not
     // been set or is unknown
     void calcParametricPointOnArc(const double t, const double c[3],double pt[3]);
 
-    //not used
+    // get parameter from control point id
+    double calcParameterFromId(vtkIdType cntlId);
+    //not used, yet
     void getControlPoint(const vtkIdType cId,double cntrp[3]);
     void setControlPoint(const vtkIdType cId,const double cntrp[3]);
 
@@ -112,6 +115,7 @@ public:
     void calcArcControlPointFromCenter(const double pac[3], double radius=0.0);
 //    void getControlPoints(vtkPoints *pnts,vtkIdList *ctrlPsIds);
     int getNumberOfControlPoints();
+
 
     //DATA
     vtkSmartPointer<vtkIdList> vertIds;
@@ -132,7 +136,6 @@ private:
     edgeTypes edgeType;
     vtkSmartPointer<vtkCellArray> lines;
     int arcNpoints;
-
 
 
     //FUNCTIONS
