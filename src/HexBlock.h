@@ -122,6 +122,10 @@ public:
     //reduces the ids if they are greater than vId
     void reduceVertId(vtkIdType vId);
 
+    //replaces a patch, used by merge
+    void replacePatch(vtkSmartPointer<HexPatch> oldPatch,
+                      vtkSmartPointer<HexPatch> newPatch);
+
     //creates new edges if needed
     void initEdges();
 

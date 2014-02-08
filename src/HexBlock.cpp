@@ -401,6 +401,8 @@ void HexBlock::initAll()
 
 void HexBlock::initEdges()
 {
+    //clear local collection of old edges
+    localEdges->RemoveAllItems();
     //Keep the same order of edges as on
     //docs on blockMesh
     initEdge(vertIds->GetId(1),vertIds->GetId(0)); //0
@@ -435,6 +437,7 @@ void HexBlock::initEdge(vtkIdType p0, vtkIdType p1)
 //            std::cout<< " edge already exists!" << std::endl;
             existsInGlobal = true;
             posInGlobal=i;
+            break;
         }
     }
 
@@ -644,6 +647,15 @@ void HexBlock::reduceVertId(vtkIdType vId)
     }
     drawLocalaxes();
     drawBlock();
+}
+
+void HexBlock::replacePatch(vtkSmartPointer<HexPatch> oldPatch,
+                            vtkSmartPointer<HexPatch> newPatch)
+{
+    int oldpos = localPatches->IsItemPresent(oldPatch) -1;
+    if (oldpos < 0) //not found
+        return;
+    localPatches->InsertItem(oldpos,newPatch);
 }
 
 vtkIdList * HexBlock::commonVertices(HexBlock *hb)

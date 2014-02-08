@@ -704,13 +704,27 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
         return;
     }
 
-    //Unregister edges
+    //Unregister slave edges, unless other blocks uses them
     for (vtkIdType i=0;i<4;i++)
     {
         vtkIdType eId = findEdge(slaveIds->GetId(i),slaveIds->GetId( (i+1) % 4));
         HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(eId));
-        renderer->RemoveActor(e->actor);
-        edges->RemoveItem(eId);
+        HexBlock *slaveBlock = slave->getPrimaryHexBlock();
+        bool deleteEdge=true;
+        for(vtkIdType bi=0;bi<hexBlocks->GetNumberOfItems();bi++)
+        {
+              HexBlock *b = HexBlock::SafeDownCast(hexBlocks->GetItemAsObject(bi));
+              if(! b->equals(slaveBlock) && b->hasEdge(e))
+              {
+                  deleteEdge=false;
+                  break;
+              }
+        }
+        if(deleteEdge)
+        {
+            renderer->RemoveActor(e->actor);
+            edges->RemoveItem(eId);
+        }
     }
 
     // CHANGING IDS of slave patch
@@ -751,9 +765,11 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
     }
 
     //Set hex in master patch
-    master->setHex(slave->getPrimaryHexBlock());
+    HexBlock *slaveBlock = slave->getPrimaryHexBlock();
+    master->setHex(slaveBlock);
 
     // Unregister slave patch
+    slaveBlock->replacePatch(slave,master);
     //SLAVE PATCH
     renderer->RemoveActor(slave->actor);
     for(vtkIdType i=0;i<hexBCs->GetNumberOfItems();i++)
