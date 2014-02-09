@@ -65,7 +65,9 @@ EdgeSetTypeWidget::EdgeSetTypeWidget(QWidget *parent) :
     connect(ui->tableView->selectionModel(),
         SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
         this, SIGNAL(selectionChanged(QItemSelection)));
-    connect(table,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotDataChanged()));
+
+    connect(table,SIGNAL(pointEdited()),
+            this,SLOT(slotDataChanged()));
     connect(ui->pushButtonApply,SIGNAL(clicked()),this,SLOT(slotApply()));
     connect(ui->selectPatchPushButton,SIGNAL(clicked()),
             this,SIGNAL(startSelectPatch()));
@@ -172,6 +174,7 @@ void EdgeSetTypeWidget::setSelectedPatch(vtkIdType selPatchId)
     }
 //    selectedEdge->getControlPoint(0,c);
     table->update();
+    slotDataChanged();
 }
 
 void EdgeSetTypeWidget::slotUseRadiusToggled()
