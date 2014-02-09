@@ -207,8 +207,14 @@ private:
      this will decrease the 2 in toRem by one. Thus pointing to
      the second item in (10 11 13 14), id 11. The result is
      the list (10 13 14 ) which was the intention*/
+
+     //this algorithm could be improved. E.g. traverse the
+    //the list backwards
     void decreaseList(vtkIdList * list, vtkIdList * toRemove);
     void decreaseList(vtkIdList * list, vtkIdType toRem);
+
+    //DATA
+    bool isRendering;
 };
 
 

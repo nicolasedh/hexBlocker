@@ -104,7 +104,7 @@ HexBlocker::HexBlocker()
     renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor(vertActor);
     renderer->AddActor(vertLabelActor);
-
+    isRendering=false;
 
 //    widget->SetInteractor( renderer->GetRenderWindow()->GetInteractor() );
 
@@ -184,7 +184,7 @@ void HexBlocker::createHexBlock(double c0[3], double c1[3])
     vertices->Modified();
     resetBounds();
 
-    renderer->Render();
+    this->render();
 }
 
 void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
@@ -237,7 +237,7 @@ void HexBlocker::extrudePatch(vtkIdList *selectedPatches, double dist)
     this->resetBounds();
     renderer->AddActor(newHex->hexAxisActor);
     renderer->AddActor(newHex->hexBlockActor);
-    renderer->Render();
+    this->render();
 
 
 }
@@ -287,7 +287,7 @@ void HexBlocker::resetColors()
     for(vtkIdType i=0;i<edges->GetNumberOfItems();i++)
         HexEdge::SafeDownCast(edges->GetItemAsObject(i))->resetColor();
 
-    renderer->GetRenderWindow()->Render();
+    this->render();
 }
 
 void HexBlocker::PrintHexBlocks()
@@ -600,7 +600,7 @@ void HexBlocker::readBlockMeshDict(HexReader *reader)
 
     resetBounds();
     renderer->Modified();
-    renderer->Render();
+    this->render();
 }
 
 int HexBlocker::calculateTotalNumberOfCells()
@@ -784,8 +784,7 @@ void HexBlocker::mergePatch(vtkIdType masterId, vtkIdType slaveId)
     removeVerticesSafely(slaveIds);
 
     vertices->Modified();
-    renderer->Render();
-    renderer->GetRenderWindow()->Render();
+    this->render();
 }
 
 void HexBlocker::decreaseList(vtkIdList *list, vtkIdList * toRemove)
@@ -862,9 +861,6 @@ void HexBlocker::removeVertice(vtkIdType toRem)
         HexEdge * e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
         e->reduceVertId(toRem);
     }
-    //    vertData->Modified();
-    //    renderer->Render();
-    //    renderer->GetRenderWindow()->Render();
 
     for(vtkIdType i=0;i<patches->GetNumberOfItems();i++)
     {
@@ -1114,8 +1110,13 @@ void HexBlocker::visibilityEdges(bool mode)
 
 void HexBlocker::render()
 {
-     renderer->Render();
-     renderer->GetRenderWindow()->Render();
+
+    if(isRendering)
+        return;
+    isRendering=true;
+    renderer->Render();
+    renderer->GetRenderWindow()->Render();
+    isRendering=false;
 }
 
 void HexBlocker::arbitraryTest()

@@ -208,7 +208,7 @@ void InteractorStyleActorPick::OnLeftButtonUp()
         case 1:
         {//Set blue color and return
             act->GetProperty()->SetColor(0.1,0.1,1);
-            this->Interactor->GetRenderWindow()->Render();
+            hexBlocker->render();
             selectedIds->InsertUniqueId(clickedActor);
             return;
         }
@@ -226,7 +226,7 @@ void InteractorStyleActorPick::OnLeftButtonUp()
     //set red color
     selectedIds->InsertUniqueId(clickedActor);
     act->GetProperty()->SetColor(1,0.1,0.1);
-    this->Interactor->GetRenderWindow()->Render();
+    hexBlocker->render();
 
 }
 
@@ -284,7 +284,7 @@ void InteractorStyleActorPick::OnRightButtonUp()
         }
         }//end switch
 
-        this->Interactor->GetRenderWindow()->Render();
+        hexBlocker->render();
     }
 }
 

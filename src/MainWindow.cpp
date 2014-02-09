@@ -93,7 +93,7 @@ MainWindow::MainWindow()
     verticeEditor = new VerticeEditorWidget();
     this->addDockWidget(Qt::RightDockWidgetArea,verticeEditor);
     verticeEditor->setHexBlocker(hexBlocker);
-    renwin->Render();
+    hexBlocker->render();
 
     // Set up action signals and slots
     connect(this->ui->actionView_tool_bar,SIGNAL(triggered()),this,SLOT(slotViewToolBar()));
@@ -154,7 +154,7 @@ MainWindow::~MainWindow()
 void MainWindow::slotZoomOut()
 {
     hexBlocker->resetBounds();
-    renwin->Render();
+    hexBlocker->render();
 }
 
 void MainWindow::slotOpenCreateHexBlockDialog()
@@ -169,7 +169,7 @@ void MainWindow::slotCreateHexBlock()
     hexBlocker->createHexBlock(toolbox->createBlockW->c0,toolbox->createBlockW->c1);
     hexBlocker->resetBounds();
     verticeEditor->updateVertices();
-    renwin->Render();
+    hexBlocker->render();
 }
 
 void MainWindow::slotStartDeleteHexBlock()
@@ -185,7 +185,7 @@ void MainWindow::slotStartDeleteHexBlock()
     renwin->GetInteractor()->SetInteractorStyle(styleActorPick);
 
     hexBlocker->hidePatches();
-    renwin->Render();
+    hexBlocker->render();
     connect(styleActorPick,SIGNAL(selectionDone()),this,SLOT(slotDeleteHexBlock()));
 
 
@@ -296,7 +296,7 @@ void MainWindow::slotMoveVertices()
 
 void MainWindow::slotRender()
 {
-    renwin->Render();
+    hexBlocker->render();
 }
 
 void MainWindow::slotResetInteractor()
@@ -305,7 +305,7 @@ void MainWindow::slotResetInteractor()
     styleVertPick->clearSelection();
     hexBlocker->resetColors();
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
-    renwin->Render();
+    hexBlocker->render();
 
 }
 
@@ -520,7 +520,7 @@ void MainWindow::slotStartSelectEdges()
     connect(styleActorPick,SIGNAL(selectionDone()),
             this,SLOT(slotEdgeSelectionDone()));
 
-    renwin->Render();
+    hexBlocker->render();
 }
 
 
@@ -531,7 +531,7 @@ void MainWindow::slotEdgeSelectionDone()
     vtkIdType edgeId = styleActorPick->selectedIds->GetId(0);
     toolbox->edgePropsW->setSelectedEdge(edgeId);
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
-    renwin->Render();
+    hexBlocker->render();
 
 }
 
@@ -642,7 +642,7 @@ void MainWindow::slotHexObjVisibility()
     hexBlocker->visibilityBlocks(this->ui->actionBlockVisibility->isChecked());
     hexBlocker->visibilityPatches(this->ui->actionPatchVisibility->isChecked());
     hexBlocker->visibilityEdges(this->ui->actionEdgeVisibility->isChecked());
-    renwin->Render();
+    hexBlocker->render();
 }
 
 void MainWindow::slotStartSelectPatchForEdgeSetType()
