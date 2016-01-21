@@ -72,6 +72,8 @@ cmake \
     -DVTK_USE_QVTK:BOOL=ON \
     -DBUILD_SHARED_LIBS:BOOL=ON \
     -DCMAKE_INSTALL_PREFIX=$vtkInstall \
+    -DCMAKE_C_FLAGS=-DGLX_GLXEXT_LEGACY \
+    -DCMAKE_CXX_FLAGS=-DGLX_GLXEXT_LEGACY \
     $vtkSRC || (echo "error in cmake, VTK"; exit 1)
 
 make -j $nprocs || (echo "error in make, VTK"; exit 1)
