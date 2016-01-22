@@ -139,77 +139,9 @@ void HexBlock::init(vtkSmartPointer<HexPatch> p,
     vtkIdType nGv=globalVertices->GetNumberOfPoints();
 
     vtkIdList * oldIds =  p->vertIds;
-
-    //We want to keep extruded blocks aligned
-    //so the extrude operation is diffierent depending
-    //on which patch was selected
-    switch (fromHex->getPatchInternalId(p))
-    {
-
-    case 0:
-        vertIds->InsertNextId(nGv);
-        vertIds->InsertNextId(nGv+3);
-        vertIds->InsertNextId(nGv+2);
-        vertIds->InsertNextId(nGv+1);
-        vertIds->InsertNextId(oldIds->GetId(0));
-        vertIds->InsertNextId(oldIds->GetId(3));
-        vertIds->InsertNextId(oldIds->GetId(2));
-        vertIds->InsertNextId(oldIds->GetId(1));
-        break;
-    case 1:
-        vertIds->InsertNextId(nGv);
-        vertIds->InsertNextId(nGv+1);
-        vertIds->InsertNextId(oldIds->GetId(1));
-        vertIds->InsertNextId(oldIds->GetId(0));
-        vertIds->InsertNextId(nGv+3);
-        vertIds->InsertNextId(nGv+2);
-        vertIds->InsertNextId(oldIds->GetId(2));
-        vertIds->InsertNextId(oldIds->GetId(3));
-        break;
-    case 2:
-        vertIds->InsertNextId(nGv);
-        vertIds->InsertNextId(oldIds->GetId(0));
-        vertIds->InsertNextId(oldIds->GetId(3));
-        vertIds->InsertNextId(nGv+3);
-        vertIds->InsertNextId(nGv+1);
-        vertIds->InsertNextId(oldIds->GetId(1));
-        vertIds->InsertNextId(oldIds->GetId(2));
-        vertIds->InsertNextId(nGv+2);
-        break;
-    case 3:
-        vertIds->InsertNextId(oldIds->GetId(0));
-        vertIds->InsertNextId(nGv);
-        vertIds->InsertNextId(nGv+1);
-        vertIds->InsertNextId(oldIds->GetId(1));
-        vertIds->InsertNextId(oldIds->GetId(3));
-        vertIds->InsertNextId(nGv+3);
-        vertIds->InsertNextId(nGv+2);
-        vertIds->InsertNextId(oldIds->GetId(2));
-        break;
-    case 4:
-        vertIds->InsertNextId(oldIds->GetId(0));
-        vertIds->InsertNextId(oldIds->GetId(3));
-        vertIds->InsertNextId(nGv+3);
-        vertIds->InsertNextId(nGv);
-        vertIds->InsertNextId(oldIds->GetId(1));
-        vertIds->InsertNextId(oldIds->GetId(2));
-        vertIds->InsertNextId(nGv+2);
-        vertIds->InsertNextId(nGv+1);
-        break;
-    case 5:
-        vertIds->InsertNextId(oldIds->GetId(0));
-        vertIds->InsertNextId(oldIds->GetId(1));
-        vertIds->InsertNextId(oldIds->GetId(2));
-        vertIds->InsertNextId(oldIds->GetId(3));
-        vertIds->InsertNextId(nGv);
-        vertIds->InsertNextId(nGv+1);
-        vertIds->InsertNextId(nGv+2);
-        vertIds->InsertNextId(nGv+3);
-        break;
-    default:
-        std::cout << "unexpected patch number" << std::endl;
-        return;
-    }
+    vtkIdList * newIds;
+    newIds = vtkSmartPointer<vtkIdList>::New();
+    newIds->SetNumberOfIds(4);
 
     double n_dist[3];
     p->getNormal(n_dist);
@@ -219,9 +151,103 @@ void HexBlock::init(vtkSmartPointer<HexPatch> p,
     {
         double oldCoords[3];
         double newCoords[3];
+        double tmpCoords[3];
+        vtkIdType ptId;
         globalVertices->GetPoint(p->vertIds->GetId(i),oldCoords);
         vtkMath::Add(oldCoords,n_dist,newCoords);
-        globalVertices->InsertNextPoint(newCoords);
+// I would make sense to create 4 new vertices for the extruded block, only if
+// the extrusion of a list of patches were permited. However, it is not the
+// case, and thus it is more useful to check if new vertices are needed.
+//      globalVertices->InsertNextPoint(newCoords);
+//      newIds->SetId(i, nGv);
+//      nGv++;
+        for(ptId=0; ptId<nGv; ptId++)
+        {
+            globalVertices->GetPoint(ptId, tmpCoords);
+            if( tmpCoords[0] == newCoords[0]
+                && tmpCoords[1] == newCoords[1]
+                && tmpCoords[2] == newCoords[2] )
+            {
+                break;
+            }
+        }
+        if(ptId==nGv)
+        {
+            globalVertices->InsertNextPoint(newCoords);
+            nGv++;
+        }
+        newIds->SetId(i, ptId);
+    }
+
+    //We want to keep extruded blocks aligned
+    //so the extrude operation is diffierent depending
+    //on which patch was selected
+    switch (fromHex->getPatchInternalId(p))
+    {
+
+    case 0:
+        vertIds->InsertNextId(newIds->GetId(0));
+        vertIds->InsertNextId(newIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(2));
+        vertIds->InsertNextId(newIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        break;
+    case 1:
+        vertIds->InsertNextId(newIds->GetId(0));
+        vertIds->InsertNextId(newIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(newIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        break;
+    case 2:
+        vertIds->InsertNextId(newIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(newIds->GetId(2));
+        break;
+    case 3:
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(newIds->GetId(0));
+        vertIds->InsertNextId(newIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        break;
+    case 4:
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(newIds->GetId(2));
+        vertIds->InsertNextId(newIds->GetId(1));
+        break;
+    case 5:
+        vertIds->InsertNextId(oldIds->GetId(0));
+        vertIds->InsertNextId(oldIds->GetId(1));
+        vertIds->InsertNextId(oldIds->GetId(2));
+        vertIds->InsertNextId(oldIds->GetId(3));
+        vertIds->InsertNextId(newIds->GetId(0));
+        vertIds->InsertNextId(newIds->GetId(1));
+        vertIds->InsertNextId(newIds->GetId(2));
+        vertIds->InsertNextId(newIds->GetId(3));
+        break;
+    default:
+        std::cout << "unexpected patch number" << std::endl;
+        return;
     }
 
     initAll();
