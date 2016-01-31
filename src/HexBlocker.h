@@ -96,6 +96,9 @@ public:
     //x coordinate is set.
     void setVerticesPos(vtkSmartPointer<vtkIdList> ids, double pos[],bool setPos[]);
 
+    //rotate vertices by adding dist to the position
+    void rotateVertices(vtkSmartPointer<vtkIdList> ids, double angle, double center[], double axis[]);
+
     //resets colors for patches and edges.
     void resetColors();
 

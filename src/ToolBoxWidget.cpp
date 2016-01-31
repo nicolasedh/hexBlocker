@@ -27,6 +27,7 @@ License
 #include "ui_ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
+#include "RotateVerticesWidget.h"
 #include "SetBCsWidget.h"
 #include "EdgePropsWidget.h"
 #include "EdgeSetTypeWidget.h"
@@ -50,11 +51,15 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
     this->ui->stackedWidget->addWidget(edgePropsW);
     edgeSetTypeW = new EdgeSetTypeWidget; //index 5;
     this->ui->stackedWidget->addWidget(edgeSetTypeW);
+    rotateVerticesW = new RotateVerticesWidget; //index 6
+    this->ui->stackedWidget->addWidget(rotateVerticesW);
 
     connect(createBlockW,SIGNAL(cancel()),this,SLOT(slotCancel()));
     connect(setBCsW,SIGNAL(done()),this,SLOT(slotCancel()));
     connect(moveVerticesW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(moveVerticesW,SIGNAL(moveDone()),this,SLOT(slotCancel()));
+    connect(rotateVerticesW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
+    connect(rotateVerticesW,SIGNAL(rotateDone()),this,SLOT(slotCancel()));
     connect(createBlockW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(setBCsW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(edgePropsW,SIGNAL(cancel()),this,SLOT(slotCancel()));
@@ -63,7 +68,6 @@ ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
 
     connect(edgeSetTypeW,SIGNAL(setStatusText(QString)),this,SLOT(slotSetStatusText(QString)));
     connect(edgeSetTypeW,SIGNAL(apply()),this,SLOT(slotCloseSetEdgeTypeDialog()));
-
 
 
     this->ui->stackedWidget->setCurrentIndex(1);
@@ -85,6 +89,7 @@ void ToolBoxWidget::setHexBlockerPointer(HexBlocker *hexBker)
     setBCsW->hexBlocker=hexBlocker;
     createBlockW->hexBlocker=hexBlocker;
     moveVerticesW->hexBlocker=hexBlocker;
+    rotateVerticesW->hexBlocker=hexBlocker;
     edgePropsW->hexBlocker=hexBlocker;
     edgeSetTypeW->hexBlocker=hexBlocker;
 }

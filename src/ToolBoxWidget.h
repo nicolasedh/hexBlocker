@@ -35,6 +35,7 @@ Description
 #include <vtkSmartPointer.h>
 class CreateBlockWidget;
 class MoveVerticesWidget;
+class RotateVerticesWidget;
 class SetBCsWidget;
 class EdgePropsWidget;
 class EdgeSetTypeWidget;
@@ -57,6 +58,7 @@ public:
     //Tools views
     CreateBlockWidget *createBlockW;
     MoveVerticesWidget *moveVerticesW;
+    RotateVerticesWidget *rotateVerticesW;
     SetBCsWidget    *setBCsW;
     EdgePropsWidget *edgePropsW;
     EdgeSetTypeWidget * edgeSetTypeW;

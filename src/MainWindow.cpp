@@ -33,6 +33,7 @@ License
 #include "ToolBoxWidget.h"
 #include "CreateBlockWidget.h"
 #include "MoveVerticesWidget.h"
+#include "RotateVerticesWidget.h"
 #include "EdgePropsWidget.h"
 #include "SetBCsWidget.h"
 #include "HexBC.h"
@@ -110,6 +111,10 @@ MainWindow::MainWindow()
     connect(toolbox->moveVerticesW,SIGNAL(moveVertices()),this,SLOT(slotMoveVertices()));
     connect(styleVertPick,SIGNAL(selectionDone()),this,SLOT(slotEndSelectVertices()));
     connect(toolbox,SIGNAL(cancel()),this,SLOT(slotResetInteractor()));
+    connect(this->ui->actionRotateVertices,SIGNAL(triggered()),this,SLOT(slotOpenRotateVerticesDialog()));
+    connect(toolbox->rotateVerticesW,SIGNAL(startSelect()),this,SLOT(slotStartSelectVertices()));
+    connect(toolbox->rotateVerticesW,SIGNAL(rotateDone()),this,SLOT(slotResetInteractor()));
+    connect(toolbox->rotateVerticesW,SIGNAL(rotateVertices()),this,SLOT(slotRotateVertices()));
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
     connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdList *)),this,SLOT(slotStartSelectPatches(vtkIdList *)));
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
@@ -258,6 +263,11 @@ void MainWindow::slotOpenMoveVerticesDialog()
     toolbox->setCurrentIndex(2);
 }
 
+void MainWindow::slotOpenRotateVerticesDialog()
+{
+    toolbox->setCurrentIndex(6);
+}
+
 void MainWindow::slotStartSelectVertices()
 {
     renwin->GetInteractor()->SetInteractorStyle(styleVertPick);
@@ -289,6 +299,15 @@ void MainWindow::slotMoveVertices()
         hexBlocker->setVerticesPos(styleVertPick->SelectedList,toolbox->moveVerticesW->dist,setPos);
     }
 
+    slotResetInteractor();
+    verticeEditor->updateVertices();
+    hexBlocker->render();
+}
+
+void MainWindow::slotRotateVertices()
+{
+    hexBlocker->rotateVertices(styleVertPick->SelectedList, toolbox->rotateVerticesW->angle,
+        toolbox->rotateVerticesW->center, toolbox->rotateVerticesW->axis);
     slotResetInteractor();
     verticeEditor->updateVertices();
     hexBlocker->render();
@@ -543,14 +562,15 @@ void MainWindow::slotAboutDialog()
     QString text("\t hexBlocker\t\t version 0.1 \n"
                  "A GUI for generating a blockMeshDict for use with OpenFOAM\n\n"
 
-                 "Current capabilitys are: \n\n"
+                 "Current capabilities are: \n\n"
                  "\t* Creating and extruding blocks.\n"
                  "\t* Exporting and importing blockMeshDicts.\n"
-                 "\t  Please not that only 2.1.x has been tested.\n"
+                 "\t  Please note that only 2.1.x has been tested.\n"
                  "\t* Selecting boundary patches.\n"
                  "\t* Setting the number of cells on each edge.\n"
                  "\t* Moving vertices.\n"
-                 "\t* Bugs -- This is an alpha realease and\n"
+                 "\t* Rotating vertices.\n"
+                 "\t* Bugs -- This is an alpha release and\n"
                  "\t  has plenty of them\n\n"
 
                  "Copyright 2012, 2013\n"

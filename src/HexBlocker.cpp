@@ -59,6 +59,10 @@ License
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkAxesActor.h>
 
+//#include <vtkGeneralTransform.h>
+#include <vtkTransform.h>
+#include <vtkAbstractTransform.h>
+//#include <vtkTransformPolyDataFilter.h>
 
 HexBlocker::HexBlocker()
 {
@@ -466,12 +470,32 @@ void HexBlocker::setVerticesPos(vtkSmartPointer<vtkIdList> ids, double newPos[3]
         //        std::cout << pos[0] << " " << pos[1] << " " << pos[2] << ")." << std::endl;
         vertices->SetPoint(ids->GetId(i),pos);
 
-        vertices->Modified();
     }
+    vertices->Modified();
     rescaleActors();
 }
 
+void HexBlocker:: rotateVertices(vtkSmartPointer<vtkIdList> ids, double angle, double center[3], double axis[3])
+{
+    vtkSmartPointer<vtkTransform> rotation = vtkSmartPointer<vtkTransform>::New();
+    rotation->Translate(      center[0], center[1], center[2]); // /\ replace points to its original reference
+    rotation->RotateWXYZ(angle, axis[0],   axis[1],   axis[2]); // /\ rotate around origin
+    rotation->Translate(     -center[0],-center[1],-center[2]); // /\ set positions relative to the center of rotation
+    double pos[3];
+    double *posout;     // needs to be a pointer
 
+    for(vtkIdType i = 0; i<ids->GetNumberOfIds(); i++)
+    {
+        vertices->GetPoint(ids->GetId(i),pos);
+        posout = rotation->TransformPoint(pos);
+        pos[0] = posout[0];
+        pos[1] = posout[1];
+        pos[2] = posout[2];
+        vertices->SetPoint(ids->GetId(i),pos);
+    }
+    vertices->Modified();
+    rescaleActors();
+}
 
 
 HexEdge *HexBlocker::showParallelEdges(vtkIdType edgeId)

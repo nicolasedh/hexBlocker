@@ -96,6 +96,8 @@ public slots:
   void slotStartSelectVertices();
   void slotEndSelectVertices();
   void slotMoveVertices();
+  void slotOpenRotateVerticesDialog();
+  void slotRotateVertices();
   void slotResetInteractor();
   void slotOpenSetBCsDialog();
   void slotPatchSelectionDone();
