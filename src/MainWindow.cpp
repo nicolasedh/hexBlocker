@@ -233,7 +233,7 @@ void MainWindow::slotExtrudePatch()
         QString title = tr("Distance");
         QString label = tr("Set the distance to extrude, has to be a positive number");
 
-        double dist = QInputDialog::getDouble(this,title,label,1.0,0,1e12,1,&ok);
+        double dist = QInputDialog::getDouble(this,title,label,1.0,0,1e12,3,&ok);
         if(ok && (dist >0.0) )
         {
             hexBlocker->extrudePatch(styleActorPick->selectedIds,dist);
