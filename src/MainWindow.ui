@@ -156,7 +156,10 @@
    <addaction name="actionCreateHexBlock"/>
    <addaction name="actionExtrudePatch"/>
    <addaction name="actionDeleteBlocks"/>
+   <addaction name="separator"/>
    <addaction name="actionOpenMoveVerticesDialog"/>
+   <addaction name="actionRotateVertices"/>
+   <addaction name="separator"/>
    <addaction name="actionSetBCs"/>
    <addaction name="actionSetNumber"/>
    <addaction name="actionMergePatch"/>
@@ -345,6 +348,20 @@
     <string>Merge two patches</string>
    </property>
   </action>
+
+  <action name="actionRotateVertices">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/rotateVertices.png</normaloff>:/Icons/rotateVertices.png</iconset>
+   </property>
+   <property name="text">
+    <string>rotateVertices</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate a selection of vertices around a specified axis</string>
+   </property>
+  </action>
+
   <action name="actionSaveAs">
    <property name="text">
     <string>Save as ...</string>
