@@ -164,6 +164,9 @@ public:
     void showEdges();
     void hideEdges();
     void visibilityEdges(bool mode);
+    void showVertIDs();
+    void hideVertIDs();
+    void visibilityVertIDs(bool mode);
 
     //force a render
     void render();

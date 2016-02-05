@@ -66,7 +66,7 @@ License
 
 HexBlocker::HexBlocker()
 {
-    //All vertices in the modell
+    //All vertices in the model
     vertices = vtkSmartPointer<vtkPoints>::New();
     vertData = vtkSmartPointer<vtkPolyData>::New();
     vertData->SetPoints(vertices);
@@ -77,10 +77,10 @@ HexBlocker::HexBlocker()
     //All edges in the model
     edges = vtkSmartPointer<vtkCollection>::New();
 
-    //All hexblocks in the modell
+    //All hexblocks in the model
     hexBlocks = vtkSmartPointer<vtkCollection>::New();
 
-    //Boundary conditions in the modell
+    //Boundary conditions in the model
     hexBCs = vtkSmartPointer<vtkCollection>::New();
 
     //Representations
@@ -1130,6 +1130,21 @@ void HexBlocker::visibilityEdges(bool mode)
         HexEdge *e = HexEdge::SafeDownCast(edges->GetItemAsObject(i));
         e->actor->SetVisibility(mode);
     }
+}
+
+void HexBlocker::showVertIDs()
+{
+    visibilityVertIDs(true);
+}
+
+void HexBlocker::hideVertIDs()
+{
+    visibilityVertIDs(false);
+}
+
+void HexBlocker::visibilityVertIDs(bool mode)
+{
+    vertLabelActor->SetVisibility(mode);
 }
 
 void HexBlocker::render()
