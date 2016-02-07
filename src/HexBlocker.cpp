@@ -114,6 +114,7 @@ HexBlocker::HexBlocker()
 
 //    widget->SetEnabled( 1 );
 
+    GeoActor = vtkSmartPointer<vtkActor>::New();
 
 }
 

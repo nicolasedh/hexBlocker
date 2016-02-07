@@ -48,7 +48,6 @@ void HexBlocker::readGeometry(char* openFileName)
     vtkSmartPointer<vtkPolyDataMapper> GeoMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     GeoMapper->SetInputConnection(GeoReader->GetOutputPort());
 
-    GeoActor = vtkSmartPointer<vtkActor>::New();
     GeoActor->GetProperty()->SetOpacity(0.5);
     GeoActor->SetMapper(GeoMapper);
 
