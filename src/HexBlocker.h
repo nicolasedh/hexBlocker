@@ -170,6 +170,9 @@ public:
     void showVertIDs();
     void hideVertIDs();
     void visibilityVertIDs(bool mode);
+    void showGeometry();
+    void hideGeometry();
+    void visibilityGeometry(bool mode);
 
     //force a render
     void render();
@@ -187,6 +190,7 @@ public:
     vtkSmartPointer<vtkGlyph3D> vertGlyph;
     vtkSmartPointer<vtkPolyDataMapper> vertMapper;
     vtkSmartPointer<vtkActor> vertActor;
+    vtkSmartPointer<vtkActor> GeoActor;
     vtkSmartPointer<vtkAxesActor> orientationAxes;
     vtkSmartPointer<vtkOrientationMarkerWidget> orientationAxesWidget;
     vtkSmartPointer<vtkLabeledDataMapper> vertLabelMapper;

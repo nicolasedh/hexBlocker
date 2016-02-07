@@ -41,17 +41,32 @@ void HexBlocker::readGeometry(char* openFileName)
  * http://www.paraview.org/Bug/view.php?id=14326
  * http://www.cfd-online.com/Forums/openfoam-paraview/124839-problems-ascii-stl.html
 */
-    vtkSmartPointer<vtkSTLReader> Greader = vtkSmartPointer<vtkSTLReader>::New();
-    Greader->SetFileName(openFileName);
-    Greader->Update();
+    vtkSmartPointer<vtkSTLReader> GeoReader = vtkSmartPointer<vtkSTLReader>::New();
+    GeoReader->SetFileName(openFileName);
+    GeoReader->Update();
 
-    vtkSmartPointer<vtkPolyDataMapper> Gmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    Gmapper->SetInputConnection(Greader->GetOutputPort());
+    vtkSmartPointer<vtkPolyDataMapper> GeoMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    GeoMapper->SetInputConnection(GeoReader->GetOutputPort());
 
-    vtkSmartPointer<vtkActor> Gactor = vtkSmartPointer<vtkActor>::New();
-    Gactor->GetProperty()->SetOpacity(0.5);
-    Gactor->SetMapper(Gmapper);
+    GeoActor = vtkSmartPointer<vtkActor>::New();
+    GeoActor->GetProperty()->SetOpacity(0.5);
+    GeoActor->SetMapper(GeoMapper);
 
-    renderer->AddActor(Gactor);
+    renderer->AddActor(GeoActor);
+}
+
+void HexBlocker::showGeometry()
+{
+    visibilityVertIDs(true);
+}
+
+void HexBlocker::hideGeometry()
+{
+    visibilityVertIDs(false);
+}
+
+void HexBlocker::visibilityGeometry(bool mode)
+{
+    GeoActor->SetVisibility(mode);
 }
 

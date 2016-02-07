@@ -141,6 +141,8 @@ MainWindow::MainWindow()
             this,SLOT(slotHexObjVisibility()));
     connect(this->ui->actionVertIDVisibility,SIGNAL(triggered()),
             this,SLOT(slotHexObjVisibility()));
+    connect(this->ui->actionGeometryVisibility,SIGNAL(triggered()),
+            this,SLOT(slotHexObjVisibility()));
     connect(this->ui->actionViewVerticeEditor,SIGNAL(toggled(bool)),
             verticeEditor,SLOT(setVisible(bool)));
     connect(toolbox->edgeSetTypeW,SIGNAL(startSelectPatch()),this,SLOT(slotStartSelectPatchForEdgeSetType()));
@@ -688,6 +690,7 @@ void MainWindow::slotHexObjVisibility()
     hexBlocker->visibilityPatches(this->ui->actionPatchVisibility->isChecked());
     hexBlocker->visibilityEdges(this->ui->actionEdgeVisibility->isChecked());
     hexBlocker->visibilityVertIDs(this->ui->actionVertIDVisibility->isChecked());
+    hexBlocker->visibilityGeometry(this->ui->actionGeometryVisibility->isChecked());
     hexBlocker->render();
 }
 
