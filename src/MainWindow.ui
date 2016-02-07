@@ -91,6 +91,7 @@
     <addaction name="actionNewCase"/>
     <addaction name="actionOpenBlockMeshDict"/>
     <addaction name="actionReOpenBlockMeshDict"/>
+    <addaction name="actionOpenGeometry"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
@@ -295,6 +296,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionOpenGeometry">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open Geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a STL file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
    </property>
   </action>
   <action name="actionAbout_Qt">

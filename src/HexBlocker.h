@@ -126,6 +126,9 @@ public:
     //from reader
     void readBlockMeshDict(HexReader * reader);
 
+    //Reads a STL geometry
+    void readGeometry(char *openFileName);
+
     //Merges two patches but only if they match
     //i.e. each vertice in master must have
     //at most one vertice which is closet in slave

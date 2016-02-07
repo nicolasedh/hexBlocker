@@ -105,6 +105,7 @@ public slots:
   void slotNewCase();
   void slotOpenBlockMeshDict();
   void slotReOpenBlockMeshDict();
+  void slotOpenGeometry();
   void slotSaveAsBlockMeshDict();
   void slotSaveBlockMeshDict();
   void slotRender();

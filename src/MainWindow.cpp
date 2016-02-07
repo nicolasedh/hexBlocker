@@ -127,6 +127,7 @@ MainWindow::MainWindow()
     connect(this->ui->actionNewCase,SIGNAL(triggered()),this,SLOT(slotNewCase()));
     connect(this->ui->actionOpenBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotOpenBlockMeshDict()));
     connect(this->ui->actionReOpenBlockMeshDict,SIGNAL(triggered()),this, SLOT(slotReOpenBlockMeshDict()));
+    connect(this->ui->actionOpenGeometry,SIGNAL(triggered()),this, SLOT(slotOpenGeometry()));
     connect(this->ui->actionSave,SIGNAL(triggered()),this,SLOT(slotSaveBlockMeshDict()));
     connect(this->ui->actionSaveAs,SIGNAL(triggered()),this, SLOT(slotSaveAsBlockMeshDict()));
     connect(this->ui->actionMergePatch,SIGNAL(triggered()),this,SLOT(slotStartMergePatch()));
@@ -518,6 +519,28 @@ void MainWindow::slotReOpenBlockMeshDict()
     verticeEditor->setHexBlocker(hexBlocker);
 //    verticeEditor->updateVertices();
 
+}
+
+void MainWindow::slotOpenGeometry()
+{
+    QFileDialog::Options options;
+    QString selectedFilter,filter;
+    QString dir = "*.stl";
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                "Select a geometry file to read",
+                dir,
+                filter,
+                &selectedFilter,
+                options);
+    if(filename.isNull())
+    {
+        this->ui->statusbar->showMessage("Reading Aborted",10000);
+        return;
+    }
+    QByteArray ba = filename.toLatin1();
+    char *openFileName = ba.data();
+    hexBlocker->readGeometry(openFileName);
 }
 
 void MainWindow::slotShowStatusText(QString text)
