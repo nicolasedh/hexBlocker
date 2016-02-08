@@ -56,12 +56,12 @@ void HexBlocker::readGeometry(char* openFileName)
 
 void HexBlocker::showGeometry()
 {
-    visibilityVertIDs(true);
+    visibilityGeometry(true);
 }
 
 void HexBlocker::hideGeometry()
 {
-    visibilityVertIDs(false);
+    visibilityGeometry(false);
 }
 
 void HexBlocker::visibilityGeometry(bool mode)
