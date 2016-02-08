@@ -1,9 +1,14 @@
 PROJECT("HexBlocker")
 cmake_minimum_required(VERSION 2.8)
 
-#find_package(VTK 6.0 REQUIRED NO_MODULE)
-find_package(VTK REQUIRED NO_MODULE)
-include(${VTK_USE_FILE})
+IF(NOT VTK_DIR)
+  MESSAGE("VTK_DIR is not set it with export VTK_DIR=/path/to/vtk/build, trying default settings")
+  SET(VTK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../build/VTK)
+ENDIF(NOT VTK_DIR)
+IF(NOT VTK_BINARY_DIR)
+    FIND_PACKAGE(VTK REQUIRED NO_MODULE)
+    INCLUDE(${VTK_USE_FILE})
+ENDIF(NOT VTK_BINARY_DIR)
 
 #SET(CMAKE_AUTOUIC ON)  
 
