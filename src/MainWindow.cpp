@@ -595,16 +595,16 @@ void MainWindow::slotAboutDialog()
 {
     QString title("hexBlocker");
     QString text("\t hexBlocker\t\t version 0.1 \n"
-                 "A GUI for generating a blockMeshDict for use with OpenFOAM\n\n"
+                 "A GUI for generating a blockMeshDict for use with OpenFOAM.\n\n"
 
                  "Current capabilities are: \n\n"
                  "\t* Creating and extruding blocks.\n"
                  "\t* Exporting and importing blockMeshDicts.\n"
-                 "\t  Please note that only 2.1.x has been tested.\n"
                  "\t* Selecting boundary patches.\n"
                  "\t* Setting the number of cells on each edge.\n"
                  "\t* Moving vertices.\n"
                  "\t* Rotating vertices.\n"
+                 "\t* Displaying geometries (STL files).\n"
                  "\t* Bugs -- This is an alpha release and\n"
                  "\t  has plenty of them\n\n"
 
