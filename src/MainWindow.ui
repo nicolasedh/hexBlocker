@@ -119,6 +119,8 @@
     <addaction name="actionEdgeVisibility"/>
     <addaction name="actionVertIDVisibility"/>
     <addaction name="actionGeometryVisibility"/>
+    <addaction name="separator"/>
+    <addaction name="actionScaleFactor"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -344,6 +346,14 @@
    </property>
    <property name="text">
     <string>View tool box</string>
+   </property>
+  </action>
+  <action name="actionScaleFactor">
+   <property name="text">
+    <string>Set scale factor</string>
+   </property>
+   <property name="toolTip">
+    <string>(convertToMeters)</string>
    </property>
   </action>
   <action name="actionArbitraryTest">

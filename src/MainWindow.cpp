@@ -99,6 +99,7 @@ MainWindow::MainWindow()
     // Set up action signals and slots
     connect(this->ui->actionView_tool_bar,SIGNAL(triggered()),this,SLOT(slotViewToolBar()));
     connect(this->ui->actionView_tool_box,SIGNAL(triggered()),this,SLOT(slotViewToolBox()));
+    connect(this->ui->actionScaleFactor,SIGNAL(triggered()),this,SLOT(slotSetScaleFactor()));
     connect(this->ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->ui->actionCreateHexBlock,SIGNAL(triggered()),this,SLOT(slotOpenCreateHexBlockDialog()));
@@ -442,7 +443,7 @@ void MainWindow::slotSetScaleFactor()
     QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
 
     bool ok1;
-    double conv2meters = QInputDialog::getDouble(this,title,label,1.0,1e-255,1e255,6,&ok1);
+    double conv2meters = QInputDialog::getDouble(this,title,label,hexBlocker->appliedScaleFactor,1e-255,1e255,6,&ok1);
 
     if(!ok1)
     {
