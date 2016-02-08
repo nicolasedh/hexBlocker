@@ -118,6 +118,7 @@ HexBlocker::HexBlocker()
     renderer->AddActor(vertLabelActor);
     vtkCamera * cam = renderer->GetActiveCamera();
     cam->SetParallelProjection(1);
+    cam->SetFreezeFocalPoint(1);
     isRendering=false;
 
 //    widget->SetInteractor( renderer->GetRenderWindow()->GetInteractor() );
