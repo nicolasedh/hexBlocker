@@ -115,9 +115,11 @@ void HexPatch::init(vtkSmartPointer<vtkIdList> vIds,
 
     data->SetPoints(globalVertices);
     data->SetPolys(quads);
-
+#if VTK_MAJOR_VERSION >= 6
     mapper->SetInputData(data);
-
+#else
+    mapper->SetInput(data);
+#endif    
     actor->SetMapper(mapper);
     actor->SetOrigin(actor->GetCenter());
     actor->SetScale(0.6);

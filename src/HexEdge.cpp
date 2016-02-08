@@ -126,7 +126,11 @@ void HexEdge::init(vtkIdType p0,
     data->SetPoints(myPoints);
     data->SetLines(lines);
 
+#if VTK_MAJOR_VERSION >= 6
     tube->SetInputData(data);
+#else
+    tube->SetInput(data);
+#endif    
     tube->SetRadius(0.05);
     mapper->SetInputConnection(tube->GetOutputPort());
 
