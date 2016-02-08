@@ -8,10 +8,11 @@ should run just fine. Just run
 
 And everything should work. Right.
 
-I have only tested to build hexBlocker on ubuntu 12.04. The needed packages
-are 
+I have only tested to build hexBlocker on Fedora 23. HexBlocker workds with the fedora packaged vtk. You can install it with
+dnf install vtk vtk-devel vtk-qt
 
-sudo apt-get install build-essential flex bison cmake zlib1g-dev qt4-dev-tools libqt4-dev gnuplot libreadline-dev libncurses-dev libxt-dev
+In wich case you should modify the installscript so it doesn't download
+VTK.
 
 For OpenSUSE the following packages names are different.
 libqt4-dev ---> libqt4-devel
