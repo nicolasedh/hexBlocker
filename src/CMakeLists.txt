@@ -89,7 +89,7 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
 # Add install time link to vtk libraries
-#SET( CMAKE_INSTALL_RPATH "\$ORIGIN/../vtk/lib/vtk-5.10" )
+SET( CMAKE_INSTALL_RPATH "\$ORIGIN/../VTK/lib/" )
 # Change exe name if debug
 IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
     MESSAGE("This is a debug build")
