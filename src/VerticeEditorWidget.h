@@ -24,6 +24,8 @@ public:
 public slots:
     void updateVertices();
     void slotPointChanged();
+    void slotSetScale();
+    void displayScale(double scale);
 
 signals:
     void apply();

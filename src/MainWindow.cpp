@@ -451,6 +451,7 @@ void MainWindow::slotSetScaleFactor()
         return;
     }
     hexBlocker->setModelScale(conv2meters);
+    verticeEditor->displayScale(conv2meters);
 }
 
 void MainWindow::slotOpenBlockMeshDict()
@@ -526,6 +527,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     toolbox->setBCsW->changeBCs(reader);
     verticeEditor->setHexBlocker(hexBlocker);
 //    verticeEditor->updateVertices();
+    verticeEditor->displayScale(hexBlocker->appliedScaleFactor);
 
 }
 
