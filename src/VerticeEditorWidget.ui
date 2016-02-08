@@ -42,7 +42,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="scaleGeo">
+       <widget class="QCheckBox" name="scaleGeometry">
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
