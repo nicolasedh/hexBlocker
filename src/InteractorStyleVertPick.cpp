@@ -150,7 +150,7 @@ void InteractorStyleVertPick::OnLeftButtonUp()
 
     }
 
-    SelectedGlyph->SetInput(extractGeometry->GetOutput());
+    SelectedGlyph->SetInputConnection(extractGeometry->GetOutputPort());
     SelectedGlyph->SetSourceConnection(SelectedSphere->GetOutputPort());
     SelectedGlyph->SetScaleModeToDataScalingOff();
     SelectedGlyph->Update();
@@ -158,7 +158,7 @@ void InteractorStyleVertPick::OnLeftButtonUp()
 #if VTK_MAJOR_VERSION <= 5
     this->SelectedMapper->SetInput(SelectedGlyph->GetOutput());
 #else
-    this->SelectedMapper->SetInputData(SelectedGlyph->GetOutputPort());
+    this->SelectedMapper->SetInputConnection(SelectedGlyph->GetOutputPort());
 #endif
     this->SelectedMapper->ScalarVisibilityOff();
     this->SelectedActor->GetProperty()->SetColor(1.0, 0.0, 0.0); //(R,G,B)

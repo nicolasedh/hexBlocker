@@ -30,7 +30,7 @@ set -x
 # Modifyable data
 baseDir=$PWD
 vtkBuild=$baseDir/build/VTK
-vtkInstall=$baseDir/vtk
+vtkInstall=$baseDir/VTK
 vtkSRC=$baseDir/vtkSrc
 hexBuild=$baseDir/build/hexBlocker
 hexBin=$baseDir/bin
@@ -48,16 +48,16 @@ if [ -z "$QMAKE" -o -z "$MOC" -o -z "$UIC" ]; then
 fi
 
 #Get vtk:
-vtkpgk=vtk-5.10.0.tar.gz
+vtkpgk=VTK-6.3.0.tar.gz
 if [ ! -f $vtkpgk ];then
-    wget -c http://www.vtk.org/files/release/5.10/$vtkpgk || \
+    wget -c http://www.vtk.org/files/release/6.3/VTK-6.3.0.tar.gz ||
 	( echo "could not download vtk" ; exit 1)
 fi
 
 #unpack vtk src
 if [ ! -d $vtkSRC ];then
     tar -xzf $vtkpgk
-    mv VTK $vtkSRC
+    mv VTK-6.3.0 $vtkSRC
 fi
 
 #build VTK
@@ -66,19 +66,20 @@ if [ ! -d $vtkBuild ];then
     cd $vtkBuild
 
 #cmake --build --config=Release
-cmake \
-    -DVTK_USE_GUISUPPORT:BOOL=ON \
-    -DVTK_USE_QT:BOOL=ON \
-    -DVTK_USE_QVTK:BOOL=ON \
-    -DBUILD_SHARED_LIBS:BOOL=ON \
-    -DCMAKE_INSTALL_PREFIX=$vtkInstall \
-    -DCMAKE_C_FLAGS=-DGLX_GLXEXT_LEGACY \
-    -DCMAKE_CXX_FLAGS=-DGLX_GLXEXT_LEGACY \
-    $vtkSRC || (echo "error in cmake, VTK"; exit 1)
+    cmake \
+	-DVTK_USE_GUISUPPORT:BOOL=ON \
+	-DVTK_USE_QT:BOOL=ON \
+	-DVTK_USE_QVTK:BOOL=ON \
+	-DVTK_Group_Qt=ON \
+	-DBUILD_SHARED_LIBS:BOOL=ON \
+	-DCMAKE_INSTALL_PREFIX=$vtkInstall \
+	-DCMAKE_C_FLAGS=-DGLX_GLXEXT_LEGACY \
+	-DCMAKE_CXX_FLAGS=-DGLX_GLXEXT_LEGACY \
+	$vtkSRC || (echo "error in cmake, VTK"; exit 1)
 
-make -j $nprocs || (echo "error in make, VTK"; exit 1)
+    make -j $nprocs || (echo "error in make, VTK"; exit 1)
 
-make install
+    make install
 fi
  
 #Build HexBlocker
@@ -86,7 +87,7 @@ cd $baseDir
 mkdir -p $hexBuild
 cd $hexBuild 
 cmake \
-    -DVTK_DIR=$vtkInstall/lib/vtk-5.10\
+    -DVTK_DIR=$vtkInstall/lib/cmake/vtk-6.3\
     -DQT_QMAKE_EXECUTABLE=$QMAKE \
     -DQT_MOC_EXECUTABLE=$MOC \
     -DQT_UIC_EXECUTABLE=$UIC \

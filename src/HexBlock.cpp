@@ -359,7 +359,11 @@ void HexBlock::drawLocalaxes()
 
     axesData->GetCellData()->SetScalars(colors);
 
+#if VTK_MAJOR_VERSION >= 6
+    axesTubes->SetInputData(axesData);
+#else
     axesTubes->SetInput(axesData);
+#endif    
     axesTubes->SetNumberOfSides(24);
     axesTubes->SetCapping(1);
 
