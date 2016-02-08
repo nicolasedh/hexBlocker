@@ -47,6 +47,7 @@ HexReader::HexReader()
     readBlocks  = vtkSmartPointer<vtkCollection>::New();
     readEdges   = vtkSmartPointer<vtkCollection>::New();
     readBCs     = vtkSmartPointer<vtkCollection>::New();
+    convertToMeters = 1.0;
 }
 
 int HexReader::readBlockMeshDict(QTextStream *in)
@@ -54,6 +55,8 @@ int HexReader::readBlockMeshDict(QTextStream *in)
 
 
     fileContents = readFileContents(in);
+
+    getScale(); // Read convertToMeters value
 
     //Read vertices
     getVertices();
@@ -154,6 +157,21 @@ QString HexReader::getEntry(QString entry, QString container)
         returnEntry.append(QChar(contentsFromStart.at(i)));
     }
     return returnEntry.simplified();
+}
+
+
+bool HexReader::getScale()
+{
+    QString c2mString = getEntry(QString("convertToMeters"),fileContents);
+    QStringList c2mList = c2mString.split(QString(" "), QString::SkipEmptyParts);
+    bool ok;
+    convertToMeters = c2mList.at(1).toDouble(&ok);
+    if(!ok)
+    {
+        std::cout << "error reading convertToMeters: " << c2mString.toAscii().data() << std::endl;
+        return false;
+    }
+    return true;
 }
 
 
@@ -540,8 +558,8 @@ vtkIdType HexReader::findEge(vtkIdType vId0, vtkIdType vId1)
         {
             //check for correct order
             if(e->vertIds->GetId(0)!=vId0)
-                std::cout << "Warning edge (" << vId0 <<" " << vId1 <<")"
-                          << " was precribed with wrong order. This could cause problems." <<std::endl;
+                std::cout << "Warning: edge (" << vId0 <<" " << vId1 <<")"
+                          << " was prescribed with wrong order. This could cause problems." <<std::endl;
             return i;
         }
     }
@@ -551,6 +569,6 @@ vtkIdType HexReader::findEge(vtkIdType vId0, vtkIdType vId1)
 
 void HexReader::badEdgeEntry(QString edgeDict)
 {
-    std::cout << "warning can\'t parse edgeDict: " << edgeDict.toAscii().data()
+    std::cout << "Warning can\'t parse edgeDict: " << edgeDict.toAscii().data()
               << ". Note that some types are not yet supported." << std::endl;
 }
