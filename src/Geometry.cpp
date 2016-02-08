@@ -94,7 +94,7 @@ void HexBlocker::scaleGeometry()
         sf = 1.0/sf;
         appliedScaleFactor = 1.0;
     } else {                    // apply scale
-        sf = convertToMeters;
+        sf = 1.0/convertToMeters;
     }
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
     transform->Scale(sf, sf, sf);

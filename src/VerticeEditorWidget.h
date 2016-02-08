@@ -26,6 +26,7 @@ public slots:
     void slotPointChanged();
     void slotSetScale();
     void displayScale(double scale);
+    void slotSetScaleGeometry(int state);
 
 signals:
     void apply();
