@@ -24,6 +24,8 @@ License
 
 
 #include "HexBlocker.h"
+#include "ui_MainWindow.h"
+
 #include <vtkPolyData.h>
 #include <vtkSTLReader.h>
 #include <vtkSmartPointer.h>
@@ -32,15 +34,13 @@ License
 #include <vtkActor.h>
 #include <vtkRenderer.h>
 
+#include <QtGui>
+#include <QMainWindow>
+
 void HexBlocker::readGeometry(char* openFileName)
 {
     printf("reading: %s\n", openFileName);
 
-/* VTK 5.10 can't open ASCII STL files?
- * http://www.vtk.org/pipermail/vtkusers/2012-October/077163.html
- * http://www.paraview.org/Bug/view.php?id=14326
- * http://www.cfd-online.com/Forums/openfoam-paraview/124839-problems-ascii-stl.html
-*/
     vtkSmartPointer<vtkSTLReader> GeoReader = vtkSmartPointer<vtkSTLReader>::New();
     GeoReader->SetFileName(openFileName);
     GeoReader->Update();
@@ -69,3 +69,7 @@ void HexBlocker::visibilityGeometry(bool mode)
     GeoActor->SetVisibility(mode);
 }
 
+void HexBlocker::setModelScale(double scaleFactor)
+{
+    appliedScaleFactor = scaleFactor;
+}

@@ -418,17 +418,6 @@ void MainWindow::slotSaveBlockMeshDict()
 
     QFile file(saveFileName);
 
-    QString title = tr("convertToMeters");
-    QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
-    bool ok1;
-    double conv2meters = QInputDialog::getDouble(this,title,label,1.0,1e-255,1e255,6,&ok1);
-
-    if(!ok1)
-    {
-        this->ui->statusbar->showMessage("Cancelled",3000);
-        return;
-    }
-
     bool ok2 = file.open(QIODevice::WriteOnly | QIODevice::Text);
 
     if(!ok2)
@@ -439,7 +428,6 @@ void MainWindow::slotSaveBlockMeshDict()
     QTextStream out(&file);
 
     HexExporter * exporter = new HexExporter(hexBlocker);
-    exporter->conv2meter=conv2meters;
     exporter->exporBlockMeshDict(out);
 
     openFileName = saveFileName;
@@ -447,6 +435,22 @@ void MainWindow::slotSaveBlockMeshDict()
     file.close();
 }
 
+void MainWindow::slotSetScaleFactor()
+{
+    ui->statusbar->clearMessage();
+    QString title = tr("convertToMeters");
+    QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
+
+    bool ok1;
+    double conv2meters = QInputDialog::getDouble(this,title,label,1.0,1e-255,1e255,6,&ok1);
+
+    if(!ok1)
+    {
+        this->ui->statusbar->showMessage("Cancelled",3000);
+        return;
+    }
+    hexBlocker->setModelScale(conv2meters);
+}
 
 void MainWindow::slotOpenBlockMeshDict()
 {
@@ -500,6 +504,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     delete hexBlocker;
     hexBlocker = new HexBlocker();
     hexBlocker->renderer->SetBackground(.2, .3, .4);
+    hexBlocker->setModelScale(reader->convertToMeters);
 
     //reset pointers to hexBlocker in gui-classes
     toolbox->setHexBlockerPointer(hexBlocker);

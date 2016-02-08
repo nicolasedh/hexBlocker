@@ -36,7 +36,6 @@ HexExporter::HexExporter()
 HexExporter::HexExporter(HexBlocker *HB)
 {
     hexB = HB;
-    conv2meter=1.0;
 }
 
 void HexExporter::exporBlockMeshDict(QTextStream &out)
@@ -52,11 +51,7 @@ void HexExporter::exporBlockMeshDict(QTextStream &out)
         << "\t object \t blockMeshDict; " << endl
         << "}" << endl;
 
-    QString cnv2m;
-    cnv2m.sprintf("%g",conv2meter);
-    out << "convertToMeters " << cnv2m <<";" << endl;
-
-
+    out << "convertToMeters " << hexB->appliedScaleFactor <<";" << endl;
 
     hexB->exportVertices(out);
     out << endl;

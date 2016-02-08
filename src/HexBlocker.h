@@ -174,6 +174,10 @@ public:
     void hideGeometry();
     void visibilityGeometry(bool mode);
 
+    //set model scale; related to convertToMeters in blockMeshDict
+    void setModelScale(double scaleFactor);
+    double appliedScaleFactor;
+
     //force a render
     void render();
 
@@ -197,7 +201,7 @@ public:
     vtkSmartPointer<vtkActor2D> vertLabelActor;
     vtkSmartPointer<vtkRenderer> renderer;
 
-    //to be removed, has info of arcs an such
+    //to be removed, has info of arcs and such
     QString edgesDict;
 
 private:
