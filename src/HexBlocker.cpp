@@ -63,6 +63,7 @@ License
 #include <vtkTransform.h>
 #include <vtkAbstractTransform.h>
 //#include <vtkTransformPolyDataFilter.h>
+#include <vtkCamera.h>
 
 HexBlocker::HexBlocker()
 {
@@ -115,6 +116,8 @@ HexBlocker::HexBlocker()
     renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor(vertActor);
     renderer->AddActor(vertLabelActor);
+    vtkCamera * cam = renderer->GetActiveCamera();
+    cam->SetParallelProjection(1);
     isRendering=false;
 
 //    widget->SetInteractor( renderer->GetRenderWindow()->GetInteractor() );
