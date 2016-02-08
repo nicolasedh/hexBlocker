@@ -33,6 +33,7 @@ License
 #include <vtkProperty.h>
 #include <vtkActor.h>
 #include <vtkRenderer.h>
+#include <vtkTransform.h>
 
 #include <QtGui>
 #include <QMainWindow>
@@ -69,7 +70,34 @@ void HexBlocker::visibilityGeometry(bool mode)
     GeoActor->SetVisibility(mode);
 }
 
-void HexBlocker::setModelScale(double scaleFactor)
+void HexBlocker::setModelScale(double scale)
 {
-    appliedScaleFactor = scaleFactor;
+    convertToMeters = scale;
+    scaleGeometry();
+}
+
+void HexBlocker::setScaledGeometry(int option)
+{
+    scaledGeometry = option;
+}
+
+void HexBlocker::scaleGeometry()
+{
+    if(convertToMeters <= 0)    // sanity check
+    {
+        return;
+    }
+
+    double sf=appliedScaleFactor;
+    if(scaledGeometry == 0)     // restore scale
+    {
+        sf = 1.0/sf;
+        appliedScaleFactor = 1.0;
+    } else {                    // apply scale
+        sf = convertToMeters;
+    }
+    vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+    transform->Scale(sf, sf, sf);
+    GeoActor->SetUserTransform(transform);
+    this->render();
 }

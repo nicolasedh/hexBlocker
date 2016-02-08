@@ -175,8 +175,12 @@ public:
     void visibilityGeometry(bool mode);
 
     //set model scale; related to convertToMeters in blockMeshDict
-    void setModelScale(double scaleFactor);
+    void setModelScale(double scale);
+    void setScaledGeometry(int option);
+    void scaleGeometry();
+    double convertToMeters;
     double appliedScaleFactor;
+    int scaledGeometry;
 
     //force a render
     void render();

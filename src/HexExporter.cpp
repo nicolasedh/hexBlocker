@@ -51,7 +51,7 @@ void HexExporter::exporBlockMeshDict(QTextStream &out)
         << "\t object \t blockMeshDict; " << endl
         << "}" << endl;
 
-    out << "convertToMeters " << hexB->appliedScaleFactor <<";" << endl;
+    out << "convertToMeters " << hexB->convertToMeters <<";" << endl;
 
     hexB->exportVertices(out);
     out << endl;
