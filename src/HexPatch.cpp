@@ -116,7 +116,7 @@ void HexPatch::init(vtkSmartPointer<vtkIdList> vIds,
     data->SetPoints(globalVertices);
     data->SetPolys(quads);
 
-    mapper->SetInput(data);
+    mapper->SetInputData(data);
 
     actor->SetMapper(mapper);
     actor->SetOrigin(actor->GetCenter());

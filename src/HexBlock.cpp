@@ -359,7 +359,7 @@ void HexBlock::drawLocalaxes()
 
     axesData->GetCellData()->SetScalars(colors);
 
-    axesTubes->SetInput(axesData);
+    axesTubes->SetInputData(axesData);
     axesTubes->SetNumberOfSides(24);
     axesTubes->SetCapping(1);
 

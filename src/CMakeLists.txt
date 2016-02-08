@@ -1,31 +1,24 @@
 PROJECT("HexBlocker")
 cmake_minimum_required(VERSION 2.8)
- 
-IF(NOT VTK_DIR)
-  MESSAGE("VTK_DIR is not set it with export VTK_DIR=/path/to/vtk/build, trying default settings")
-  SET(VTK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../build/VTK)
-ENDIF(NOT VTK_DIR)
-IF(NOT VTK_BINARY_DIR)
-    FIND_PACKAGE(VTK REQUIRED)
-    INCLUDE(${VTK_USE_FILE})
-ENDIF(NOT VTK_BINARY_DIR)
+
+#find_package(VTK 6.0 REQUIRED NO_MODULE)
+find_package(VTK REQUIRED NO_MODULE)
+include(${VTK_USE_FILE})
+
+#SET(CMAKE_AUTOUIC ON)  
 
 # use what QVTK built with
-
 SET(QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "")
 SET(QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "")
 SET(QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "")
 FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
 
-
-# Use the include path and library for Qt that is used by VTK.
 INCLUDE_DIRECTORIES(
   ${QT_INCLUDE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
-
 # Set your files and resources here  
 SET(HexBlockerSrcs
     main.cpp MainWindow.cpp HexBlock.cpp HexBlocker.cpp
@@ -91,7 +84,8 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
 # Add install time link to vtk libraries
-SET( CMAKE_INSTALL_RPATH "\$ORIGIN/../vtk/lib/vtk-5.10" )
+#SET( CMAKE_INSTALL_RPATH "\$ORIGIN/../vtk/lib/vtk-5.10" )
+# Change exe name if debug
 IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
     MESSAGE("This is a debug build")
     SET(EXE_NAME HexBlocker-dbg)
@@ -103,16 +97,9 @@ ENDIF()
 ADD_EXECUTABLE( ${EXE_NAME} MACOSX_BUNDLE ${HexBlockerSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
 
 TARGET_LINK_LIBRARIES(${EXE_NAME}
-  QVTK
   ${QT_LIBRARIES}
-  vtkRendering
-  vtkGraphics
-  vtkIO
-  vtkCommon
-  vtkInfovis
-  vtkViews
-)
-
+  ${VTK_LIBRARIES}
+  )
 
 get_cmake_property(CacheVars CACHE_VARIABLES)
 foreach(CacheVar ${CacheVars})

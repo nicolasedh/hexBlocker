@@ -126,7 +126,7 @@ void HexEdge::init(vtkIdType p0,
     data->SetPoints(myPoints);
     data->SetLines(lines);
 
-    tube->SetInput(data);
+    tube->SetInputData(data);
     tube->SetRadius(0.05);
     mapper->SetInputConnection(tube->GetOutputPort());
 

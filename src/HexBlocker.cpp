@@ -89,7 +89,7 @@ HexBlocker::HexBlocker()
     vertSphere->SetPhiResolution(10);
 
     vertGlyph  = vtkSmartPointer<vtkGlyph3D>::New();
-    vertGlyph->SetInput(vertData);
+    vertGlyph->SetInputData(vertData);
     vertGlyph->SetSourceConnection(vertSphere->GetOutputPort());
 
     vertMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -99,7 +99,7 @@ HexBlocker::HexBlocker()
     vertActor->SetMapper(vertMapper);
 
     vertLabelMapper = vtkSmartPointer<vtkLabeledDataMapper>::New();
-    vertLabelMapper->SetInput(vertData);
+    vertLabelMapper->SetInputData(vertData);
 
     vertLabelActor = vtkSmartPointer<vtkActor2D>::New();
     vertLabelActor->SetMapper(vertLabelMapper);
