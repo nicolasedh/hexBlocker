@@ -63,6 +63,8 @@ public:
     vtkSmartPointer<vtkCollection> readEdges; //read edges
 
     QString edgesDict; //such as egdes or mergePairs
+    double convertToMeters;
+
 private:
     //FUNCTIONS
 
@@ -73,6 +75,8 @@ private:
     QString removeDoubleSlashes(QString line);
 
     void errorInGrading(vtkIdType hexNum, QString entry);
+
+    bool getScale();
 
     //fills vtkPoints with points from fileContents,
     //returns true if succesfull

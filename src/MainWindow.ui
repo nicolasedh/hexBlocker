@@ -120,8 +120,16 @@
     <addaction name="actionVertIDVisibility"/>
     <addaction name="actionGeometryVisibility"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionScaleMesh"/>
+    <addaction name="actionScaleGeometry"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuTools"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -344,6 +352,19 @@
    </property>
    <property name="text">
     <string>View tool box</string>
+   </property>
+  </action>
+  <action name="actionScaleMesh">
+   <property name="text">
+    <string>Set mesh scale</string>
+   </property>
+   <property name="toolTip">
+    <string>(convertToMeters)</string>
+   </property>
+  </action>
+  <action name="actionScaleGeometry">
+   <property name="text">
+    <string>Set geometry scale</string>
    </property>
   </action>
   <action name="actionArbitraryTest">

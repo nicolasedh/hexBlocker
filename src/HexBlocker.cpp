@@ -126,6 +126,7 @@ HexBlocker::HexBlocker()
 //    widget->SetEnabled( 1 );
 
     GeoActor = vtkSmartPointer<vtkActor>::New();
+    convertToMeters = 1; // to be reset by user, or when reading a blockMeshDict file
 
 }
 

@@ -99,6 +99,8 @@ MainWindow::MainWindow()
     // Set up action signals and slots
     connect(this->ui->actionView_tool_bar,SIGNAL(triggered()),this,SLOT(slotViewToolBar()));
     connect(this->ui->actionView_tool_box,SIGNAL(triggered()),this,SLOT(slotViewToolBox()));
+    connect(this->ui->actionScaleMesh,SIGNAL(triggered()),this,SLOT(slotSetMeshScale()));
+    connect(this->ui->actionScaleGeometry,SIGNAL(triggered()),this,SLOT(slotSetGeometryScale()));
     connect(this->ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->ui->actionCreateHexBlock,SIGNAL(triggered()),this,SLOT(slotOpenCreateHexBlockDialog()));
@@ -418,17 +420,6 @@ void MainWindow::slotSaveBlockMeshDict()
 
     QFile file(saveFileName);
 
-    QString title = tr("convertToMeters");
-    QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
-    bool ok1;
-    double conv2meters = QInputDialog::getDouble(this,title,label,1.0,1e-255,1e255,6,&ok1);
-
-    if(!ok1)
-    {
-        this->ui->statusbar->showMessage("Cancelled",3000);
-        return;
-    }
-
     bool ok2 = file.open(QIODevice::WriteOnly | QIODevice::Text);
 
     if(!ok2)
@@ -439,7 +430,6 @@ void MainWindow::slotSaveBlockMeshDict()
     QTextStream out(&file);
 
     HexExporter * exporter = new HexExporter(hexBlocker);
-    exporter->conv2meter=conv2meters;
     exporter->exporBlockMeshDict(out);
 
     openFileName = saveFileName;
@@ -447,6 +437,40 @@ void MainWindow::slotSaveBlockMeshDict()
     file.close();
 }
 
+void MainWindow::slotSetMeshScale()
+{
+    ui->statusbar->clearMessage();
+    QString title = tr("convertToMeters");
+    QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
+
+    bool ok1;
+    double conv2meters = QInputDialog::getDouble(this,title,label,hexBlocker->convertToMeters,1e-255,1e255,6,&ok1);
+
+    if(!ok1)
+    {
+        this->ui->statusbar->showMessage("Cancelled",3000);
+        return;
+    }
+    hexBlocker->setModelScale(conv2meters);
+    verticeEditor->displayScale(conv2meters);
+}
+
+void MainWindow::slotSetGeometryScale()
+{
+    ui->statusbar->clearMessage();
+    QString title = tr("Scale geometry");
+    QString label = tr("Factor to scale the geometry, to match the mesh scale.");
+
+    bool ok1;
+    double conv2meters = QInputDialog::getDouble(this,title,label,1,1e-255,1e255,6,&ok1);
+
+    if(!ok1)
+    {
+        this->ui->statusbar->showMessage("Cancelled",3000);
+        return;
+    }
+    hexBlocker->scaleGeometry(conv2meters);
+}
 
 void MainWindow::slotOpenBlockMeshDict()
 {
@@ -500,6 +524,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     delete hexBlocker;
     hexBlocker = new HexBlocker();
     hexBlocker->renderer->SetBackground(.2, .3, .4);
+    hexBlocker->setModelScale(reader->convertToMeters);
 
     //reset pointers to hexBlocker in gui-classes
     toolbox->setHexBlockerPointer(hexBlocker);
@@ -520,6 +545,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     toolbox->setBCsW->changeBCs(reader);
     verticeEditor->setHexBlocker(hexBlocker);
 //    verticeEditor->updateVertices();
+    verticeEditor->displayScale(hexBlocker->convertToMeters);
 
 }
 
@@ -543,6 +569,7 @@ void MainWindow::slotOpenGeometry()
     QByteArray ba = filename.toLatin1();
     char *openFileName = ba.data();
     hexBlocker->readGeometry(openFileName);
+    ui->statusbar->showMessage("Adjust the geometry size in \"Tools/Set geometry scale\"",10000);
 }
 
 void MainWindow::slotShowStatusText(QString text)
@@ -587,16 +614,16 @@ void MainWindow::slotAboutDialog()
 {
     QString title("hexBlocker");
     QString text("\t hexBlocker\t\t version 0.1 \n"
-                 "A GUI for generating a blockMeshDict for use with OpenFOAM\n\n"
+                 "A GUI for generating a blockMeshDict for use with OpenFOAM.\n\n"
 
                  "Current capabilities are: \n\n"
                  "\t* Creating and extruding blocks.\n"
                  "\t* Exporting and importing blockMeshDicts.\n"
-                 "\t  Please note that only 2.1.x has been tested.\n"
                  "\t* Selecting boundary patches.\n"
                  "\t* Setting the number of cells on each edge.\n"
                  "\t* Moving vertices.\n"
                  "\t* Rotating vertices.\n"
+                 "\t* Displaying geometries (STL files).\n"
                  "\t* Bugs -- This is an alpha release and\n"
                  "\t  has plenty of them\n\n"
 
