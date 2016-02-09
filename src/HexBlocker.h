@@ -176,10 +176,8 @@ public:
 
     //set model scale; related to convertToMeters in blockMeshDict
     void setModelScale(double scale);
-    void setScaledGeometry(int option);
-    void scaleGeometry();
+    void scaleGeometry(double scale);
     double convertToMeters;
-    double appliedScaleFactor;
     int scaledGeometry;
 
     //force a render

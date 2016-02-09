@@ -73,31 +73,12 @@ void HexBlocker::visibilityGeometry(bool mode)
 void HexBlocker::setModelScale(double scale)
 {
     convertToMeters = scale;
-    scaleGeometry();
 }
 
-void HexBlocker::setScaledGeometry(int option)
+void HexBlocker::scaleGeometry(double scale)
 {
-    scaledGeometry = option;
-}
-
-void HexBlocker::scaleGeometry()
-{
-    if(convertToMeters <= 0)    // sanity check
-    {
-        return;
-    }
-
-    double sf=appliedScaleFactor;
-    if(scaledGeometry == 0)     // restore scale
-    {
-        sf = 1.0/sf;
-        appliedScaleFactor = 1.0;
-    } else {                    // apply scale
-        sf = 1.0/convertToMeters;
-    }
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-    transform->Scale(sf, sf, sf);
+    transform->Scale(scale, scale, scale);
     GeoActor->SetUserTransform(transform);
     this->render();
 }

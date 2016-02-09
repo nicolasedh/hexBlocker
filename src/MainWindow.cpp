@@ -99,7 +99,8 @@ MainWindow::MainWindow()
     // Set up action signals and slots
     connect(this->ui->actionView_tool_bar,SIGNAL(triggered()),this,SLOT(slotViewToolBar()));
     connect(this->ui->actionView_tool_box,SIGNAL(triggered()),this,SLOT(slotViewToolBox()));
-    connect(this->ui->actionScaleFactor,SIGNAL(triggered()),this,SLOT(slotSetScaleFactor()));
+    connect(this->ui->actionScaleMesh,SIGNAL(triggered()),this,SLOT(slotSetMeshScale()));
+    connect(this->ui->actionScaleGeometry,SIGNAL(triggered()),this,SLOT(slotSetGeometryScale()));
     connect(this->ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->ui->actionCreateHexBlock,SIGNAL(triggered()),this,SLOT(slotOpenCreateHexBlockDialog()));
@@ -436,14 +437,14 @@ void MainWindow::slotSaveBlockMeshDict()
     file.close();
 }
 
-void MainWindow::slotSetScaleFactor()
+void MainWindow::slotSetMeshScale()
 {
     ui->statusbar->clearMessage();
     QString title = tr("convertToMeters");
     QString label = tr("Factor to convert to meters. If you modelled in mm this is 0.001.");
 
     bool ok1;
-    double conv2meters = QInputDialog::getDouble(this,title,label,hexBlocker->appliedScaleFactor,1e-255,1e255,6,&ok1);
+    double conv2meters = QInputDialog::getDouble(this,title,label,hexBlocker->convertToMeters,1e-255,1e255,6,&ok1);
 
     if(!ok1)
     {
@@ -452,6 +453,23 @@ void MainWindow::slotSetScaleFactor()
     }
     hexBlocker->setModelScale(conv2meters);
     verticeEditor->displayScale(conv2meters);
+}
+
+void MainWindow::slotSetGeometryScale()
+{
+    ui->statusbar->clearMessage();
+    QString title = tr("Scale geometry");
+    QString label = tr("Factor to scale the geometry, to match the mesh scale.");
+
+    bool ok1;
+    double conv2meters = QInputDialog::getDouble(this,title,label,1,1e-255,1e255,6,&ok1);
+
+    if(!ok1)
+    {
+        this->ui->statusbar->showMessage("Cancelled",3000);
+        return;
+    }
+    hexBlocker->scaleGeometry(conv2meters);
 }
 
 void MainWindow::slotOpenBlockMeshDict()
@@ -527,7 +545,7 @@ void MainWindow::slotReOpenBlockMeshDict()
     toolbox->setBCsW->changeBCs(reader);
     verticeEditor->setHexBlocker(hexBlocker);
 //    verticeEditor->updateVertices();
-    verticeEditor->displayScale(hexBlocker->appliedScaleFactor);
+    verticeEditor->displayScale(hexBlocker->convertToMeters);
 
 }
 

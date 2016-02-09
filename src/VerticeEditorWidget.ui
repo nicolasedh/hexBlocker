@@ -32,25 +32,22 @@
        </spacer>
       </item>
       <item>
+       <widget class="QLabel" name="scaleLabel">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Mesh scale</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="scaleFactor">
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
         <property name="text">
          <string>1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="scaleGeometry">
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>scale geometry</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
         </property>
        </widget>
       </item>

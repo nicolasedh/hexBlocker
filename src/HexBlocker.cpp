@@ -127,8 +127,6 @@ HexBlocker::HexBlocker()
 
     GeoActor = vtkSmartPointer<vtkActor>::New();
     convertToMeters = 1; // to be reset by user, or when reading a blockMeshDict file
-    appliedScaleFactor = 1;
-    scaledGeometry = 1;
 
 }
 
@@ -610,7 +608,6 @@ void HexBlocker::readBlockMeshDict(HexReader *reader)
     edges = reader->readEdges;
     patches = reader->readPatches;
     hexBCs = reader->readBCs;
-    appliedScaleFactor = reader->convertToMeters;
 
     vertData->SetPoints(vertices);
     vertices->Modified();

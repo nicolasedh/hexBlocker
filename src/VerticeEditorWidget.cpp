@@ -46,8 +46,7 @@ VerticeEditorWidget::VerticeEditorWidget(QWidget *parent) :
 
     connect(table,SIGNAL(pointEdited()),this,SLOT(slotPointChanged()));
 
-    connect(ui->scaleFactor,SIGNAL(returnPressed()),this,SLOT(slotSetScale()));
-    connect(ui->scaleGeometry,SIGNAL(stateChanged(int)),this,SLOT(slotSetScaleGeometry(int)));
+    connect(ui->scaleFactor,SIGNAL(editingFinished()),this,SLOT(slotSetScale()));
 
 }
 
@@ -88,8 +87,3 @@ void VerticeEditorWidget::displayScale(double scale)
     ui->scaleFactor->setText(QString::number(scale));
 }
 
-void VerticeEditorWidget::slotSetScaleGeometry(int state)   // 0=unchecked; 2=checked
-{
-    hexBlocker->scaledGeometry = state;
-    hexBlocker->scaleGeometry();
-}

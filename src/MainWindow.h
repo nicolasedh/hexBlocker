@@ -121,7 +121,8 @@ public slots:
 
   void slotStartSelectPatchForEdgeSetType();
   void slotStartSelectPatchForEdgeSetTypeDone();
-  void slotSetScaleFactor();
+  void slotSetMeshScale();
+  void slotSetGeometryScale();
 
 
 protected:
