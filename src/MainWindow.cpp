@@ -569,6 +569,7 @@ void MainWindow::slotOpenGeometry()
     QByteArray ba = filename.toLatin1();
     char *openFileName = ba.data();
     hexBlocker->readGeometry(openFileName);
+    ui->statusbar->showMessage("Adjust the geometry size in \"Tools/Set geometry scale\"",10000);
 }
 
 void MainWindow::slotShowStatusText(QString text)
