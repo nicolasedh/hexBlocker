@@ -11,6 +11,7 @@ Current capabilities are:
 * Moving vertices.
 * Rotating vertices.
 * Displaying geometries (STL files).
+* Project vertices to surfaces.
 * Bugs -- This is an alpha release and has plenty of them
 
 Copyright 2012, 2013;

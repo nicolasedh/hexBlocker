@@ -643,6 +643,7 @@ void MainWindow::slotAboutDialog()
                  "\t* Moving vertices.\n"
                  "\t* Rotating vertices.\n"
                  "\t* Displaying geometries (STL files).\n"
+                 "\t* Project vertices to surfaces.\n"
                  "\t* Bugs -- This is an alpha release and\n"
                  "\t  has plenty of them\n\n"
 
