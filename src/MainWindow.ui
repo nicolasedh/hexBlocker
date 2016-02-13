@@ -170,6 +170,7 @@
    <addaction name="separator"/>
    <addaction name="actionOpenMoveVerticesDialog"/>
    <addaction name="actionRotateVertices"/>
+   <addaction name="actionSnapVertices"/>
    <addaction name="separator"/>
    <addaction name="actionSetBCs"/>
    <addaction name="actionSetNumber"/>
@@ -398,6 +399,18 @@
    </property>
    <property name="toolTip">
     <string>Rotate a selection of vertices around a specified axis</string>
+   </property>
+  </action>
+  <action name="actionSnapVertices">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/snapVertices.png</normaloff>:/Icons/snapVertices.png</iconset>
+   </property>
+   <property name="text">
+    <string>snapVertices</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap a selection of vertices to the closest point on the geometry</string>
    </property>
   </action>
 

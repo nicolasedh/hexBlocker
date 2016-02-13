@@ -117,6 +117,7 @@ MainWindow::MainWindow()
     connect(toolbox->rotateVerticesW,SIGNAL(startSelect()),this,SLOT(slotStartSelectVertices()));
     connect(toolbox->rotateVerticesW,SIGNAL(rotateDone()),this,SLOT(slotResetInteractor()));
     connect(toolbox->rotateVerticesW,SIGNAL(rotateVertices()),this,SLOT(slotRotateVertices()));
+    connect(this->ui->actionSnapVertices,SIGNAL(triggered()),this,SLOT(slotSnapVertices()));
     connect(this->ui->actionSetBCs,SIGNAL(triggered()),this,SLOT(slotOpenSetBCsDialog()));
     connect(toolbox->setBCsW,SIGNAL(startSelectPatches(vtkIdList *)),this,SLOT(slotStartSelectPatches(vtkIdList *)));
     connect(toolbox->setBCsW,SIGNAL(resetInteractor()), this, SLOT(slotResetInteractor()));
@@ -153,6 +154,8 @@ MainWindow::MainWindow()
     connect(this->ui->actionAbout_hexBlocker,SIGNAL(triggered()),
             this,SLOT(slotAboutDialog()));
     connect(this->ui->actionArbitraryTest,SIGNAL(triggered()),this,SLOT(slotArbitraryTest()));
+
+    isToSnap = false;
 
 }
 
@@ -288,6 +291,7 @@ void MainWindow::slotStartSelectVertices()
 void MainWindow::slotEndSelectVertices()
 {
     renwin->GetInteractor()->SetInteractorStyle(defStyle);
+    if(isToSnap) toSnapVertices();
     hexBlocker->render();
 }
 
@@ -315,6 +319,21 @@ void MainWindow::slotRotateVertices()
 {
     hexBlocker->rotateVertices(styleVertPick->SelectedList, toolbox->rotateVerticesW->angle,
         toolbox->rotateVerticesW->center, toolbox->rotateVerticesW->axis);
+    slotResetInteractor();
+    verticeEditor->updateVertices();
+    hexBlocker->render();
+}
+
+void MainWindow::slotSnapVertices()
+{
+    isToSnap = true;    // this variable is a hack, but I don't want a new toolbox / replace an existing one
+    slotStartSelectVertices();
+}
+
+void MainWindow::toSnapVertices()
+{
+    isToSnap = false;
+    hexBlocker->snapVertices(styleVertPick->SelectedList);
     slotResetInteractor();
     verticeEditor->updateVertices();
     hexBlocker->render();

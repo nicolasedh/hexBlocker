@@ -13,5 +13,6 @@
         <file>mergePatch.png</file>
         <file>DeletHexBlock.png</file>
         <file>rotateVertices.png</file>
+        <file>snapVertices.png</file>
     </qresource>
 </RCC>

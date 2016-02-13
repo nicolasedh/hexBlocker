@@ -33,6 +33,7 @@ Description
 #define HEXBLOCKER_H
 
 #include <vtkSmartPointer.h>
+#include <vtkSTLReader.h>
 #include <QTextStream>
 #include <QString>
 
@@ -96,8 +97,11 @@ public:
     //x coordinate is set.
     void setVerticesPos(vtkSmartPointer<vtkIdList> ids, double pos[],bool setPos[]);
 
-    //rotate vertices by adding dist to the position
+    //rotate vertices by a given angle around a custom axis
     void rotateVertices(vtkSmartPointer<vtkIdList> ids, double angle, double center[], double axis[]);
+
+    //snap vertices to the closest point on a geometry (read STL surface)
+    void snapVertices(vtkSmartPointer<vtkIdList> ids);
 
     //resets colors for patches and edges.
     void resetColors();
@@ -197,6 +201,7 @@ public:
     vtkSmartPointer<vtkPolyDataMapper> vertMapper;
     vtkSmartPointer<vtkActor> vertActor;
     vtkSmartPointer<vtkActor> GeoActor;
+    vtkSmartPointer<vtkSTLReader> GeoReader;
     vtkSmartPointer<vtkAxesActor> orientationAxes;
     vtkSmartPointer<vtkOrientationMarkerWidget> orientationAxesWidget;
     vtkSmartPointer<vtkLabeledDataMapper> vertLabelMapper;

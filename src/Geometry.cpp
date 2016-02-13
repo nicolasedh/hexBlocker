@@ -34,6 +34,9 @@ License
 #include <vtkActor.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
+#include <vtkCellLocator.h>
+#include <vtkIdList.h>
+#include <vtkIdFilter.h>
 
 #include <QtGui>
 #include <QMainWindow>
@@ -42,11 +45,13 @@ void HexBlocker::readGeometry(char* openFileName)
 {
     printf("reading: %s\n", openFileName);
 
-    vtkSmartPointer<vtkSTLReader> GeoReader = vtkSmartPointer<vtkSTLReader>::New();
+//  vtkSmartPointer<vtkSTLReader> GeoReader = vtkSmartPointer<vtkSTLReader>::New();
+    GeoReader = vtkSmartPointer<vtkSTLReader>::New();
     GeoReader->SetFileName(openFileName);
     GeoReader->Update();
 
     vtkSmartPointer<vtkPolyDataMapper> GeoMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    GeoMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     GeoMapper->SetInputConnection(GeoReader->GetOutputPort());
 
     GeoActor->GetProperty()->SetOpacity(0.5);
@@ -81,4 +86,34 @@ void HexBlocker::scaleGeometry(double scale)
     transform->Scale(scale, scale, scale);
     GeoActor->SetUserTransform(transform);
     this->render();
+}
+
+void HexBlocker:: snapVertices(vtkSmartPointer<vtkIdList> ids)
+{
+    vtkSmartPointer<vtkIdFilter> cellIdFilter =
+        vtkSmartPointer<vtkIdFilter>::New();
+    cellIdFilter->SetInputConnection(GeoReader->GetOutputPort());
+    cellIdFilter->Update();
+
+    vtkSmartPointer<vtkCellLocator> cellLocator = vtkSmartPointer<vtkCellLocator>::New();
+    cellLocator->SetDataSet(cellIdFilter->GetOutput());
+    cellLocator->BuildLocator();
+
+//  printf("here\n");
+    for(vtkIdType i=0; i<ids->GetNumberOfIds(); i++)
+    {
+//      printf("%d\n", i);
+        //Find the closest points to TestPoint
+        double pos[3];              //the coordinates of the vertice to move
+        double closestPoint[3];     //the coordinates of the closest point will be returned here
+        double closestPointDist2;   //the squared distance to the closest point will be returned here
+        vtkIdType cellId;           //the cell id of the cell containing the closest point will be returned here
+        int subId;                  //this is rarely used (in triangle strips only, I believe)
+
+        vertices->GetPoint(ids->GetId(i),pos);
+        cellLocator->FindClosestPoint(pos, closestPoint, cellId, subId, closestPointDist2);
+        vertices->SetPoint(ids->GetId(i),closestPoint);
+    }
+    vertices->Modified();
+    rescaleActors();
 }

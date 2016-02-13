@@ -123,6 +123,8 @@ public slots:
   void slotStartSelectPatchForEdgeSetTypeDone();
   void slotSetMeshScale();
   void slotSetGeometryScale();
+  void slotSnapVertices();
+  void toSnapVertices();
 
 
 protected:
@@ -140,6 +142,8 @@ private:
   // Designer form
   Ui_MainWindow *ui;
   QString saveFileName;
+
+  bool isToSnap;
 };
 
 #endif // MainWindow_H
