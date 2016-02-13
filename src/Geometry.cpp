@@ -58,6 +58,8 @@ void HexBlocker::readGeometry(char* openFileName)
     GeoActor->SetMapper(GeoMapper);
 
     renderer->AddActor(GeoActor);
+    geoScale = 1.0;
+    hasGeometry = true;
 }
 
 void HexBlocker::showGeometry()
@@ -82,14 +84,22 @@ void HexBlocker::setModelScale(double scale)
 
 void HexBlocker::scaleGeometry(double scale)
 {
+    if(!hasGeometry) return;
+    if(scale <= 0) return;
+    geoScale = scale;
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
     transform->Scale(scale, scale, scale);
     GeoActor->SetUserTransform(transform);
     this->render();
 }
 
-void HexBlocker:: snapVertices(vtkSmartPointer<vtkIdList> ids)
+void HexBlocker::snapVertices(vtkSmartPointer<vtkIdList> ids)
 {
+    if(!hasGeometry) return;
+    vtkSmartPointer<vtkTransform> transform1 = vtkSmartPointer<vtkTransform>::New();
+    vtkSmartPointer<vtkTransform> transform2 = vtkSmartPointer<vtkTransform>::New();
+    transform1->Scale(geoScale, geoScale, geoScale);
+    transform2->Scale(1/geoScale, 1/geoScale, 1/geoScale);
     vtkSmartPointer<vtkIdFilter> cellIdFilter =
         vtkSmartPointer<vtkIdFilter>::New();
     cellIdFilter->SetInputConnection(GeoReader->GetOutputPort());
@@ -99,20 +109,24 @@ void HexBlocker:: snapVertices(vtkSmartPointer<vtkIdList> ids)
     cellLocator->SetDataSet(cellIdFilter->GetOutput());
     cellLocator->BuildLocator();
 
-//  printf("here\n");
     for(vtkIdType i=0; i<ids->GetNumberOfIds(); i++)
     {
-//      printf("%d\n", i);
         //Find the closest points to TestPoint
         double pos[3];              //the coordinates of the vertice to move
+        double *scaledPos;          //scaled coordinates
         double closestPoint[3];     //the coordinates of the closest point will be returned here
         double closestPointDist2;   //the squared distance to the closest point will be returned here
         vtkIdType cellId;           //the cell id of the cell containing the closest point will be returned here
         int subId;                  //this is rarely used (in triangle strips only, I believe)
 
         vertices->GetPoint(ids->GetId(i),pos);
-        cellLocator->FindClosestPoint(pos, closestPoint, cellId, subId, closestPointDist2);
-        vertices->SetPoint(ids->GetId(i),closestPoint);
+        scaledPos = transform2->TransformPoint(pos);
+        cellLocator->FindClosestPoint(scaledPos, closestPoint, cellId, subId, closestPointDist2);
+        scaledPos = transform1->TransformPoint(closestPoint);
+        pos[0] = scaledPos[0];
+        pos[1] = scaledPos[1];
+        pos[2] = scaledPos[2];
+        vertices->SetPoint(ids->GetId(i),pos);
     }
     vertices->Modified();
     rescaleActors();

@@ -481,7 +481,7 @@ void MainWindow::slotSetGeometryScale()
     QString label = tr("Factor to scale the geometry, to match the mesh scale.");
 
     bool ok1;
-    double conv2meters = QInputDialog::getDouble(this,title,label,1,1e-255,1e255,6,&ok1);
+    double conv2meters = QInputDialog::getDouble(this,title,label,hexBlocker->geoScale,1e-255,1e255,6,&ok1);
 
     if(!ok1)
     {

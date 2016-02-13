@@ -182,7 +182,8 @@ public:
     void setModelScale(double scale);
     void scaleGeometry(double scale);
     double convertToMeters;
-    int scaledGeometry;
+    double geoScale;
+    bool hasGeometry;
 
     //force a render
     void render();
