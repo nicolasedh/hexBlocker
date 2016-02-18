@@ -36,7 +36,7 @@ hexBuild=$baseDir/build/hexBlocker
 hexBin=$baseDir/bin
 hexSRC=$baseDir/src
 nprocs=4
-debug="false" #set to true to build debug version aswell.
+debug="true" #set to true to build debug version aswell.
 #---------------------------------------------------------------------------
 # Try to find qt exes
 QMAKE=$(which qmake)
@@ -87,7 +87,7 @@ cd $baseDir
 mkdir -p $hexBuild
 cd $hexBuild 
 cmake \
-    -DVTK_DIR=$vtkInstall/lib/cmake/vtk-6.3\
+    -DVTK_DIR=$vtkInstall/lib/cmake/vtk-6.3 \
     -DQT_QMAKE_EXECUTABLE=$QMAKE \
     -DQT_MOC_EXECUTABLE=$MOC \
     -DQT_UIC_EXECUTABLE=$UIC \
@@ -101,11 +101,11 @@ make install
 #Buil debug version (optional)
 
 if [ $debug == "true" ];then
-    mkdir -p $baseDir/$hexBuild-dbg
+    mkdir -p $hexBuild-dbg
     cd $hexBuild-dbg
     cmake \
 	-DCMAKE_BUILD_TYPE=Debug \
-	-DVTK_DIR=$vtkInstall/lib/vtk-5.10\
+	-DVTK_DIR=$vtkInstall/lib/cmake/vtk-6.3  \
 	-DQT_QMAKE_EXECUTABLE=$QMAKE \
 	-DQT_MOC_EXECUTABLE=$MOC \
 	-DQT_UIC_EXECUTABLE=$UIC \
